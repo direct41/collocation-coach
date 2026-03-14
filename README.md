@@ -20,6 +20,7 @@ Initial MVP focus:
 - [Technical decisions](./docs/TECHNICAL_DECISIONS.md)
 - [Phase 1 product contract](./docs/PHASE_1_PRODUCT_CONTRACT.md)
 - [Phase 2 readiness brief](./docs/PHASE_2_READINESS_BRIEF.md)
+- [Phase 3 readiness brief](./docs/PHASE_3_READINESS_BRIEF.md)
 
 ## Planned Open-Source Goals
 
@@ -75,7 +76,10 @@ docker compose up --build
 
 - `/start`
 - `/help`
+- `/today`
+- `/review`
+- `/settings`
 
 ## Repository Status
 
-Phase 2 runtime foundation is in progress.
+Phase 3 learning loop is in progress.

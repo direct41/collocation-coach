@@ -1,6 +1,18 @@
-from datetime import datetime
+from datetime import date, datetime
 
-from sqlalchemy import JSON, BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy import (
+    JSON,
+    BigInteger,
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -61,10 +73,82 @@ class CollocationItem(Base):
     common_mistake: Mapped[str] = mapped_column(Text)
     mistake_explanation_ru: Mapped[str] = mapped_column(Text)
     practice_prompt: Mapped[str] = mapped_column(Text)
-    correct_option: Mapped[str] = mapped_column(Text)
-    wrong_option_1: Mapped[str] = mapped_column(Text)
-    wrong_option_2: Mapped[str] = mapped_column(Text)
+    option_a: Mapped[str] = mapped_column(Text)
+    option_b: Mapped[str] = mapped_column(Text)
+    option_c: Mapped[str] = mapped_column(Text)
+    correct_option_index: Mapped[int] = mapped_column(Integer, nullable=False)
     tags: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+
+class DailyLesson(Base):
+    __tablename__ = "daily_lessons"
+    __table_args__ = (UniqueConstraint("user_id", "lesson_date", name="uq_daily_lesson_user_date"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    lesson_date: Mapped[date] = mapped_column(Date, nullable=False)
+    lesson_unit_id: Mapped[int] = mapped_column(ForeignKey("lesson_units.id"), index=True)
+    status: Mapped[str] = mapped_column(String(32), default="in_progress", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class DailyLessonItem(Base):
+    __tablename__ = "daily_lesson_items"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    daily_lesson_id: Mapped[int] = mapped_column(ForeignKey("daily_lessons.id"), index=True)
+    collocation_item_id: Mapped[int] = mapped_column(ForeignKey("collocation_items.id"), index=True)
+    item_type: Mapped[str] = mapped_column(String(16), nullable=False)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+    answer_selected: Mapped[str | None] = mapped_column(Text)
+    answered_correctly: Mapped[bool | None] = mapped_column(Boolean)
+    self_rating: Mapped[str | None] = mapped_column(String(16))
+    answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class UserCollocationProgress(TimestampMixin, Base):
+    __tablename__ = "user_collocation_progress"
+    __table_args__ = (
+        UniqueConstraint("user_id", "collocation_item_id", name="uq_user_collocation_progress"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    collocation_item_id: Mapped[int] = mapped_column(ForeignKey("collocation_items.id"), index=True)
+    times_seen: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    times_correct: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    last_rating: Mapped[str | None] = mapped_column(String(16))
+    stability_stage: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ReviewSession(Base):
+    __tablename__ = "review_sessions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    status: Mapped[str] = mapped_column(String(32), default="in_progress", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ReviewSessionItem(Base):
+    __tablename__ = "review_session_items"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    review_session_id: Mapped[int] = mapped_column(ForeignKey("review_sessions.id"), index=True)
+    collocation_item_id: Mapped[int] = mapped_column(ForeignKey("collocation_items.id"), index=True)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+    answer_selected: Mapped[str | None] = mapped_column(Text)
+    answered_correctly: Mapped[bool | None] = mapped_column(Boolean)
+    self_rating: Mapped[str | None] = mapped_column(String(16))
+    answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

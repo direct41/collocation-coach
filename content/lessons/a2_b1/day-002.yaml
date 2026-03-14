@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-002
+  level_band: a2_b1
+  day_number: 2
+  topic: take collocations
+  locale: ru
+  tags:
+    - take
+    - study
+    - daily-life
+items:
+  - key: a2-b1-day-002-item-01
+    phrase: take a break
+    translation_ru: сделать перерыв
+    explanation_ru: Используется, когда человек на время прекращает работу или учебу, чтобы отдохнуть.
+    correct_example: Let's take a break after this exercise.
+    common_mistake: make a break
+    mistake_explanation_ru: В значении короткого отдыха обычно говорят take a break.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Let's make a break after this exercise.
+        - Let's take a break after this exercise.
+        - Let's do a break after this exercise.
+      correct_option_index: 1
+    tags:
+      - take
+      - break
+  - key: a2-b1-day-002-item-02
+    phrase: take notes
+    translation_ru: делать записи
+    explanation_ru: Используется, когда человек записывает важную информацию во время урока, встречи или лекции.
+    correct_example: I always take notes during online lessons.
+    common_mistake: write notes downs
+    mistake_explanation_ru: Естественное и частотное сочетание здесь take notes.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I always take notes during online lessons.
+        - I always do notes during online lessons.
+        - I always make noteses during online lessons.
+      correct_option_index: 0
+    tags:
+      - take
+      - notes
+  - key: a2-b1-day-002-item-03
+    phrase: take responsibility
+    translation_ru: брать на себя ответственность
+    explanation_ru: Используется, когда человек признает свою роль и готов отвечать за результат.
+    correct_example: Good leaders take responsibility for mistakes.
+    common_mistake: accept responsibility for mistakes
+    mistake_explanation_ru: accept responsibility возможно, но базовое устойчивое сочетание для этой идеи — take responsibility.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Good leaders do responsibility for mistakes.
+        - Good leaders take responsibility for mistakes.
+        - Good leaders make responsibility for mistakes.
+      correct_option_index: 1
+    tags:
+      - take
+      - responsibility

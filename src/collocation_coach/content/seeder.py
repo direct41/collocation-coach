@@ -49,15 +49,10 @@ async def seed_lessons(
                         common_mistake=item.common_mistake,
                         mistake_explanation_ru=item.mistake_explanation_ru,
                         practice_prompt=item.practice.prompt_ru,
-                        correct_option=item.practice.options[
-                            item.practice.correct_option_index
-                        ],
-                        wrong_option_1=item.practice.options[
-                            (item.practice.correct_option_index + 1) % 3
-                        ],
-                        wrong_option_2=item.practice.options[
-                            (item.practice.correct_option_index + 2) % 3
-                        ],
+                        option_a=item.practice.options[0],
+                        option_b=item.practice.options[1],
+                        option_c=item.practice.options[2],
+                        correct_option_index=item.practice.correct_option_index,
                         tags=item.tags,
                     )
                     session.add(collocation_item)
@@ -71,15 +66,10 @@ async def seed_lessons(
                 collocation_item.common_mistake = item.common_mistake
                 collocation_item.mistake_explanation_ru = item.mistake_explanation_ru
                 collocation_item.practice_prompt = item.practice.prompt_ru
-                collocation_item.correct_option = item.practice.options[
-                    item.practice.correct_option_index
-                ]
-                collocation_item.wrong_option_1 = item.practice.options[
-                    (item.practice.correct_option_index + 1) % 3
-                ]
-                collocation_item.wrong_option_2 = item.practice.options[
-                    (item.practice.correct_option_index + 2) % 3
-                ]
+                collocation_item.option_a = item.practice.options[0]
+                collocation_item.option_b = item.practice.options[1]
+                collocation_item.option_c = item.practice.options[2]
+                collocation_item.correct_option_index = item.practice.correct_option_index
                 collocation_item.tags = item.tags
 
         await session.commit()

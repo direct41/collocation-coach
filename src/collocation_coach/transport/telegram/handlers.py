@@ -1,15 +1,151 @@
+from datetime import UTC, date, datetime
+from html import escape
 import logging
 
 from aiogram import Router
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandStart
+from aiogram.types import CallbackQuery
 from aiogram.types import Message
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
+from collocation_coach.application.onboarding import onboarding_complete
+from collocation_coach.application.study import (
+    SessionSummary,
+    StudyItemCard,
+    apply_rating,
+    create_or_get_daily_lesson,
+    create_or_get_review_session,
+    get_next_session_card,
+    get_session_item_card,
+    get_session_summary,
+    load_user_by_telegram_id,
+    record_answer,
+)
+from collocation_coach.application.users import ensure_user
 from collocation_coach.config import Settings
 from collocation_coach.storage.models import User
+from collocation_coach.transport.telegram.callbacks import (
+    DeliveryTimeSelectionCallback,
+    LevelSelectionCallback,
+    SettingsActionCallback,
+    StudyActionCallback,
+    TimezoneSelectionCallback,
+)
+from collocation_coach.transport.telegram.keyboards import (
+    answer_keyboard,
+    delivery_time_keyboard,
+    level_keyboard,
+    practice_start_keyboard,
+    rating_keyboard,
+    settings_keyboard,
+    timezone_keyboard,
+)
 
 logger = logging.getLogger(__name__)
+
+
+def _format_settings(user: User) -> str:
+    return (
+        "Current settings:\n"
+        f"- Level: {user.level_band or 'not set'}\n"
+        f"- Timezone: {user.timezone or 'not set'}\n"
+        f"- Delivery time: {user.daily_delivery_time or 'not set'}"
+    )
+
+
+def _is_ready(user: User) -> bool:
+    return onboarding_complete(user.level_band, user.timezone, user.daily_delivery_time)
+
+
+async def _send_onboarding_next_step(message: Message, user: User, default_timezone: str) -> None:
+    if not user.level_band:
+        await message.answer(
+            "Choose your current level band.",
+            reply_markup=level_keyboard(),
+        )
+        return
+    if not user.timezone or (user.timezone == default_timezone and not user.daily_delivery_time):
+        await message.answer(
+            "Choose your timezone.",
+            reply_markup=timezone_keyboard(),
+        )
+        return
+    if not user.daily_delivery_time:
+        await message.answer(
+            "Choose when to receive your daily lesson.",
+            reply_markup=delivery_time_keyboard(),
+        )
+        return
+    await message.answer(
+        "Onboarding complete.\n\n"
+        f"{_format_settings(user)}\n\n"
+        "Use /today to start your current lesson.",
+    )
+
+
+def _item_card_text(card: StudyItemCard) -> str:
+    item_label = "Review" if card.item_type == "review" else "New"
+    return (
+        f"{item_label} item {card.position}/{card.total_items}\n\n"
+        f"<b>{escape(card.phrase)}</b>\n"
+        f"{escape(card.translation_ru)}\n\n"
+        f"{escape(card.explanation_ru)}\n\n"
+        f"Example: <i>{escape(card.correct_example)}</i>\n"
+        f"Common mistake: <code>{escape(card.common_mistake)}</code>\n"
+        f"{escape(card.mistake_explanation_ru)}"
+    )
+
+
+def _practice_text(card: StudyItemCard) -> str:
+    return (
+        f"Item {card.position}/{card.total_items}\n\n"
+        f"<b>{escape(card.phrase)}</b>\n\n"
+        f"{escape(card.practice_prompt)}"
+    )
+
+
+def _feedback_text(card: StudyItemCard, selected_index: int) -> str:
+    is_correct = selected_index == card.correct_option_index
+    result = "Correct" if is_correct else "Not quite"
+    return (
+        f"{result}.\n\n"
+        f"Correct answer:\n<i>{escape(card.options[card.correct_option_index])}</i>\n\n"
+        f"{escape(card.mistake_explanation_ru)}\n\n"
+        "How did this feel?"
+    )
+
+
+def _summary_text(summary: SessionSummary) -> str:
+    if summary.session_type == "daily":
+        return (
+            "Daily lesson complete.\n\n"
+            f"Correct answers: {summary.correct_answers}/{summary.total_items}\n"
+            f"New items: {summary.new_items}\n"
+            f"Review items: {summary.review_items}"
+        )
+    return (
+        "Review session complete.\n\n"
+        f"Correct answers: {summary.correct_answers}/{summary.total_items}"
+    )
+
+
+async def _send_next_card(
+    session_factory: async_sessionmaker,
+    target_message: Message,
+    session_type: str,
+    session_id: int,
+) -> None:
+    async with session_factory() as session:
+        card = await get_next_session_card(session, session_type, session_id)
+        if card is None:
+            summary = await get_session_summary(session, session_type, session_id)
+            await target_message.answer(_summary_text(summary))
+            return
+
+    await target_message.answer(
+        _item_card_text(card),
+        reply_markup=practice_start_keyboard(card.session_type, card.session_id, card.session_item_id),
+    )
 
 
 def create_router(
@@ -18,59 +154,324 @@ def create_router(
 ) -> Router:
     router = Router()
 
-    @router.message(Command("start"))
+    @router.message(CommandStart())
     async def start_handler(message: Message) -> None:
         from_user = message.from_user
         if from_user is None:
             return
 
         async with session_factory() as session:
-            user = await session.scalar(
-                select(User).where(User.telegram_user_id == from_user.id)
-            )
-            if user is None:
-                user = User(
-                    telegram_user_id=from_user.id,
-                    username=from_user.username,
-                    first_name=from_user.first_name,
-                    language_code=from_user.language_code,
-                    timezone=settings.default_timezone,
-                )
-                session.add(user)
-                created = True
-            else:
-                user.username = from_user.username
-                user.first_name = from_user.first_name
-                user.language_code = from_user.language_code
-                created = False
-
-            await session.commit()
+            user, created = await ensure_user(session, from_user, settings.default_timezone)
 
         logger.info("Handled /start", extra={"telegram_user_id": from_user.id})
 
-        if created:
-            text = (
+        if created or not _is_ready(user):
+            await message.answer(
                 "Welcome to Collocation Coach.\n\n"
-                "The MVP foundation is live: content is loaded and your account is saved.\n"
-                "Next phases will add onboarding, daily lessons, and review."
+                "Let’s set up your daily collocation practice."
             )
-        else:
-            text = (
-                "You are already registered in Collocation Coach.\n\n"
-                "Current foundation commands:\n"
-                "/start\n"
-                "/help"
-            )
+            await _send_onboarding_next_step(message, user, settings.default_timezone)
+            return
 
-        await message.answer(text)
+        await message.answer(
+            "You are already set up.\n\n"
+            f"{_format_settings(user)}\n\n"
+            "Use /today to open today's lesson or /settings to change preferences."
+        )
 
     @router.message(Command("help"))
     async def help_handler(message: Message) -> None:
         await message.answer(
             "Collocation Coach is an open-source Telegram bot for daily collocation practice.\n\n"
-            "Current available commands:\n"
+            "Commands:\n"
             "/start - register or reopen the bot\n"
-            "/help - show this help message"
+            "/today - open today's lesson\n"
+            "/review - start a review session\n"
+            "/settings - change your preferences\n"
+            "/help - show this help message\n\n"
+            "Ratings:\n"
+            "Know - this item felt solid\n"
+            "Unsure - show it again tomorrow\n"
+            "Repeat - keep it due right away"
         )
+
+    @router.message(Command("today"))
+    async def today_handler(message: Message) -> None:
+        from_user = message.from_user
+        if from_user is None:
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, from_user.id)
+            if user is None:
+                await message.answer("Use /start first.")
+                return
+            if not _is_ready(user):
+                await message.answer("Finish onboarding first.")
+                await _send_onboarding_next_step(message, user, settings.default_timezone)
+                return
+
+            lesson = await create_or_get_daily_lesson(
+                session,
+                user.id,
+                lesson_date=date.today(),
+                now=datetime.now(UTC),
+            )
+            if lesson is None:
+                await message.answer("No lesson content is available for your current level yet.")
+                return
+
+            summary = await get_session_summary(session, "daily", lesson.id)
+            if summary.completed:
+                await message.answer(_summary_text(summary))
+                return
+
+            intro = (
+                "Today's lesson is ready.\n\n"
+                f"New items: {summary.new_items}\n"
+                f"Review items: {summary.review_items}"
+            )
+            await message.answer(intro)
+
+        await _send_next_card(session_factory, message, "daily", lesson.id)
+
+    @router.message(Command("review"))
+    async def review_handler(message: Message) -> None:
+        from_user = message.from_user
+        if from_user is None:
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, from_user.id)
+            if user is None:
+                await message.answer("Use /start first.")
+                return
+            if not _is_ready(user):
+                await message.answer("Finish onboarding first.")
+                await _send_onboarding_next_step(message, user, settings.default_timezone)
+                return
+
+            review_session = await create_or_get_review_session(
+                session,
+                user.id,
+                now=datetime.now(UTC),
+            )
+            if review_session is None:
+                await message.answer("Your review queue is empty right now.")
+                return
+
+        await message.answer("Review session started.")
+        await _send_next_card(session_factory, message, "review", review_session.id)
+
+    @router.message(Command("settings"))
+    async def settings_handler(message: Message) -> None:
+        from_user = message.from_user
+        if from_user is None:
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, from_user.id)
+            if user is None:
+                await message.answer("Use /start first.")
+                return
+
+            await message.answer(
+                _format_settings(user),
+                reply_markup=settings_keyboard(),
+            )
+
+    @router.callback_query(LevelSelectionCallback.filter())
+    async def level_selected(callback: CallbackQuery, callback_data: LevelSelectionCallback) -> None:
+        if callback.from_user is None or callback.message is None:
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, callback.from_user.id)
+            if user is None:
+                await callback.message.answer("Use /start first.")
+                await callback.answer()
+                return
+            user.level_band = callback_data.level_band
+            await session.commit()
+            await session.refresh(user)
+
+        await callback.message.edit_text(f"Level set to {callback_data.level_band}.")
+        if not _is_ready(user):
+            if not user.timezone or user.timezone == settings.default_timezone:
+                await callback.message.answer(
+                    "Choose your timezone.",
+                    reply_markup=timezone_keyboard(),
+                )
+            else:
+                await callback.message.answer(
+                    "Choose your daily lesson time.",
+                    reply_markup=delivery_time_keyboard(),
+                )
+        else:
+            await callback.message.answer(f"Updated.\n\n{_format_settings(user)}")
+        await callback.answer()
+
+    @router.callback_query(TimezoneSelectionCallback.filter())
+    async def timezone_selected(
+        callback: CallbackQuery,
+        callback_data: TimezoneSelectionCallback,
+    ) -> None:
+        if callback.from_user is None or callback.message is None:
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, callback.from_user.id)
+            if user is None:
+                await callback.message.answer("Use /start first.")
+                await callback.answer()
+                return
+            user.timezone = callback_data.timezone
+            await session.commit()
+            await session.refresh(user)
+
+        await callback.message.edit_text(f"Timezone set to {callback_data.timezone}.")
+        if not user.daily_delivery_time:
+            await callback.message.answer(
+                "Choose your daily lesson time.",
+                reply_markup=delivery_time_keyboard(),
+            )
+        else:
+            await callback.message.answer(f"Updated.\n\n{_format_settings(user)}")
+        await callback.answer()
+
+    @router.callback_query(DeliveryTimeSelectionCallback.filter())
+    async def delivery_time_selected(
+        callback: CallbackQuery,
+        callback_data: DeliveryTimeSelectionCallback,
+    ) -> None:
+        if callback.from_user is None or callback.message is None:
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, callback.from_user.id)
+            if user is None:
+                await callback.message.answer("Use /start first.")
+                await callback.answer()
+                return
+            user.daily_delivery_time = callback_data.delivery_time
+            await session.commit()
+            await session.refresh(user)
+
+        await callback.message.edit_text(
+            "Daily delivery time saved.\n\n"
+            f"{_format_settings(user)}\n\n"
+            "Use /today to start your lesson."
+        )
+        await callback.answer()
+
+    @router.callback_query(SettingsActionCallback.filter())
+    async def settings_action(
+        callback: CallbackQuery,
+        callback_data: SettingsActionCallback,
+    ) -> None:
+        if callback.message is None:
+            return
+
+        if callback_data.action == "level":
+            await callback.message.answer("Choose a new level band.", reply_markup=level_keyboard())
+        elif callback_data.action == "timezone":
+            await callback.message.answer("Choose a new timezone.", reply_markup=timezone_keyboard())
+        else:
+            await callback.message.answer(
+                "Choose a new delivery time.",
+                reply_markup=delivery_time_keyboard(),
+            )
+        await callback.answer()
+
+    @router.callback_query(StudyActionCallback.filter())
+    async def study_action(
+        callback: CallbackQuery,
+        callback_data: StudyActionCallback,
+    ) -> None:
+        if callback.message is None or callback.from_user is None:
+            return
+
+        session_type = "daily" if callback_data.session_type == "daily" else "review"
+
+        if callback_data.action == "practice":
+            async with session_factory() as session:
+                card = await get_session_item_card(
+                    session,
+                    session_type,
+                    callback_data.session_id,
+                    callback_data.item_id,
+                )
+            if card is None:
+                await callback.answer("This item is no longer available.", show_alert=True)
+                return
+            await callback.message.edit_text(
+                _practice_text(card),
+                reply_markup=answer_keyboard(
+                    card.session_type,
+                    card.session_id,
+                    card.session_item_id,
+                    card.options,
+                ),
+            )
+            await callback.answer()
+            return
+
+        if callback_data.action == "answer":
+            async with session_factory() as session:
+                card = await record_answer(
+                    session,
+                    session_type,
+                    callback_data.session_id,
+                    callback_data.item_id,
+                    int(callback_data.value),
+                )
+            if card is None:
+                await callback.answer("This item is no longer available.", show_alert=True)
+                return
+
+            await callback.message.edit_text(
+                _feedback_text(card, int(callback_data.value)),
+                reply_markup=rating_keyboard(
+                    card.session_type,
+                    card.session_id,
+                    card.session_item_id,
+                ),
+            )
+            await callback.answer()
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, callback.from_user.id)
+            if user is None:
+                await callback.answer("Use /start first.", show_alert=True)
+                return
+            summary = await apply_rating(
+                session,
+                user.id,
+                session_type,
+                callback_data.session_id,
+                callback_data.item_id,
+                callback_data.value,  # type: ignore[arg-type]
+                now=datetime.now(UTC),
+            )
+            next_card = await get_next_session_card(
+                session,
+                session_type,
+                callback_data.session_id,
+            )
+
+        await callback.message.edit_text(f"Saved rating: {callback_data.value}.")
+        if next_card is None:
+            await callback.message.answer(_summary_text(summary))
+        else:
+            await callback.message.answer(
+                _item_card_text(next_card),
+                reply_markup=practice_start_keyboard(
+                    next_card.session_type,
+                    next_card.session_id,
+                    next_card.session_item_id,
+                ),
+            )
+        await callback.answer()
 
     return router

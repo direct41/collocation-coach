@@ -1,0 +1,21 @@
+from collections.abc import Sequence
+
+
+LEVEL_BANDS: Sequence[tuple[str, str]] = (
+    ("a2_b1", "A2-B1"),
+    ("b1_b2", "B1-B2"),
+)
+
+TIMEZONE_OPTIONS: Sequence[tuple[str, str]] = (
+    ("UTC", "UTC"),
+    ("Europe/Berlin", "Berlin"),
+    ("Europe/Moscow", "Moscow"),
+    ("America/New_York", "New York"),
+    ("Asia/Ho_Chi_Minh", "Ho Chi Minh"),
+)
+
+DELIVERY_TIME_OPTIONS: Sequence[str] = ("09:00", "13:00", "19:00", "21:00")
+
+
+def onboarding_complete(user_level_band: str | None, user_timezone: str | None, delivery_time: str | None) -> bool:
+    return bool(user_level_band and user_timezone and delivery_time)

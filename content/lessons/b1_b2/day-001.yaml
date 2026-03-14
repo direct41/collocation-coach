@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-001
+  level_band: b1_b2
+  day_number: 1
+  topic: discussion and decision collocations
+  locale: ru
+  tags:
+    - meetings
+    - decisions
+    - discussion
+items:
+  - key: b1-b2-day-001-item-01
+    phrase: reach an agreement
+    translation_ru: прийти к соглашению
+    explanation_ru: Используется, когда стороны после обсуждения приходят к общему решению.
+    correct_example: The two teams finally reached an agreement.
+    common_mistake: make an agreement
+    mistake_explanation_ru: make an agreement встречается, но для результата переговоров естественнее reach an agreement.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The two teams finally reached an agreement.
+        - The two teams finally did an agreement.
+        - The two teams finally took an agreement.
+      correct_option_index: 0
+    tags:
+      - reach
+      - agreement
+  - key: b1-b2-day-001-item-02
+    phrase: raise concerns
+    translation_ru: высказывать опасения
+    explanation_ru: Используется, когда человек открыто говорит о проблемах или рисках.
+    correct_example: Several employees raised concerns about the deadline.
+    common_mistake: tell concerns
+    mistake_explanation_ru: Со словом concerns обычно используется raise, когда речь идет о том, чтобы озвучить проблему.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Several employees raised concerns about the deadline.
+        - Several employees made concerns about the deadline.
+        - Several employees told concerns about the deadline.
+      correct_option_index: 0
+    tags:
+      - raise
+      - concerns
+  - key: b1-b2-day-001-item-03
+    phrase: draw a conclusion
+    translation_ru: сделать вывод
+    explanation_ru: Используется, когда человек логически формулирует вывод на основе фактов.
+    correct_example: It is too early to draw a conclusion from one test.
+    common_mistake: make a conclusion
+    mistake_explanation_ru: make a conclusion встречается, но draw a conclusion звучит естественнее и точнее в учебном английском.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - It is too early to draw a conclusion from one test.
+        - It is too early to do a conclusion from one test.
+        - It is too early to take a conclusion from one test.
+      correct_option_index: 0
+    tags:
+      - draw
+      - conclusion
