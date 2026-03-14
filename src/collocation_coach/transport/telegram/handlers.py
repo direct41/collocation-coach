@@ -7,7 +7,7 @@ from aiogram.types import CallbackQuery
 from aiogram.types import Message
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from collocation_coach.application.onboarding import onboarding_complete
+from collocation_coach.application.onboarding import decode_delivery_time, onboarding_complete
 from collocation_coach.application.study import (
     apply_rating,
     create_or_get_daily_lesson,
@@ -305,7 +305,7 @@ def create_router(
                 await callback.message.answer("Use /start first.")
                 await callback.answer()
                 return
-            user.daily_delivery_time = callback_data.delivery_time
+            user.daily_delivery_time = decode_delivery_time(callback_data.delivery_time)
             await session.commit()
             await session.refresh(user)
 

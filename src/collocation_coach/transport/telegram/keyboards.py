@@ -4,6 +4,7 @@ from collocation_coach.application.onboarding import (
     DELIVERY_TIME_OPTIONS,
     LEVEL_BANDS,
     TIMEZONE_OPTIONS,
+    encode_delivery_time,
 )
 from collocation_coach.transport.telegram.callbacks import (
     DeliveryTimeSelectionCallback,
@@ -48,14 +49,18 @@ def delivery_time_keyboard() -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(
                     text=value,
-                    callback_data=DeliveryTimeSelectionCallback(delivery_time=value).pack(),
+                    callback_data=DeliveryTimeSelectionCallback(
+                        delivery_time=encode_delivery_time(value)
+                    ).pack(),
                 )
                 for value in DELIVERY_TIME_OPTIONS[:2]
             ],
             [
                 InlineKeyboardButton(
                     text=value,
-                    callback_data=DeliveryTimeSelectionCallback(delivery_time=value).pack(),
+                    callback_data=DeliveryTimeSelectionCallback(
+                        delivery_time=encode_delivery_time(value)
+                    ).pack(),
                 )
                 for value in DELIVERY_TIME_OPTIONS[2:]
             ],

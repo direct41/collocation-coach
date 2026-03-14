@@ -17,5 +17,15 @@ TIMEZONE_OPTIONS: Sequence[tuple[str, str]] = (
 DELIVERY_TIME_OPTIONS: Sequence[str] = ("09:00", "13:00", "19:00", "21:00")
 
 
+def encode_delivery_time(value: str) -> str:
+    return value.replace(":", "")
+
+
+def decode_delivery_time(value: str) -> str:
+    if len(value) != 4 or not value.isdigit():
+        raise ValueError("Invalid delivery time value")
+    return f"{value[:2]}:{value[2:]}"
+
+
 def onboarding_complete(user_level_band: str | None, user_timezone: str | None, delivery_time: str | None) -> bool:
     return bool(user_level_band and user_timezone and delivery_time)
