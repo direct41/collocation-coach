@@ -171,12 +171,41 @@ async def _fetch_session_item_card(
 async def _load_existing_in_progress_review_session(
     session: AsyncSession,
     user_id: int,
+    level_band: str,
 ) -> ReviewSession | None:
     return await session.scalar(
         select(ReviewSession)
-        .where(ReviewSession.user_id == user_id, ReviewSession.status == "in_progress")
+        .join(ReviewSessionItem, ReviewSessionItem.review_session_id == ReviewSession.id)
+        .join(CollocationItem, CollocationItem.id == ReviewSessionItem.collocation_item_id)
+        .join(LessonUnit, LessonUnit.id == CollocationItem.lesson_unit_id)
+        .where(
+            ReviewSession.user_id == user_id,
+            ReviewSession.status == "in_progress",
+            LessonUnit.level_band == level_band,
+        )
         .order_by(ReviewSession.id.desc())
         .limit(1)
+    )
+
+
+def _due_progress_query(
+    user_id: int,
+    level_band: str,
+    now: datetime,
+    limit: int,
+) -> Select[tuple[int]]:
+    return (
+        select(UserCollocationProgress.collocation_item_id)
+        .join(CollocationItem, CollocationItem.id == UserCollocationProgress.collocation_item_id)
+        .join(LessonUnit, LessonUnit.id == CollocationItem.lesson_unit_id)
+        .where(
+            UserCollocationProgress.user_id == user_id,
+            UserCollocationProgress.due_at.is_not(None),
+            UserCollocationProgress.due_at <= now,
+            LessonUnit.level_band == level_band,
+        )
+        .order_by(asc(UserCollocationProgress.due_at))
+        .limit(limit)
     )
 
 
@@ -228,18 +257,7 @@ async def create_or_get_daily_lesson(
         await session.flush()
 
     due_review_ids = list(
-        (
-            await session.execute(
-                select(UserCollocationProgress.collocation_item_id)
-                .where(
-                    UserCollocationProgress.user_id == user_id,
-                    UserCollocationProgress.due_at.is_not(None),
-                    UserCollocationProgress.due_at <= now,
-                )
-                .order_by(asc(UserCollocationProgress.due_at))
-                .limit(DAILY_REVIEW_LIMIT)
-            )
-        ).scalars()
+        (await session.execute(_due_progress_query(user_id, user.level_band, now, DAILY_REVIEW_LIMIT))).scalars()
     )
 
     new_items = list(
@@ -310,7 +328,11 @@ async def create_or_get_review_session(
     now: datetime | None = None,
 ) -> ReviewSession | None:
     now = now or utc_now()
-    existing = await _load_existing_in_progress_review_session(session, user_id)
+    user = await session.get(User, user_id)
+    if user is None or user.level_band is None:
+        return None
+
+    existing = await _load_existing_in_progress_review_session(session, user_id, user.level_band)
     if existing is not None:
         has_pending = await session.scalar(
             select(func.count())
@@ -324,18 +346,7 @@ async def create_or_get_review_session(
             return existing
 
     due_item_ids = list(
-        (
-            await session.execute(
-                select(UserCollocationProgress.collocation_item_id)
-                .where(
-                    UserCollocationProgress.user_id == user_id,
-                    UserCollocationProgress.due_at.is_not(None),
-                    UserCollocationProgress.due_at <= now,
-                )
-                .order_by(asc(UserCollocationProgress.due_at))
-                .limit(REVIEW_SESSION_LIMIT)
-            )
-        ).scalars()
+        (await session.execute(_due_progress_query(user_id, user.level_band, now, REVIEW_SESSION_LIMIT))).scalars()
     )
     if not due_item_ids:
         return None

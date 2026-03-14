@@ -93,29 +93,28 @@ async def _seed_second_level_content(factory: async_sessionmaker) -> int:
         )
         session.add(lesson_unit)
         await session.flush()
-        session.add_all(
-            [
-                CollocationItem(
-                    lesson_unit_id=lesson_unit.id,
-                    external_key=f"b1-item-{index}",
-                    phrase=f"b1-phrase-{index}",
-                    translation_ru=f"b1-перевод-{index}",
-                    explanation_ru=f"b1-объяснение-{index}",
-                    correct_example=f"b1-correct-{index}",
-                    common_mistake=f"b1-wrong-{index}",
-                    mistake_explanation_ru=f"b1-mistake-explanation-{index}",
-                    practice_prompt=f"b1-practice-{index}",
-                    option_a=f"b1-a-{index}",
-                    option_b=f"b1-b-{index}",
-                    option_c=f"b1-c-{index}",
-                    correct_option_index=0,
-                    tags=["tag"],
-                )
-                for index in range(1, 4)
-            ]
-        )
+        items = [
+            CollocationItem(
+                lesson_unit_id=lesson_unit.id,
+                external_key=f"b1-item-{index}",
+                phrase=f"b1-phrase-{index}",
+                translation_ru=f"b1-перевод-{index}",
+                explanation_ru=f"b1-объяснение-{index}",
+                correct_example=f"b1-correct-{index}",
+                common_mistake=f"b1-wrong-{index}",
+                mistake_explanation_ru=f"b1-mistake-explanation-{index}",
+                practice_prompt=f"b1-practice-{index}",
+                option_a=f"b1-a-{index}",
+                option_b=f"b1-b-{index}",
+                option_c=f"b1-c-{index}",
+                correct_option_index=0,
+                tags=["tag"],
+            )
+            for index in range(1, 4)
+        ]
+        session.add_all(items)
         await session.commit()
-        return lesson_unit.id
+        return lesson_unit.id, [item.id for item in items]
 
 
 @pytest.mark.asyncio
@@ -225,7 +224,7 @@ async def test_apply_rating_updates_progress_and_creates_review_session(session_
 @pytest.mark.asyncio
 async def test_level_change_uses_first_lesson_of_new_level(session_factory) -> None:
     user_id, _ = await _seed_user_and_content(session_factory)
-    b1_lesson_unit_id = await _seed_second_level_content(session_factory)
+    b1_lesson_unit_id, _ = await _seed_second_level_content(session_factory)
 
     async with session_factory() as session:
         lesson = await create_or_get_daily_lesson(
@@ -257,7 +256,7 @@ async def test_level_change_uses_first_lesson_of_new_level(session_factory) -> N
 @pytest.mark.asyncio
 async def test_incomplete_daily_lesson_is_replaced_when_level_changes(session_factory) -> None:
     user_id, _ = await _seed_user_and_content(session_factory)
-    b1_lesson_unit_id = await _seed_second_level_content(session_factory)
+    b1_lesson_unit_id, _ = await _seed_second_level_content(session_factory)
 
     async with session_factory() as session:
         lesson = await create_or_get_daily_lesson(
@@ -292,3 +291,110 @@ async def test_incomplete_daily_lesson_is_replaced_when_level_changes(session_fa
             ).scalars()
         )
         assert len(rows) == 3
+
+
+@pytest.mark.asyncio
+async def test_daily_lesson_review_items_stay_with_current_level(session_factory) -> None:
+    user_id, a2_item_ids = await _seed_user_and_content(session_factory)
+    _, b1_item_ids = await _seed_second_level_content(session_factory)
+
+    async with session_factory() as session:
+        session.add_all(
+            [
+                UserCollocationProgress(
+                    user_id=user_id,
+                    collocation_item_id=a2_item_ids[0],
+                    times_seen=1,
+                    times_correct=1,
+                    stability_stage=1,
+                    due_at=datetime(2026, 3, 14, tzinfo=UTC),
+                ),
+                UserCollocationProgress(
+                    user_id=user_id,
+                    collocation_item_id=b1_item_ids[0],
+                    times_seen=1,
+                    times_correct=1,
+                    stability_stage=1,
+                    due_at=datetime(2026, 3, 14, tzinfo=UTC),
+                ),
+            ]
+        )
+        user = await session.get(User, user_id)
+        assert user is not None
+        user.level_band = "b1_b2"
+        await session.commit()
+
+        lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert lesson is not None
+
+        review_item_id = await session.scalar(
+            select(DailyLessonItem.collocation_item_id)
+            .where(
+                DailyLessonItem.daily_lesson_id == lesson.id,
+                DailyLessonItem.item_type == "review",
+            )
+            .limit(1)
+        )
+        assert review_item_id == b1_item_ids[0]
+
+
+@pytest.mark.asyncio
+async def test_review_session_is_isolated_per_level(session_factory) -> None:
+    user_id, a2_item_ids = await _seed_user_and_content(session_factory)
+    _, b1_item_ids = await _seed_second_level_content(session_factory)
+
+    async with session_factory() as session:
+        session.add_all(
+            [
+                UserCollocationProgress(
+                    user_id=user_id,
+                    collocation_item_id=a2_item_ids[0],
+                    times_seen=1,
+                    times_correct=1,
+                    stability_stage=1,
+                    due_at=datetime(2026, 3, 14, tzinfo=UTC),
+                ),
+                UserCollocationProgress(
+                    user_id=user_id,
+                    collocation_item_id=b1_item_ids[0],
+                    times_seen=1,
+                    times_correct=1,
+                    stability_stage=1,
+                    due_at=datetime(2026, 3, 14, tzinfo=UTC),
+                ),
+            ]
+        )
+        await session.commit()
+
+        a2_review = await create_or_get_review_session(
+            session,
+            user_id=user_id,
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert a2_review is not None
+
+        first_card = await get_next_session_card(session, "review", a2_review.id)
+        assert first_card is not None
+        assert first_card.phrase == "phrase-1"
+
+        user = await session.get(User, user_id)
+        assert user is not None
+        user.level_band = "b1_b2"
+        await session.commit()
+
+        b1_review = await create_or_get_review_session(
+            session,
+            user_id=user_id,
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert b1_review is not None
+        assert b1_review.id != a2_review.id
+
+        second_card = await get_next_session_card(session, "review", b1_review.id)
+        assert second_card is not None
+        assert second_card.phrase == "b1-phrase-1"
