@@ -19,6 +19,7 @@ Initial MVP focus:
 - [Product plan](./docs/PRODUCT_PLAN.md)
 - [Technical decisions](./docs/TECHNICAL_DECISIONS.md)
 - [Phase 1 product contract](./docs/PHASE_1_PRODUCT_CONTRACT.md)
+- [Phase 2 readiness brief](./docs/PHASE_2_READINESS_BRIEF.md)
 
 ## Planned Open-Source Goals
 
@@ -35,6 +36,46 @@ Initial MVP focus:
 - content format: YAML files
 - deployment: single container app plus Postgres
 
+## Current Foundation
+
+Implemented now:
+- Python project scaffold
+- config loading and validation
+- YAML lesson parsing
+- PostgreSQL schema bootstrap
+- lesson content seeding
+- Telegram polling runtime
+- `/start` and `/help`
+- Dockerfile and Docker Compose
+- tests for config and content loading
+
+## Local Run
+
+1. Copy `.env.example` to `.env`
+2. Set `TELEGRAM_BOT_TOKEN`
+3. Start PostgreSQL
+4. Run the bot
+
+### With uv
+
+```bash
+cp .env.example .env
+uv sync
+uv run python -m collocation_coach.main
+```
+
+### With Docker Compose
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+## Current Commands
+
+- `/start`
+- `/help`
+
 ## Repository Status
 
-Phase 1 product contract is being prepared. No production code yet.
+Phase 2 runtime foundation is in progress.

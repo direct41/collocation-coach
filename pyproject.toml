@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "collocation-coach"
+version = "0.1.0"
+description = "Open-source Telegram bot for learning English collocations through short daily lessons."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+authors = [
+  { name = "direct41" }
+]
+dependencies = [
+  "aiogram>=3.22.0,<4.0.0",
+  "asyncpg>=0.30.0,<1.0.0",
+  "pydantic-settings>=2.11.0,<3.0.0",
+  "pyyaml>=6.0.2,<7.0.0",
+  "sqlalchemy>=2.0.43,<3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=9.0.0,<10.0.0",
+  "pytest-asyncio>=1.2.0,<2.0.0",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=9.0.0,<10.0.0",
+  "pytest-asyncio>=1.2.0,<2.0.0",
+]
+
+[project.scripts]
+collocation-coach = "collocation_coach.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/collocation_coach"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.uv]
+default-groups = ["dev"]
