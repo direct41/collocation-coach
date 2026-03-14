@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-024
+  level_band: a2_b1
+  day_number: 24
+  topic: fall collocations
+  locale: ru
+  tags:
+    - fall
+    - health
+    - progress
+items:
+  - key: a2-b1-day-024-item-01
+    phrase: fall asleep
+    translation_ru: заснуть
+    explanation_ru: Используется, когда человек переходит от бодрствования ко сну.
+    correct_example: I fell asleep during the movie.
+    common_mistake: go to sleeping suddenly
+    mistake_explanation_ru: Для начала сна естественно использовать fall asleep.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I fell asleep during the movie.
+        - I did asleep during the movie.
+        - I made asleep during the movie.
+      correct_option_index: 0
+    tags:
+      - fall
+      - asleep
+  - key: a2-b1-day-024-item-02
+    phrase: fall ill
+    translation_ru: заболеть
+    explanation_ru: Используется в более нейтральном и формальном стиле, когда человек становится больным.
+    correct_example: Several workers fell ill after lunch.
+    common_mistake: become sickly in work
+    mistake_explanation_ru: В нейтральном сообщении о болезни естественно говорить fall ill.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Several workers fell ill after lunch.
+        - Several workers did ill after lunch.
+        - Several workers made ill after lunch.
+      correct_option_index: 0
+    tags:
+      - fall
+      - ill
+  - key: a2-b1-day-024-item-03
+    phrase: fall behind
+    translation_ru: отставать
+    explanation_ru: Используется, когда человек начинает делать что-то медленнее графика или требований.
+    correct_example: Don't fall behind with your homework.
+    common_mistake: stay back in homework
+    mistake_explanation_ru: Когда кто-то начинает не успевать, естественно говорить fall behind.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Don't fall behind with your homework.
+        - Don't do behind with your homework.
+        - Don't make behind with your homework.
+      correct_option_index: 0
+    tags:
+      - fall
+      - behind

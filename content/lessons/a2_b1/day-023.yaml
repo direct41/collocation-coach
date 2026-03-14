@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-023
+  level_band: a2_b1
+  day_number: 23
+  topic: check collocations
+  locale: ru
+  tags:
+    - check
+    - study
+    - routine
+items:
+  - key: a2-b1-day-023-item-01
+    phrase: check your email
+    translation_ru: проверять почту
+    explanation_ru: Используется, когда человек смотрит новые письма.
+    correct_example: I check my email first thing in the morning.
+    common_mistake: see my email box
+    mistake_explanation_ru: Для обычного действия просмотра почты естественно говорить check your email.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I check my email first thing in the morning.
+        - I do my email first thing in the morning.
+        - I make my email first thing in the morning.
+      correct_option_index: 0
+    tags:
+      - check
+      - email
+  - key: a2-b1-day-023-item-02
+    phrase: check the answer
+    translation_ru: проверить ответ
+    explanation_ru: Используется, когда человек хочет убедиться, что ответ правильный.
+    correct_example: Check the answer before you submit the form.
+    common_mistake: control the answer
+    mistake_explanation_ru: В бытовом и учебном контексте естественно говорить check the answer.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Check the answer before you submit the form.
+        - Do the answer before you submit the form.
+        - Make the answer before you submit the form.
+      correct_option_index: 0
+    tags:
+      - check
+      - answer
+  - key: a2-b1-day-023-item-03
+    phrase: check availability
+    translation_ru: проверить наличие, доступность
+    explanation_ru: Используется, когда человек хочет узнать, есть ли товар, время или место.
+    correct_example: I'll check availability and call you back.
+    common_mistake: see if there has
+    mistake_explanation_ru: Для такой ситуации естественно использовать check availability.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I'll check availability and call you back.
+        - I'll do availability and call you back.
+        - I'll make availability and call you back.
+      correct_option_index: 0
+    tags:
+      - check
+      - availability

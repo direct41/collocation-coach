@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-016
+  level_band: a2_b1
+  day_number: 16
+  topic: run collocations
+  locale: ru
+  tags:
+    - run
+    - work
+    - time
+items:
+  - key: a2-b1-day-016-item-01
+    phrase: run a business
+    translation_ru: вести бизнес
+    explanation_ru: Используется, когда человек управляет компанией или своим делом.
+    correct_example: It's not easy to run a small business.
+    common_mistake: make a business
+    mistake_explanation_ru: Для управления компанией естественно говорить run a business.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - It's not easy to run a small business.
+        - It's not easy to do a small business.
+        - It's not easy to make a small business.
+      correct_option_index: 0
+    tags:
+      - run
+      - business
+  - key: a2-b1-day-016-item-02
+    phrase: run late
+    translation_ru: опаздывать
+    explanation_ru: Используется, когда человек понимает, что прибудет позже, чем планировал.
+    correct_example: Sorry, I'm running late.
+    common_mistake: go late now
+    mistake_explanation_ru: В разговорном английском очень естественно говорить run late.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Sorry, I'm running late.
+        - Sorry, I'm doing late.
+        - Sorry, I'm making late.
+      correct_option_index: 0
+    tags:
+      - run
+      - late
+  - key: a2-b1-day-016-item-03
+    phrase: run out of time
+    translation_ru: остаться без времени
+    explanation_ru: Используется, когда время заканчивается и его больше не хватает.
+    correct_example: We ran out of time before the last question.
+    common_mistake: finish from time
+    mistake_explanation_ru: Для ситуации, когда время закончилось, используют run out of time.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We ran out of time before the last question.
+        - We did out of time before the last question.
+        - We made out of time before the last question.
+      correct_option_index: 0
+    tags:
+      - run
+      - time

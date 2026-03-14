@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-022
+  level_band: a2_b1
+  day_number: 22
+  topic: hold collocations
+  locale: ru
+  tags:
+    - hold
+    - meetings
+    - body
+items:
+  - key: a2-b1-day-022-item-01
+    phrase: hold a meeting
+    translation_ru: проводить встречу
+    explanation_ru: Используется, когда компания, команда или группа официально собираются для обсуждения.
+    correct_example: We'll hold a meeting tomorrow morning.
+    common_mistake: do a meeting
+    mistake_explanation_ru: Когда встречу проводят, естественно говорить hold a meeting.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We'll hold a meeting tomorrow morning.
+        - We'll do a meeting tomorrow morning.
+        - We'll make a meeting tomorrow morning.
+      correct_option_index: 0
+    tags:
+      - hold
+      - meeting
+  - key: a2-b1-day-022-item-02
+    phrase: hold hands
+    translation_ru: держаться за руки
+    explanation_ru: Используется, когда два человека держат друг друга за руку.
+    correct_example: The children were holding hands.
+    common_mistake: keep the hands together
+    mistake_explanation_ru: Для этого действия в английском обычно говорят hold hands.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The children were holding hands.
+        - The children were doing hands.
+        - The children were making hands.
+      correct_option_index: 0
+    tags:
+      - hold
+      - hands
+  - key: a2-b1-day-022-item-03
+    phrase: hold your breath
+    translation_ru: задержать дыхание
+    explanation_ru: Используется буквально про дыхание и образно, когда человек напряженно ждет результата.
+    correct_example: Hold your breath and count to ten.
+    common_mistake: stop your air
+    mistake_explanation_ru: В английском для этого действия используют hold your breath.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Hold your breath and count to ten.
+        - Do your breath and count to ten.
+        - Make your breath and count to ten.
+      correct_option_index: 0
+    tags:
+      - hold
+      - breath

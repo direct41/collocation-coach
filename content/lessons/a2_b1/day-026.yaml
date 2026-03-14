@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-026
+  level_band: a2_b1
+  day_number: 26
+  topic: pass collocations
+  locale: ru
+  tags:
+    - pass
+    - exams
+    - communication
+items:
+  - key: a2-b1-day-026-item-01
+    phrase: pass an exam
+    translation_ru: сдать экзамен
+    explanation_ru: Используется, когда человек успешно проходит экзамен или тест.
+    correct_example: She passed the exam on her first try.
+    common_mistake: give an exam successfully
+    mistake_explanation_ru: Когда экзамен сдан успешно, естественно говорить pass an exam.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She passed the exam on her first try.
+        - She did the exam on her first try.
+        - She made the exam on her first try.
+      correct_option_index: 0
+    tags:
+      - pass
+      - exam
+  - key: a2-b1-day-026-item-02
+    phrase: pass the time
+    translation_ru: скоротать время
+    explanation_ru: Используется, когда человек делает что-то, чтобы время прошло быстрее.
+    correct_example: We played cards to pass the time.
+    common_mistake: spend the time away
+    mistake_explanation_ru: Для идеи скоротать время естественно использовать pass the time.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We played cards to pass the time.
+        - We played cards to do the time.
+        - We played cards to make the time.
+      correct_option_index: 0
+    tags:
+      - pass
+      - time
+  - key: a2-b1-day-026-item-03
+    phrase: pass a message
+    translation_ru: передать сообщение
+    explanation_ru: Используется, когда человек просит передать информацию другому человеку.
+    correct_example: Can you pass this message to Anna?
+    common_mistake: say this message to Anna
+    mistake_explanation_ru: Когда сообщение передают через кого-то, естественно говорить pass a message.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Can you pass this message to Anna?
+        - Can you do this message to Anna?
+        - Can you make this message to Anna?
+      correct_option_index: 0
+    tags:
+      - pass
+      - message

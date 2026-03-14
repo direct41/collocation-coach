@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-017
+  level_band: a2_b1
+  day_number: 17
+  topic: lose collocations
+  locale: ru
+  tags:
+    - lose
+    - emotions
+    - motivation
+items:
+  - key: a2-b1-day-017-item-01
+    phrase: lose weight
+    translation_ru: похудеть
+    explanation_ru: Используется, когда человек становится легче.
+    correct_example: She wants to lose weight before summer.
+    common_mistake: reduce weight yourself
+    mistake_explanation_ru: В бытовом английском обычно говорят lose weight.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She wants to lose weight before summer.
+        - She wants to do weight before summer.
+        - She wants to make weight before summer.
+      correct_option_index: 0
+    tags:
+      - lose
+      - weight
+  - key: a2-b1-day-017-item-02
+    phrase: lose interest
+    translation_ru: потерять интерес
+    explanation_ru: Используется, когда тема, проект или хобби больше не кажутся интересными.
+    correct_example: I quickly lose interest if a class is too slow.
+    common_mistake: miss interest
+    mistake_explanation_ru: В таком значении естественно говорить lose interest.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I quickly lose interest if a class is too slow.
+        - I quickly do interest if a class is too slow.
+        - I quickly make interest if a class is too slow.
+      correct_option_index: 0
+    tags:
+      - lose
+      - interest
+  - key: a2-b1-day-017-item-03
+    phrase: lose your temper
+    translation_ru: выйти из себя
+    explanation_ru: Используется, когда человек внезапно сердится и теряет контроль над эмоциями.
+    correct_example: He rarely loses his temper at work.
+    common_mistake: break your temper
+    mistake_explanation_ru: Для такой эмоциональной реакции используют lose your temper.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He rarely loses his temper at work.
+        - He rarely does his temper at work.
+        - He rarely makes his temper at work.
+      correct_option_index: 0
+    tags:
+      - lose
+      - temper

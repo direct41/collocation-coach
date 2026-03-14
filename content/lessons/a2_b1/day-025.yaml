@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-025
+  level_band: a2_b1
+  day_number: 25
+  topic: raise collocations
+  locale: ru
+  tags:
+    - raise
+    - money
+    - questions
+items:
+  - key: a2-b1-day-025-item-01
+    phrase: raise a question
+    translation_ru: задать вопрос, поднять вопрос
+    explanation_ru: Используется, когда человек поднимает тему, которую нужно обсудить.
+    correct_example: She raised an important question at the end of the meeting.
+    common_mistake: put a question on the table
+    mistake_explanation_ru: В более формальном стиле естественно говорить raise a question.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She raised an important question at the end of the meeting.
+        - She did an important question at the end of the meeting.
+        - She made an important question at the end of the meeting.
+      correct_option_index: 0
+    tags:
+      - raise
+      - question
+  - key: a2-b1-day-025-item-02
+    phrase: raise money
+    translation_ru: собирать деньги
+    explanation_ru: Используется, когда люди собирают средства для проекта, бизнеса или благотворительности.
+    correct_example: They raised money for a local charity.
+    common_mistake: collect a moneys
+    mistake_explanation_ru: Для идеи сбора средств естественно использовать raise money.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - They raised money for a local charity.
+        - They did money for a local charity.
+        - They made money for a local charity.
+      correct_option_index: 0
+    tags:
+      - raise
+      - money
+  - key: a2-b1-day-025-item-03
+    phrase: raise a child
+    translation_ru: воспитывать ребенка
+    explanation_ru: Используется, когда речь идет о процессе воспитания ребенка.
+    correct_example: It's not easy to raise a child on your own.
+    common_mistake: grow a child
+    mistake_explanation_ru: В значении воспитания естественно говорить raise a child.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - It's not easy to raise a child on your own.
+        - It's not easy to do a child on your own.
+        - It's not easy to make a child on your own.
+      correct_option_index: 0
+    tags:
+      - raise
+      - child

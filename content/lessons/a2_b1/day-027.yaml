@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-027
+  level_band: a2_b1
+  day_number: 27
+  topic: meet collocations
+  locale: ru
+  tags:
+    - meet
+    - expectations
+    - people
+items:
+  - key: a2-b1-day-027-item-01
+    phrase: meet expectations
+    translation_ru: соответствовать ожиданиям
+    explanation_ru: Используется, когда результат оказывается таким хорошим, как люди ожидали.
+    correct_example: The course really met my expectations.
+    common_mistake: match with expectations fully
+    mistake_explanation_ru: В таком контексте естественно использовать meet expectations.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The course really met my expectations.
+        - The course really did my expectations.
+        - The course really made my expectations.
+      correct_option_index: 0
+    tags:
+      - meet
+      - expectations
+  - key: a2-b1-day-027-item-02
+    phrase: meet a friend
+    translation_ru: встретиться с другом
+    explanation_ru: Используется, когда человек планирует или случайно видит друга.
+    correct_example: I'm meeting a friend after work.
+    common_mistake: see with a friend
+    mistake_explanation_ru: Для запланированной или обычной встречи естественно говорить meet a friend.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I'm meeting a friend after work.
+        - I'm doing a friend after work.
+        - I'm making a friend after work.
+      correct_option_index: 0
+    tags:
+      - meet
+      - friend
+  - key: a2-b1-day-027-item-03
+    phrase: meet a requirement
+    translation_ru: соответствовать требованию
+    explanation_ru: Используется, когда что-то подходит под правило, стандарт или условие.
+    correct_example: This document doesn't meet the requirements.
+    common_mistake: fit to the requirements exactly
+    mistake_explanation_ru: В нейтральном и формальном стиле естественно говорить meet a requirement or meet the requirements.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - This document doesn't meet the requirements.
+        - This document doesn't do the requirements.
+        - This document doesn't make the requirements.
+      correct_option_index: 0
+    tags:
+      - meet
+      - requirement

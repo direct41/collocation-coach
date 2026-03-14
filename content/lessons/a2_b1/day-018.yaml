@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-018
+  level_band: a2_b1
+  day_number: 18
+  topic: win collocations
+  locale: ru
+  tags:
+    - win
+    - success
+    - competition
+items:
+  - key: a2-b1-day-018-item-01
+    phrase: win a game
+    translation_ru: выиграть игру
+    explanation_ru: Используется, когда команда или человек побеждают в игре.
+    correct_example: Our team won the game in the last minute.
+    common_mistake: earn a game
+    mistake_explanation_ru: Для победы в игре естественно говорить win a game.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Our team won the game in the last minute.
+        - Our team did the game in the last minute.
+        - Our team made the game in the last minute.
+      correct_option_index: 0
+    tags:
+      - win
+      - game
+  - key: a2-b1-day-018-item-02
+    phrase: win an award
+    translation_ru: получить награду
+    explanation_ru: Используется, когда человек побеждает в конкурсе или получает официальное признание.
+    correct_example: She won an award for her design project.
+    common_mistake: get an awarded
+    mistake_explanation_ru: Когда речь идет о награде, естественно говорить win an award.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She won an award for her design project.
+        - She did an award for her design project.
+        - She made an award for her design project.
+      correct_option_index: 0
+    tags:
+      - win
+      - award
+  - key: a2-b1-day-018-item-03
+    phrase: win support
+    translation_ru: заручиться поддержкой
+    explanation_ru: Используется, когда идея или человек получают одобрение других людей.
+    correct_example: The new plan won support from the whole team.
+    common_mistake: take support from all
+    mistake_explanation_ru: В этом контексте естественно использовать win support.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The new plan won support from the whole team.
+        - The new plan did support from the whole team.
+        - The new plan made support from the whole team.
+      correct_option_index: 0
+    tags:
+      - win
+      - support

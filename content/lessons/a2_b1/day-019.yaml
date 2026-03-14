@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-019
+  level_band: a2_b1
+  day_number: 19
+  topic: change collocations
+  locale: ru
+  tags:
+    - change
+    - decisions
+    - life
+items:
+  - key: a2-b1-day-019-item-01
+    phrase: change your mind
+    translation_ru: передумать
+    explanation_ru: Используется, когда человек решает сделать что-то по-другому.
+    correct_example: I changed my mind and stayed at home.
+    common_mistake: replace your mind
+    mistake_explanation_ru: Для смены решения естественно использовать change your mind.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I changed my mind and stayed at home.
+        - I did my mind and stayed at home.
+        - I made my mind and stayed at home.
+      correct_option_index: 0
+    tags:
+      - change
+      - mind
+  - key: a2-b1-day-019-item-02
+    phrase: change jobs
+    translation_ru: сменить работу
+    explanation_ru: Используется, когда человек уходит с одной работы и начинает другую.
+    correct_example: He changed jobs after five years at the company.
+    common_mistake: move the job
+    mistake_explanation_ru: Для смены места работы обычно говорят change jobs.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He changed jobs after five years at the company.
+        - He did jobs after five years at the company.
+        - He made jobs after five years at the company.
+      correct_option_index: 0
+    tags:
+      - change
+      - jobs
+  - key: a2-b1-day-019-item-03
+    phrase: change clothes
+    translation_ru: переодеться
+    explanation_ru: Используется, когда человек надевает другую одежду.
+    correct_example: I need to change clothes before dinner.
+    common_mistake: wear another clothes now
+    mistake_explanation_ru: Для действия переодевания естественно говорить change clothes.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I need to change clothes before dinner.
+        - I need to do clothes before dinner.
+        - I need to make clothes before dinner.
+      correct_option_index: 0
+    tags:
+      - change
+      - clothes

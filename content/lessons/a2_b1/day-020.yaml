@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-020
+  level_band: a2_b1
+  day_number: 20
+  topic: spend collocations
+  locale: ru
+  tags:
+    - spend
+    - time
+    - money
+items:
+  - key: a2-b1-day-020-item-01
+    phrase: spend time
+    translation_ru: проводить время
+    explanation_ru: Используется, когда говорят о том, как человек использует свое время.
+    correct_example: I spend a lot of time reading in English.
+    common_mistake: pass time on regularly
+    mistake_explanation_ru: В нейтральном описании того, как человек использует время, часто говорят spend time.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I spend a lot of time reading in English.
+        - I do a lot of time reading in English.
+        - I make a lot of time reading in English.
+      correct_option_index: 0
+    tags:
+      - spend
+      - time
+  - key: a2-b1-day-020-item-02
+    phrase: spend money
+    translation_ru: тратить деньги
+    explanation_ru: Используется, когда человек платит за что-то или использует деньги на покупку.
+    correct_example: I don't want to spend too much money today.
+    common_mistake: use money much
+    mistake_explanation_ru: В обычной речи естественно говорить spend money.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I don't want to spend too much money today.
+        - I don't want to do too much money today.
+        - I don't want to make too much money today.
+      correct_option_index: 0
+    tags:
+      - spend
+      - money
+  - key: a2-b1-day-020-item-03
+    phrase: spend the night
+    translation_ru: провести ночь
+    explanation_ru: Используется, когда человек ночует где-то или проводит ночь в определенном месте.
+    correct_example: We spent the night at a small hotel.
+    common_mistake: stay the night ated
+    mistake_explanation_ru: Для такого значения естественно использовать spend the night.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We spent the night at a small hotel.
+        - We did the night at a small hotel.
+        - We made the night at a small hotel.
+      correct_option_index: 0
+    tags:
+      - spend
+      - night

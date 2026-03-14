@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-021
+  level_band: a2_b1
+  day_number: 21
+  topic: bring collocations
+  locale: ru
+  tags:
+    - bring
+    - effects
+    - communication
+items:
+  - key: a2-b1-day-021-item-01
+    phrase: bring good luck
+    translation_ru: приносить удачу
+    explanation_ru: Используется, когда вещь, действие или ритуал ассоциируются с удачей.
+    correct_example: Some people think this charm brings good luck.
+    common_mistake: gives lucky
+    mistake_explanation_ru: В таком значении естественно говорить bring good luck.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Some people think this charm brings good luck.
+        - Some people think this charm does good luck.
+        - Some people think this charm makes good luck.
+      correct_option_index: 0
+    tags:
+      - bring
+      - luck
+  - key: a2-b1-day-021-item-02
+    phrase: bring bad news
+    translation_ru: приносить плохие новости
+    explanation_ru: Используется, когда человек сообщает что-то неприятное.
+    correct_example: I'm sorry to bring bad news.
+    common_mistake: tell bad new
+    mistake_explanation_ru: В такой ситуации естественно использовать bring bad news.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I'm sorry to bring bad news.
+        - I'm sorry to do bad news.
+        - I'm sorry to make bad news.
+      correct_option_index: 0
+    tags:
+      - bring
+      - news
+  - key: a2-b1-day-021-item-03
+    phrase: bring a smile
+    translation_ru: вызвать улыбку
+    explanation_ru: Используется, когда что-то делает человека немного счастливее или веселее.
+    correct_example: That memory always brings a smile to my face.
+    common_mistake: make a smile in my face
+    mistake_explanation_ru: Для идеи вызвать улыбку часто используют bring a smile.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - That memory always brings a smile to my face.
+        - That memory always does a smile to my face.
+        - That memory always makes a smile to my face.
+      correct_option_index: 0
+    tags:
+      - bring
+      - smile
