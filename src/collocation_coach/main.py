@@ -10,8 +10,10 @@ from collocation_coach.config import load_settings
 from collocation_coach.content.loader import load_all_lessons
 from collocation_coach.content.seeder import seed_lessons
 from collocation_coach.logging import configure_logging
+from collocation_coach.runtime import delivery_loop, stop_background_task
 from collocation_coach.storage.database import Database
 from collocation_coach.transport.telegram.handlers import create_router
+from collocation_coach.validation import validate_startup_content
 
 
 async def run() -> None:
@@ -20,6 +22,7 @@ async def run() -> None:
     logger = logging.getLogger(__name__)
 
     lessons = load_all_lessons(settings.content_dir)
+    validate_startup_content(lessons)
     logger.info("Loaded lesson files", extra={"lesson_file_count": len(lessons)})
 
     database = Database(settings.database_url)
@@ -32,6 +35,7 @@ async def run() -> None:
     )
     dispatcher = Dispatcher()
     dispatcher.include_router(create_router(settings, database.session_factory))
+    delivery_task = asyncio.create_task(delivery_loop(bot, database.session_factory))
 
     await bot.set_my_commands(
         [
@@ -47,6 +51,7 @@ async def run() -> None:
         logger.info("Starting polling")
         await dispatcher.start_polling(bot)
     finally:
+        await stop_background_task(delivery_task)
         await bot.session.close()
         await database.dispose()
 

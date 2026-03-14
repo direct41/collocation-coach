@@ -1,5 +1,4 @@
 from datetime import UTC, date, datetime
-from html import escape
 import logging
 
 from aiogram import Router
@@ -10,8 +9,6 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from collocation_coach.application.onboarding import onboarding_complete
 from collocation_coach.application.study import (
-    SessionSummary,
-    StudyItemCard,
     apply_rating,
     create_or_get_daily_lesson,
     create_or_get_review_session,
@@ -35,22 +32,21 @@ from collocation_coach.transport.telegram.keyboards import (
     answer_keyboard,
     delivery_time_keyboard,
     level_keyboard,
-    practice_start_keyboard,
     rating_keyboard,
     settings_keyboard,
     timezone_keyboard,
 )
+from collocation_coach.transport.telegram.messages import (
+    daily_intro_text,
+    format_feedback,
+    format_item_card,
+    format_practice,
+    format_settings,
+    format_summary,
+    practice_markup,
+)
 
 logger = logging.getLogger(__name__)
-
-
-def _format_settings(user: User) -> str:
-    return (
-        "Current settings:\n"
-        f"- Level: {user.level_band or 'not set'}\n"
-        f"- Timezone: {user.timezone or 'not set'}\n"
-        f"- Delivery time: {user.daily_delivery_time or 'not set'}"
-    )
 
 
 def _is_ready(user: User) -> bool:
@@ -78,54 +74,8 @@ async def _send_onboarding_next_step(message: Message, user: User, default_timez
         return
     await message.answer(
         "Onboarding complete.\n\n"
-        f"{_format_settings(user)}\n\n"
+        f"{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}\n\n"
         "Use /today to start your current lesson.",
-    )
-
-
-def _item_card_text(card: StudyItemCard) -> str:
-    item_label = "Review" if card.item_type == "review" else "New"
-    return (
-        f"{item_label} item {card.position}/{card.total_items}\n\n"
-        f"<b>{escape(card.phrase)}</b>\n"
-        f"{escape(card.translation_ru)}\n\n"
-        f"{escape(card.explanation_ru)}\n\n"
-        f"Example: <i>{escape(card.correct_example)}</i>\n"
-        f"Common mistake: <code>{escape(card.common_mistake)}</code>\n"
-        f"{escape(card.mistake_explanation_ru)}"
-    )
-
-
-def _practice_text(card: StudyItemCard) -> str:
-    return (
-        f"Item {card.position}/{card.total_items}\n\n"
-        f"<b>{escape(card.phrase)}</b>\n\n"
-        f"{escape(card.practice_prompt)}"
-    )
-
-
-def _feedback_text(card: StudyItemCard, selected_index: int) -> str:
-    is_correct = selected_index == card.correct_option_index
-    result = "Correct" if is_correct else "Not quite"
-    return (
-        f"{result}.\n\n"
-        f"Correct answer:\n<i>{escape(card.options[card.correct_option_index])}</i>\n\n"
-        f"{escape(card.mistake_explanation_ru)}\n\n"
-        "How did this feel?"
-    )
-
-
-def _summary_text(summary: SessionSummary) -> str:
-    if summary.session_type == "daily":
-        return (
-            "Daily lesson complete.\n\n"
-            f"Correct answers: {summary.correct_answers}/{summary.total_items}\n"
-            f"New items: {summary.new_items}\n"
-            f"Review items: {summary.review_items}"
-        )
-    return (
-        "Review session complete.\n\n"
-        f"Correct answers: {summary.correct_answers}/{summary.total_items}"
     )
 
 
@@ -139,12 +89,12 @@ async def _send_next_card(
         card = await get_next_session_card(session, session_type, session_id)
         if card is None:
             summary = await get_session_summary(session, session_type, session_id)
-            await target_message.answer(_summary_text(summary))
+            await target_message.answer(format_summary(summary))
             return
 
     await target_message.answer(
-        _item_card_text(card),
-        reply_markup=practice_start_keyboard(card.session_type, card.session_id, card.session_item_id),
+        format_item_card(card),
+        reply_markup=practice_markup(card),
     )
 
 
@@ -175,7 +125,7 @@ def create_router(
 
         await message.answer(
             "You are already set up.\n\n"
-            f"{_format_settings(user)}\n\n"
+            f"{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}\n\n"
             "Use /today to open today's lesson or /settings to change preferences."
         )
 
@@ -223,15 +173,13 @@ def create_router(
 
             summary = await get_session_summary(session, "daily", lesson.id)
             if summary.completed:
-                await message.answer(_summary_text(summary))
+                await message.answer(format_summary(summary))
                 return
 
-            intro = (
-                "Today's lesson is ready.\n\n"
-                f"New items: {summary.new_items}\n"
-                f"Review items: {summary.review_items}"
-            )
-            await message.answer(intro)
+            if lesson.delivered_at is None:
+                lesson.delivered_at = datetime.now(UTC)
+                await session.commit()
+            await message.answer(daily_intro_text(summary))
 
         await _send_next_card(session_factory, message, "daily", lesson.id)
 
@@ -276,7 +224,7 @@ def create_router(
                 return
 
             await message.answer(
-                _format_settings(user),
+                format_settings(user.level_band, user.timezone, user.daily_delivery_time),
                 reply_markup=settings_keyboard(),
             )
 
@@ -308,7 +256,9 @@ def create_router(
                     reply_markup=delivery_time_keyboard(),
                 )
         else:
-            await callback.message.answer(f"Updated.\n\n{_format_settings(user)}")
+            await callback.message.answer(
+                f"Updated.\n\n{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}"
+            )
         await callback.answer()
 
     @router.callback_query(TimezoneSelectionCallback.filter())
@@ -336,7 +286,9 @@ def create_router(
                 reply_markup=delivery_time_keyboard(),
             )
         else:
-            await callback.message.answer(f"Updated.\n\n{_format_settings(user)}")
+            await callback.message.answer(
+                f"Updated.\n\n{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}"
+            )
         await callback.answer()
 
     @router.callback_query(DeliveryTimeSelectionCallback.filter())
@@ -359,7 +311,7 @@ def create_router(
 
         await callback.message.edit_text(
             "Daily delivery time saved.\n\n"
-            f"{_format_settings(user)}\n\n"
+            f"{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}\n\n"
             "Use /today to start your lesson."
         )
         await callback.answer()
@@ -405,7 +357,7 @@ def create_router(
                 await callback.answer("This item is no longer available.", show_alert=True)
                 return
             await callback.message.edit_text(
-                _practice_text(card),
+                format_practice(card),
                 reply_markup=answer_keyboard(
                     card.session_type,
                     card.session_id,
@@ -430,7 +382,7 @@ def create_router(
                 return
 
             await callback.message.edit_text(
-                _feedback_text(card, int(callback_data.value)),
+                format_feedback(card, int(callback_data.value)),
                 reply_markup=rating_keyboard(
                     card.session_type,
                     card.session_id,
@@ -462,15 +414,11 @@ def create_router(
 
         await callback.message.edit_text(f"Saved rating: {callback_data.value}.")
         if next_card is None:
-            await callback.message.answer(_summary_text(summary))
+            await callback.message.answer(format_summary(summary))
         else:
             await callback.message.answer(
-                _item_card_text(next_card),
-                reply_markup=practice_start_keyboard(
-                    next_card.session_type,
-                    next_card.session_id,
-                    next_card.session_item_id,
-                ),
+                format_item_card(next_card),
+                reply_markup=practice_markup(next_card),
             )
         await callback.answer()
 

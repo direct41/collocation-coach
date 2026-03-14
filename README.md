@@ -21,6 +21,7 @@ Initial MVP focus:
 - [Phase 1 product contract](./docs/PHASE_1_PRODUCT_CONTRACT.md)
 - [Phase 2 readiness brief](./docs/PHASE_2_READINESS_BRIEF.md)
 - [Phase 3 readiness brief](./docs/PHASE_3_READINESS_BRIEF.md)
+- [Phase 4 readiness brief](./docs/PHASE_4_READINESS_BRIEF.md)
 
 ## Planned Open-Source Goals
 
@@ -46,9 +47,10 @@ Implemented now:
 - PostgreSQL schema bootstrap
 - lesson content seeding
 - Telegram polling runtime
-- `/start` and `/help`
+- onboarding and study flow
+- simple built-in daily delivery loop
 - Dockerfile and Docker Compose
-- tests for config and content loading
+- tests for config, content, study logic, and delivery
 
 ## Local Run
 
@@ -56,6 +58,7 @@ Implemented now:
 2. Set `TELEGRAM_BOT_TOKEN`
 3. Start PostgreSQL
 4. Run the bot
+5. Finish onboarding in Telegram with `/start`
 
 ### With uv
 
@@ -82,4 +85,4 @@ docker compose up --build
 
 ## Repository Status
 
-Phase 3 learning loop is in progress.
+Simple MVP is runnable. Next work should focus on more lesson content and small release polish, not on extra infrastructure.
