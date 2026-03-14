@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-008
+  level_band: a2_b1
+  day_number: 8
+  topic: give collocations
+  locale: ru
+  tags:
+    - give
+    - communication
+    - help
+items:
+  - key: a2-b1-day-008-item-01
+    phrase: give advice
+    translation_ru: давать совет
+    explanation_ru: Используется, когда человек рекомендует, что лучше сделать в ситуации.
+    correct_example: My teacher gave me some useful advice.
+    common_mistake: say an advice
+    mistake_explanation_ru: Advice обычно используется с give, а не say. Также advice неисчисляемое.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - My teacher gave me some useful advice.
+        - My teacher did me some useful advice.
+        - My teacher made me some useful advice.
+      correct_option_index: 0
+    tags:
+      - give
+      - advice
+  - key: a2-b1-day-008-item-02
+    phrase: give permission
+    translation_ru: дать разрешение
+    explanation_ru: Используется, когда кто-то официально или неофициально разрешает что-то сделать.
+    correct_example: They gave us permission to leave early.
+    common_mistake: allow permission
+    mistake_explanation_ru: В устойчивом сочетании с permission обычно говорят give permission.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - They gave us permission to leave early.
+        - They did us permission to leave early.
+        - They made us permission to leave early.
+      correct_option_index: 0
+    tags:
+      - give
+      - permission
+  - key: a2-b1-day-008-item-03
+    phrase: give a speech
+    translation_ru: выступить с речью
+    explanation_ru: Используется, когда человек говорит перед аудиторией на мероприятии или встрече.
+    correct_example: She gave a short speech at the conference.
+    common_mistake: make a speech short
+    mistake_explanation_ru: Естественное выражение для выступления перед аудиторией — give a speech.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She gave a short speech at the conference.
+        - She did a short speech at the conference.
+        - She took a short speech at the conference.
+      correct_option_index: 0
+    tags:
+      - give
+      - speech

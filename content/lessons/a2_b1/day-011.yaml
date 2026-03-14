@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-011
+  level_band: a2_b1
+  day_number: 11
+  topic: save collocations
+  locale: ru
+  tags:
+    - save
+    - time
+    - energy
+items:
+  - key: a2-b1-day-011-item-01
+    phrase: save time
+    translation_ru: экономить время
+    explanation_ru: Используется, когда действие помогает сделать что-то быстрее или без лишних шагов.
+    correct_example: This shortcut can save you a lot of time.
+    common_mistake: win time
+    mistake_explanation_ru: В обычной речи говорят save time, когда что-то помогает не тратить время зря.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - This shortcut can save you a lot of time.
+        - This shortcut can do you a lot of time.
+        - This shortcut can make you a lot of time.
+      correct_option_index: 0
+    tags:
+      - save
+      - time
+  - key: a2-b1-day-011-item-02
+    phrase: save money
+    translation_ru: экономить деньги
+    explanation_ru: Используется, когда человек тратит меньше или откладывает деньги на будущее.
+    correct_example: Cooking at home helps me save money.
+    common_mistake: keep money cheaper
+    mistake_explanation_ru: Для идеи экономии денег обычно используют save money.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Cooking at home helps me save money.
+        - Cooking at home helps me do money.
+        - Cooking at home helps me make money.
+      correct_option_index: 0
+    tags:
+      - save
+      - money
+  - key: a2-b1-day-011-item-03
+    phrase: save energy
+    translation_ru: экономить энергию, беречь силы
+    explanation_ru: Используется, когда человек или устройство тратят меньше энергии.
+    correct_example: Turn the lights off to save energy.
+    common_mistake: protect energy
+    mistake_explanation_ru: В бытовом и экологическом контексте естественно говорить save energy.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Turn the lights off to save energy.
+        - Turn the lights off to do energy.
+        - Turn the lights off to make energy.
+      correct_option_index: 0
+    tags:
+      - save
+      - energy

@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-008
+  level_band: b1_b2
+  day_number: 8
+  topic: balance and consequences collocations
+  locale: ru
+  tags:
+    - balance
+    - consequences
+    - responses
+items:
+  - key: b1-b2-day-008-item-01
+    phrase: strike a balance
+    translation_ru: найти баланс
+    explanation_ru: Используется, когда человек пытается уравновесить две важные, но конкурирующие вещи.
+    correct_example: It's hard to strike a balance between speed and quality.
+    common_mistake: make a balance between
+    mistake_explanation_ru: Для идеи поиска равновесия естественно говорить strike a balance.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - It's hard to strike a balance between speed and quality.
+        - It's hard to do a balance between speed and quality.
+        - It's hard to make a balance between speed and quality.
+      correct_option_index: 0
+    tags:
+      - strike
+      - balance
+  - key: b1-b2-day-008-item-02
+    phrase: trigger a response
+    translation_ru: вызвать реакцию
+    explanation_ru: Используется, когда событие, сообщение или действие становится причиной реакции.
+    correct_example: A small change can trigger a strong response from users.
+    common_mistake: make a response from users
+    mistake_explanation_ru: Когда что-то вызывает реакцию, естественно говорить trigger a response.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - A small change can trigger a strong response from users.
+        - A small change can do a strong response from users.
+        - A small change can make a strong response from users.
+      correct_option_index: 0
+    tags:
+      - trigger
+      - response
+  - key: b1-b2-day-008-item-03
+    phrase: face consequences
+    translation_ru: столкнуться с последствиями
+    explanation_ru: Используется, когда человек должен отвечать за результат своих действий.
+    correct_example: If we ignore the warning signs, we'll face serious consequences.
+    common_mistake: get consequences seriously
+    mistake_explanation_ru: В контексте ответственности и результата естественно говорить face consequences.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - If we ignore the warning signs, we'll face serious consequences.
+        - If we ignore the warning signs, we'll do serious consequences.
+        - If we ignore the warning signs, we'll make serious consequences.
+      correct_option_index: 0
+    tags:
+      - face
+      - consequences

@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-012
+  level_band: a2_b1
+  day_number: 12
+  topic: miss collocations
+  locale: ru
+  tags:
+    - miss
+    - chances
+    - transport
+items:
+  - key: a2-b1-day-012-item-01
+    phrase: miss a chance
+    translation_ru: упустить шанс
+    explanation_ru: Используется, когда человек не использует хорошую возможность.
+    correct_example: I don't want to miss this chance.
+    common_mistake: lose a chance by not
+    mistake_explanation_ru: Для идеи упущенной возможности естественно говорить miss a chance.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I don't want to miss this chance.
+        - I don't want to do this chance.
+        - I don't want to make this chance.
+      correct_option_index: 0
+    tags:
+      - miss
+      - chance
+  - key: a2-b1-day-012-item-02
+    phrase: miss the train
+    translation_ru: опоздать на поезд
+    explanation_ru: Используется, когда человек не успевает на поезд или другой транспорт.
+    correct_example: We missed the train by two minutes.
+    common_mistake: late the train
+    mistake_explanation_ru: Когда кто-то не успевает на транспорт, естественно говорить miss the train.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We missed the train by two minutes.
+        - We did the train by two minutes.
+        - We made the train by two minutes.
+      correct_option_index: 0
+    tags:
+      - miss
+      - train
+  - key: a2-b1-day-012-item-03
+    phrase: miss a point
+    translation_ru: не уловить суть, упустить важный момент
+    explanation_ru: Используется, когда человек не понял основную идею или важную деталь.
+    correct_example: I think you missed the main point.
+    common_mistake: don't catch the meaning point
+    mistake_explanation_ru: В разговоре о понимании идеи часто говорят miss the point или miss a point.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I think you missed the main point.
+        - I think you did the main point.
+        - I think you made the main point.
+      correct_option_index: 0
+    tags:
+      - miss
+      - point

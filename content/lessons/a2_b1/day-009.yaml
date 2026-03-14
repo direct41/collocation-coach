@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-009
+  level_band: a2_b1
+  day_number: 9
+  topic: catch collocations
+  locale: ru
+  tags:
+    - catch
+    - health
+    - transport
+items:
+  - key: a2-b1-day-009-item-01
+    phrase: catch a cold
+    translation_ru: простудиться
+    explanation_ru: Используется, когда человек заболевает легкой простудой.
+    correct_example: You'll catch a cold if you go out like that.
+    common_mistake: get a colded
+    mistake_explanation_ru: Устойчивое выражение — catch a cold.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - You'll catch a cold if you go out like that.
+        - You'll do a cold if you go out like that.
+        - You'll make a cold if you go out like that.
+      correct_option_index: 0
+    tags:
+      - catch
+      - cold
+  - key: a2-b1-day-009-item-02
+    phrase: catch the bus
+    translation_ru: успеть на автобус
+    explanation_ru: Используется, когда человек успевает сесть на автобус до его отправления.
+    correct_example: Hurry up or we won't catch the bus.
+    common_mistake: take on time the bus
+    mistake_explanation_ru: Когда важно успеть на транспорт, часто говорят catch the bus или catch the train.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Hurry up or we won't catch the bus.
+        - Hurry up or we won't do the bus.
+        - Hurry up or we won't make the bus.
+      correct_option_index: 0
+    tags:
+      - catch
+      - bus
+  - key: a2-b1-day-009-item-03
+    phrase: catch a mistake
+    translation_ru: заметить ошибку
+    explanation_ru: Используется, когда человек успевает увидеть ошибку до того, как станет поздно.
+    correct_example: I caught a mistake in the report just in time.
+    common_mistake: find out a mistake in time
+    mistake_explanation_ru: В этом значении естественно говорить catch a mistake, особенно если ошибка была замечена быстро.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I caught a mistake in the report just in time.
+        - I did a mistake in the report just in time.
+        - I made a mistake in the report just in time.
+      correct_option_index: 0
+    tags:
+      - catch
+      - mistake

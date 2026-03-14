@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-007
+  level_band: b1_b2
+  day_number: 7
+  topic: strategic action collocations
+  locale: ru
+  tags:
+    - strategy
+    - risk
+    - action
+items:
+  - key: b1-b2-day-007-item-01
+    phrase: take steps
+    translation_ru: предпринимать шаги
+    explanation_ru: Используется, когда человек или организация начинают действовать, чтобы решить проблему.
+    correct_example: The company took steps to improve security.
+    common_mistake: make steps to improve
+    mistake_explanation_ru: В этом значении естественно говорить take steps.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The company took steps to improve security.
+        - The company did steps to improve security.
+        - The company made steps to improve security.
+      correct_option_index: 0
+    tags:
+      - take
+      - steps
+  - key: b1-b2-day-007-item-02
+    phrase: exercise caution
+    translation_ru: проявлять осторожность
+    explanation_ru: Используется, когда нужно действовать осторожно из-за риска.
+    correct_example: Investors should exercise caution in unstable markets.
+    common_mistake: do caution
+    mistake_explanation_ru: В формальном английском стандартное выражение — exercise caution.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Investors should exercise caution in unstable markets.
+        - Investors should make caution in unstable markets.
+        - Investors should do caution in unstable markets.
+      correct_option_index: 0
+    tags:
+      - exercise
+      - caution
+  - key: b1-b2-day-007-item-03
+    phrase: come to terms with
+    translation_ru: смириться с, принять
+    explanation_ru: Используется, когда человек постепенно принимает сложную ситуацию или факт.
+    correct_example: It took her time to come to terms with the decision.
+    common_mistake: accept with peace
+    mistake_explanation_ru: Для психологического принятия ситуации естественно говорить come to terms with.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - It took her time to come to terms with the decision.
+        - It took her time to do terms with the decision.
+        - It took her time to make terms with the decision.
+      correct_option_index: 0
+    tags:
+      - come
+      - terms

@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-014
+  level_band: a2_b1
+  day_number: 14
+  topic: come collocations
+  locale: ru
+  tags:
+    - come
+    - outcomes
+    - preparation
+items:
+  - key: a2-b1-day-014-item-01
+    phrase: come true
+    translation_ru: сбываться
+    explanation_ru: Используется, когда мечта, надежда или план становятся реальностью.
+    correct_example: I hope your dream comes true.
+    common_mistake: become true finally
+    mistake_explanation_ru: Для сбывшейся мечты естественно говорить come true.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I hope your dream comes true.
+        - I hope your dream does true.
+        - I hope your dream makes true.
+      correct_option_index: 0
+    tags:
+      - come
+      - "true"
+  - key: a2-b1-day-014-item-02
+    phrase: come first
+    translation_ru: быть на первом месте
+    explanation_ru: Используется, когда что-то важнее всего или занимает первое место в списке приоритетов.
+    correct_example: In this team, safety comes first.
+    common_mistake: goes first priority
+    mistake_explanation_ru: В устойчивом выражении для приоритета обычно говорят come first.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - In this team, safety comes first.
+        - In this team, safety does first.
+        - In this team, safety makes first.
+      correct_option_index: 0
+    tags:
+      - come
+      - first
+  - key: a2-b1-day-014-item-03
+    phrase: come prepared
+    translation_ru: прийти подготовленным
+    explanation_ru: Используется, когда человек заранее готовится к уроку, встрече или интервью.
+    correct_example: Please come prepared for the discussion.
+    common_mistake: arrive with prepared
+    mistake_explanation_ru: Естественное короткое выражение — come prepared.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Please come prepared for the discussion.
+        - Please do prepared for the discussion.
+        - Please make prepared for the discussion.
+      correct_option_index: 0
+    tags:
+      - come
+      - prepared

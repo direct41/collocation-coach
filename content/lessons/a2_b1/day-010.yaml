@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-010
+  level_band: a2_b1
+  day_number: 10
+  topic: break collocations
+  locale: ru
+  tags:
+    - break
+    - rules
+    - news
+items:
+  - key: a2-b1-day-010-item-01
+    phrase: break the law
+    translation_ru: нарушать закон
+    explanation_ru: Используется, когда человек делает что-то незаконное.
+    correct_example: Anyone who breaks the law must face the consequences.
+    common_mistake: do against the law
+    mistake_explanation_ru: Естественное и частотное выражение здесь — break the law.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Anyone who breaks the law must face the consequences.
+        - Anyone who does the law must face the consequences.
+        - Anyone who makes the law must face the consequences.
+      correct_option_index: 0
+    tags:
+      - break
+      - law
+  - key: a2-b1-day-010-item-02
+    phrase: break a promise
+    translation_ru: нарушить обещание
+    explanation_ru: Используется, когда человек не делает то, что обещал.
+    correct_example: He never breaks a promise.
+    common_mistake: lose a promise
+    mistake_explanation_ru: Когда обещание не выполняют, естественно говорить break a promise.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He never breaks a promise.
+        - He never does a promise.
+        - He never makes a promise.
+      correct_option_index: 0
+    tags:
+      - break
+      - promise
+  - key: a2-b1-day-010-item-03
+    phrase: break the news
+    translation_ru: сообщить новость
+    explanation_ru: Используется, когда кто-то рассказывает важную, часто неожиданную новость.
+    correct_example: She broke the news very gently.
+    common_mistake: say the news suddenly
+    mistake_explanation_ru: Для сообщения важной новости есть устойчивое выражение break the news.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She broke the news very gently.
+        - She did the news very gently.
+        - She made the news very gently.
+      correct_option_index: 0
+    tags:
+      - break
+      - news

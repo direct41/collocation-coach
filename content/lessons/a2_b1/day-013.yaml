@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-013
+  level_band: a2_b1
+  day_number: 13
+  topic: tell collocations
+  locale: ru
+  tags:
+    - tell
+    - communication
+    - truth
+items:
+  - key: a2-b1-day-013-item-01
+    phrase: tell the truth
+    translation_ru: говорить правду
+    explanation_ru: Используется, когда человек честно рассказывает, что произошло или что он думает.
+    correct_example: Please tell me the truth.
+    common_mistake: say the truth
+    mistake_explanation_ru: В устойчивом выражении обычно говорят tell the truth.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Please tell me the truth.
+        - Please do me the truth.
+        - Please make me the truth.
+      correct_option_index: 0
+    tags:
+      - tell
+      - truth
+  - key: a2-b1-day-013-item-02
+    phrase: tell a lie
+    translation_ru: солгать
+    explanation_ru: Используется, когда человек говорит неправду.
+    correct_example: He told a lie to avoid trouble.
+    common_mistake: make a lie
+    mistake_explanation_ru: Когда человек врет, естественно говорить tell a lie.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He told a lie to avoid trouble.
+        - He did a lie to avoid trouble.
+        - He made a lie to avoid trouble.
+      correct_option_index: 0
+    tags:
+      - tell
+      - lie
+  - key: a2-b1-day-013-item-03
+    phrase: tell a story
+    translation_ru: рассказывать историю
+    explanation_ru: Используется, когда человек повествует о событиях, реальных или вымышленных.
+    correct_example: My grandfather used to tell us stories at night.
+    common_mistake: say a story
+    mistake_explanation_ru: Для повествования естественно использовать tell a story.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - My grandfather used to tell us stories at night.
+        - My grandfather used to do us stories at night.
+        - My grandfather used to make us stories at night.
+      correct_option_index: 0
+    tags:
+      - tell
+      - story

@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-015
+  level_band: a2_b1
+  day_number: 15
+  topic: set collocations
+  locale: ru
+  tags:
+    - set
+    - routines
+    - goals
+items:
+  - key: a2-b1-day-015-item-01
+    phrase: set a goal
+    translation_ru: поставить цель
+    explanation_ru: Используется, когда человек четко решает, чего хочет достичь.
+    correct_example: It's easier to improve when you set a clear goal.
+    common_mistake: put a goal for yourself
+    mistake_explanation_ru: В нейтральном и деловом стиле естественно говорить set a goal.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - It's easier to improve when you set a clear goal.
+        - It's easier to improve when you do a clear goal.
+        - It's easier to improve when you make a clear goal.
+      correct_option_index: 0
+    tags:
+      - set
+      - goal
+  - key: a2-b1-day-015-item-02
+    phrase: set an alarm
+    translation_ru: поставить будильник
+    explanation_ru: Используется, когда человек программирует телефон или часы на определенное время.
+    correct_example: Don't forget to set an alarm for tomorrow.
+    common_mistake: put an alarm on time
+    mistake_explanation_ru: Для настройки будильника естественно говорить set an alarm.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Don't forget to set an alarm for tomorrow.
+        - Don't forget to do an alarm for tomorrow.
+        - Don't forget to make an alarm for tomorrow.
+      correct_option_index: 0
+    tags:
+      - set
+      - alarm
+  - key: a2-b1-day-015-item-03
+    phrase: set the table
+    translation_ru: накрыть на стол
+    explanation_ru: "Используется, когда человек готовит стол к еде: ставит тарелки, приборы и так далее."
+    correct_example: Can you set the table while I finish cooking?
+    common_mistake: prepare the table for eating
+    mistake_explanation_ru: В бытовом английском для этого действия обычно говорят set the table.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Can you set the table while I finish cooking?
+        - Can you do the table while I finish cooking?
+        - Can you make the table while I finish cooking?
+      correct_option_index: 0
+    tags:
+      - set
+      - table
