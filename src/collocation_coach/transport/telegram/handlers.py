@@ -13,6 +13,7 @@ from collocation_coach.application.study import (
     create_or_get_daily_lesson,
     create_or_get_review_session,
     get_next_session_card,
+    get_daily_lesson_level_band,
     get_session_item_card,
     get_session_summary,
     load_user_by_telegram_id,
@@ -172,7 +173,13 @@ def create_router(
                 return
 
             summary = await get_session_summary(session, "daily", lesson.id)
+            lesson_level_band = await get_daily_lesson_level_band(session, lesson.id)
             if summary.completed:
+                if lesson_level_band != user.level_band:
+                    await message.answer(
+                        "Today's lesson was already completed with your previous level.\n"
+                        "Your new level will apply to the next generated lesson."
+                    )
                 await message.answer(format_summary(summary))
                 return
 

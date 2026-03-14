@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from typing import Literal
 
-from sqlalchemy import Select, asc, func, select
+from sqlalchemy import Select, asc, delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from collocation_coach.storage.models import (
@@ -187,34 +187,45 @@ async def create_or_get_daily_lesson(
     now: datetime | None = None,
 ) -> DailyLesson | None:
     now = now or utc_now()
+    user = await session.get(User, user_id)
+    if user is None or user.level_band is None:
+        return None
+
     existing = await session.scalar(
         select(DailyLesson).where(
             DailyLesson.user_id == user_id,
             DailyLesson.lesson_date == lesson_date,
         )
     )
-    if existing is not None:
-        return existing
 
-    user = await session.get(User, user_id)
-    if user is None or user.level_band is None:
-        return None
-
-    served_count = await session.scalar(
-        select(func.count())
-        .select_from(DailyLesson)
-        .where(DailyLesson.user_id == user_id)
-    ) or 0
-
-    lesson_unit = await session.scalar(
-        select(LessonUnit)
-        .where(LessonUnit.level_band == user.level_band)
-        .order_by(asc(LessonUnit.day_number))
-        .offset(served_count)
-        .limit(1)
-    )
+    lesson_unit = await _select_next_lesson_unit_for_level(session, user_id, user.level_band)
     if lesson_unit is None:
         return None
+
+    if existing is not None:
+        existing_level_band = await get_daily_lesson_level_band(session, existing.id)
+        if existing_level_band == user.level_band:
+            return existing
+        if existing.status == "completed":
+            return existing
+
+        await session.execute(
+            delete(DailyLessonItem).where(DailyLessonItem.daily_lesson_id == existing.id)
+        )
+        existing.lesson_unit_id = lesson_unit.id
+        existing.status = "in_progress"
+        existing.completed_at = None
+        existing.delivered_at = None
+        daily_lesson = existing
+    else:
+        daily_lesson = DailyLesson(
+            user_id=user_id,
+            lesson_date=lesson_date,
+            lesson_unit_id=lesson_unit.id,
+            status="in_progress",
+        )
+        session.add(daily_lesson)
+        await session.flush()
 
     due_review_ids = list(
         (
@@ -240,15 +251,6 @@ async def create_or_get_daily_lesson(
             )
         ).scalars()
     )
-
-    daily_lesson = DailyLesson(
-        user_id=user_id,
-        lesson_date=lesson_date,
-        lesson_unit_id=lesson_unit.id,
-        status="in_progress",
-    )
-    session.add(daily_lesson)
-    await session.flush()
 
     position = 1
     for collocation_item_id in due_review_ids:
@@ -276,6 +278,30 @@ async def create_or_get_daily_lesson(
     await session.commit()
     await session.refresh(daily_lesson)
     return daily_lesson
+
+
+async def _select_next_lesson_unit_for_level(
+    session: AsyncSession,
+    user_id: int,
+    level_band: str,
+) -> LessonUnit | None:
+    served_count = await session.scalar(
+        select(func.count())
+        .select_from(DailyLesson)
+        .join(LessonUnit, LessonUnit.id == DailyLesson.lesson_unit_id)
+        .where(
+            DailyLesson.user_id == user_id,
+            LessonUnit.level_band == level_band,
+        )
+    ) or 0
+
+    return await session.scalar(
+        select(LessonUnit)
+        .where(LessonUnit.level_band == level_band)
+        .order_by(asc(LessonUnit.day_number))
+        .offset(served_count)
+        .limit(1)
+    )
 
 
 async def create_or_get_review_session(
@@ -501,3 +527,11 @@ async def get_session_summary(
 
 async def load_user_by_telegram_id(session: AsyncSession, telegram_user_id: int) -> User | None:
     return await session.scalar(select(User).where(User.telegram_user_id == telegram_user_id))
+
+
+async def get_daily_lesson_level_band(session: AsyncSession, daily_lesson_id: int) -> str | None:
+    return await session.scalar(
+        select(LessonUnit.level_band)
+        .join(DailyLesson, DailyLesson.lesson_unit_id == LessonUnit.id)
+        .where(DailyLesson.id == daily_lesson_id)
+    )

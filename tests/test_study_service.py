@@ -9,6 +9,7 @@ from collocation_coach.application.study import (
     apply_rating,
     create_or_get_daily_lesson,
     create_or_get_review_session,
+    get_daily_lesson_level_band,
     get_next_session_card,
     record_answer,
 )
@@ -79,6 +80,42 @@ async def _seed_user_and_content(factory: async_sessionmaker):
         session.add_all(items)
         await session.commit()
         return user.id, [item.id for item in items]
+
+
+async def _seed_second_level_content(factory: async_sessionmaker) -> int:
+    async with factory() as session:
+        lesson_unit = LessonUnit(
+            external_key="lesson-b1-1",
+            level_band="b1_b2",
+            day_number=1,
+            topic="b1 topic",
+            source_path="b1.yaml",
+        )
+        session.add(lesson_unit)
+        await session.flush()
+        session.add_all(
+            [
+                CollocationItem(
+                    lesson_unit_id=lesson_unit.id,
+                    external_key=f"b1-item-{index}",
+                    phrase=f"b1-phrase-{index}",
+                    translation_ru=f"b1-перевод-{index}",
+                    explanation_ru=f"b1-объяснение-{index}",
+                    correct_example=f"b1-correct-{index}",
+                    common_mistake=f"b1-wrong-{index}",
+                    mistake_explanation_ru=f"b1-mistake-explanation-{index}",
+                    practice_prompt=f"b1-practice-{index}",
+                    option_a=f"b1-a-{index}",
+                    option_b=f"b1-b-{index}",
+                    option_c=f"b1-c-{index}",
+                    correct_option_index=0,
+                    tags=["tag"],
+                )
+                for index in range(1, 4)
+            ]
+        )
+        await session.commit()
+        return lesson_unit.id
 
 
 @pytest.mark.asyncio
@@ -183,3 +220,75 @@ async def test_apply_rating_updates_progress_and_creates_review_session(session_
         review_card = await get_next_session_card(session, "review", review_session.id)
         assert review_card is not None
         assert review_card.phrase == card.phrase
+
+
+@pytest.mark.asyncio
+async def test_level_change_uses_first_lesson_of_new_level(session_factory) -> None:
+    user_id, _ = await _seed_user_and_content(session_factory)
+    b1_lesson_unit_id = await _seed_second_level_content(session_factory)
+
+    async with session_factory() as session:
+        lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert lesson is not None
+        lesson.status = "completed"
+        await session.commit()
+
+        user = await session.get(User, user_id)
+        assert user is not None
+        user.level_band = "b1_b2"
+        await session.commit()
+
+        next_lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 15),
+            now=datetime(2026, 3, 15, tzinfo=UTC),
+        )
+        assert next_lesson is not None
+        assert next_lesson.lesson_unit_id == b1_lesson_unit_id
+        assert await get_daily_lesson_level_band(session, next_lesson.id) == "b1_b2"
+
+
+@pytest.mark.asyncio
+async def test_incomplete_daily_lesson_is_replaced_when_level_changes(session_factory) -> None:
+    user_id, _ = await _seed_user_and_content(session_factory)
+    b1_lesson_unit_id = await _seed_second_level_content(session_factory)
+
+    async with session_factory() as session:
+        lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert lesson is not None
+
+        user = await session.get(User, user_id)
+        assert user is not None
+        user.level_band = "b1_b2"
+        await session.commit()
+
+        replaced = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert replaced is not None
+        assert replaced.id == lesson.id
+        assert replaced.lesson_unit_id == b1_lesson_unit_id
+        rows = list(
+            (
+                await session.execute(
+                    select(DailyLessonItem)
+                    .where(DailyLessonItem.daily_lesson_id == replaced.id)
+                    .order_by(DailyLessonItem.position.asc())
+                )
+            ).scalars()
+        )
+        assert len(rows) == 3
