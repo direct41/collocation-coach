@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-005
+  level_band: b1_b2
+  day_number: 5
+  topic: meetings and problem-solving collocations
+  locale: ru
+  tags:
+    - meetings
+    - problem-solving
+    - goals
+items:
+  - key: b1-b2-day-005-item-01
+    phrase: hold discussions
+    translation_ru: проводить обсуждения
+    explanation_ru: Используется, когда стороны официально или полуофициально обсуждают вопрос.
+    correct_example: The partners will hold discussions next week.
+    common_mistake: make discussions
+    mistake_explanation_ru: В более формальном контексте естественно использовать hold discussions.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The partners will hold discussions next week.
+        - The partners will do discussions next week.
+        - The partners will make discussions next week.
+      correct_option_index: 0
+    tags:
+      - hold
+      - discussions
+  - key: b1-b2-day-005-item-02
+    phrase: address an issue
+    translation_ru: заняться проблемой, рассмотреть проблему
+    explanation_ru: Используется, когда команда или человек прямо разбирают проблему и пытаются ее решить.
+    correct_example: We need to address this issue before the launch.
+    common_mistake: solve this issue directly
+    mistake_explanation_ru: solve возможно, когда решение уже ясно, но address an issue шире и естественнее для обсуждения и работы над проблемой.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to address this issue before the launch.
+        - We need to do this issue before the launch.
+        - We need to make this issue before the launch.
+      correct_option_index: 0
+    tags:
+      - address
+      - issue
+  - key: b1-b2-day-005-item-03
+    phrase: achieve a goal
+    translation_ru: достичь цели
+    explanation_ru: Используется, когда человек или команда получают желаемый результат.
+    correct_example: Small daily actions help you achieve your goals.
+    common_mistake: reach to a goal
+    mistake_explanation_ru: Можно сказать reach a goal или achieve a goal, но не reach to a goal.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Small daily actions help you achieve your goals.
+        - Small daily actions help you do your goals.
+        - Small daily actions help you make your goals.
+      correct_option_index: 0
+    tags:
+      - achieve
+      - goal

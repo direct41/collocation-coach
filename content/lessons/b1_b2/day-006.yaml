@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-006
+  level_band: b1_b2
+  day_number: 6
+  topic: results and expectations collocations
+  locale: ru
+  tags:
+    - results
+    - strategy
+    - expectations
+items:
+  - key: b1-b2-day-006-item-01
+    phrase: deliver results
+    translation_ru: приносить результаты
+    explanation_ru: Используется, когда человек, команда или стратегия дают ощутимый полезный результат.
+    correct_example: The new campaign delivered strong results.
+    common_mistake: give results strongly
+    mistake_explanation_ru: В деловом английском естественно говорить deliver results.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The new campaign delivered strong results.
+        - The new campaign did strong results.
+        - The new campaign made strong results.
+      correct_option_index: 0
+    tags:
+      - deliver
+      - results
+  - key: b1-b2-day-006-item-02
+    phrase: take into account
+    translation_ru: принимать во внимание
+    explanation_ru: Используется, когда фактор или ограничение учитываются при анализе или решении.
+    correct_example: We need to take customer feedback into account.
+    common_mistake: make into account
+    mistake_explanation_ru: Устойчивое выражение — take something into account.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to take customer feedback into account.
+        - We need to do customer feedback into account.
+        - We need to make customer feedback into account.
+      correct_option_index: 0
+    tags:
+      - take
+      - account
+  - key: b1-b2-day-006-item-03
+    phrase: set expectations
+    translation_ru: задавать ожидания
+    explanation_ru: Используется, когда команда или руководитель заранее ясно объясняют, чего ждать и что требуется.
+    correct_example: Managers should set clear expectations from the start.
+    common_mistake: put expectations
+    mistake_explanation_ru: В деловом контексте стандартное выражение — set expectations.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Managers should set clear expectations from the start.
+        - Managers should do clear expectations from the start.
+        - Managers should make clear expectations from the start.
+      correct_option_index: 0
+    tags:
+      - set
+      - expectations

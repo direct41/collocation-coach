@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-002
+  level_band: b1_b2
+  day_number: 2
+  topic: deadlines and planning collocations
+  locale: ru
+  tags:
+    - planning
+    - work
+    - deadlines
+items:
+  - key: b1-b2-day-002-item-01
+    phrase: meet a deadline
+    translation_ru: уложиться в дедлайн
+    explanation_ru: Используется, когда работа завершена вовремя, до установленного срока.
+    correct_example: We need to meet the deadline without lowering quality.
+    common_mistake: catch a deadline
+    mistake_explanation_ru: В значении выполнения работы в срок обычно используют meet a deadline.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to meet the deadline without lowering quality.
+        - We need to do the deadline without lowering quality.
+        - We need to catch the deadline without lowering quality.
+      correct_option_index: 0
+    tags:
+      - meet
+      - deadline
+  - key: b1-b2-day-002-item-02
+    phrase: bear in mind
+    translation_ru: иметь в виду
+    explanation_ru: Используется, когда нужно помнить о важном факторе при принятии решения.
+    correct_example: Bear in mind that the budget is limited.
+    common_mistake: keep in minded
+    mistake_explanation_ru: Устойчивое выражение — bear in mind. Также возможно keep in mind, но не keep in minded.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Bear in mind that the budget is limited.
+        - Do in mind that the budget is limited.
+        - Make in mind that the budget is limited.
+      correct_option_index: 0
+    tags:
+      - bear
+      - mind
+  - key: b1-b2-day-002-item-03
+    phrase: pose a threat
+    translation_ru: представлять угрозу
+    explanation_ru: Используется, когда что-то создает риск для людей, бизнеса или системы.
+    correct_example: Fake reviews can pose a threat to trust.
+    common_mistake: make a threat to trust
+    mistake_explanation_ru: Когда речь идет о риске или опасности, естественно говорить pose a threat.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Fake reviews can pose a threat to trust.
+        - Fake reviews can do a threat to trust.
+        - Fake reviews can take a threat to trust.
+      correct_option_index: 0
+    tags:
+      - pose
+      - threat

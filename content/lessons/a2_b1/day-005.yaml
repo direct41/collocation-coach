@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-005
+  level_band: a2_b1
+  day_number: 5
+  topic: have collocations
+  locale: ru
+  tags:
+    - have
+    - daily-life
+    - routine
+items:
+  - key: a2-b1-day-005-item-01
+    phrase: have lunch
+    translation_ru: обедать
+    explanation_ru: Используется, когда говорят о приеме пищи в середине дня.
+    correct_example: We usually have lunch at one o'clock.
+    common_mistake: eat a lunch
+    mistake_explanation_ru: eat lunch тоже возможно, но базовое частотное сочетание для рутины — have lunch.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We usually have lunch at one o'clock.
+        - We usually do lunch at one o'clock.
+        - We usually make lunch at one o'clock.
+      correct_option_index: 0
+    tags:
+      - have
+      - lunch
+  - key: a2-b1-day-005-item-02
+    phrase: have a good time
+    translation_ru: хорошо проводить время
+    explanation_ru: Используется, когда человек наслаждается событием, поездкой или встречей.
+    correct_example: We had a good time at the party.
+    common_mistake: spend a good time
+    mistake_explanation_ru: В таком выражении обычно говорят have a good time.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We had a good time at the party.
+        - We did a good time at the party.
+        - We made a good time at the party.
+      correct_option_index: 0
+    tags:
+      - have
+      - good-time
+  - key: a2-b1-day-005-item-03
+    phrase: have a problem
+    translation_ru: иметь проблему, столкнуться с проблемой
+    explanation_ru: Используется, когда у человека есть трудность или что-то идет не так.
+    correct_example: I'm having a problem with my laptop.
+    common_mistake: get a problem with
+    mistake_explanation_ru: В нейтральном описании состояния чаще используется have a problem.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I'm having a problem with my laptop.
+        - I'm doing a problem with my laptop.
+        - I'm making a problem with my laptop.
+      correct_option_index: 0
+    tags:
+      - have
+      - problem

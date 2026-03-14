@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-006
+  level_band: a2_b1
+  day_number: 6
+  topic: pay collocations
+  locale: ru
+  tags:
+    - pay
+    - attention
+    - money
+items:
+  - key: a2-b1-day-006-item-01
+    phrase: pay attention
+    translation_ru: обращать внимание
+    explanation_ru: Используется, когда нужно сосредоточиться на чем-то важном.
+    correct_example: Please pay attention to the instructions.
+    common_mistake: give attention
+    mistake_explanation_ru: В этом выражении естественно использовать именно pay attention.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Please pay attention to the instructions.
+        - Please do attention to the instructions.
+        - Please make attention to the instructions.
+      correct_option_index: 0
+    tags:
+      - pay
+      - attention
+  - key: a2-b1-day-006-item-02
+    phrase: pay a bill
+    translation_ru: оплатить счет
+    explanation_ru: Используется, когда человек оплачивает счет за услугу, ресторан, электричество и так далее.
+    correct_example: I need to pay the electricity bill today.
+    common_mistake: close a bill
+    mistake_explanation_ru: Когда речь идет об оплате, обычно говорят pay a bill или pay the bill.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I need to pay the electricity bill today.
+        - I need to do the electricity bill today.
+        - I need to make the electricity bill today.
+      correct_option_index: 0
+    tags:
+      - pay
+      - bill
+  - key: a2-b1-day-006-item-03
+    phrase: pay a compliment
+    translation_ru: сделать комплимент
+    explanation_ru: Используется, когда человек говорит что-то приятное о внешности, работе или идее другого человека.
+    correct_example: He paid her a compliment on her presentation.
+    common_mistake: say a compliment
+    mistake_explanation_ru: В устойчивом выражении чаще используют pay a compliment.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He paid her a compliment on her presentation.
+        - He did her a compliment on her presentation.
+        - He made her a compliment on her presentation.
+      correct_option_index: 0
+    tags:
+      - pay
+      - compliment

@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-004
+  level_band: b1_b2
+  day_number: 4
+  topic: influence and impact collocations
+  locale: ru
+  tags:
+    - influence
+    - impact
+    - business
+items:
+  - key: b1-b2-day-004-item-01
+    phrase: exert pressure
+    translation_ru: оказывать давление
+    explanation_ru: Используется, когда кто-то активно пытается заставить другого человека принять решение или изменить поведение.
+    correct_example: Investors are exerting pressure on the board.
+    common_mistake: make pressure on
+    mistake_explanation_ru: В более формальном английском естественно говорить exert pressure.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Investors are exerting pressure on the board.
+        - Investors are doing pressure on the board.
+        - Investors are making pressure on the board.
+      correct_option_index: 0
+    tags:
+      - exert
+      - pressure
+  - key: b1-b2-day-004-item-02
+    phrase: gain access
+    translation_ru: получить доступ
+    explanation_ru: Используется, когда человек или система получают возможность войти, посмотреть данные или воспользоваться ресурсом.
+    correct_example: Only authorized staff can gain access to the server room.
+    common_mistake: get an access
+    mistake_explanation_ru: В формальном и нейтральном стиле обычно говорят gain access без артикля.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Only authorized staff can gain access to the server room.
+        - Only authorized staff can do access to the server room.
+        - Only authorized staff can make access to the server room.
+      correct_option_index: 0
+    tags:
+      - gain
+      - access
+  - key: b1-b2-day-004-item-03
+    phrase: play a key role
+    translation_ru: играть ключевую роль
+    explanation_ru: Используется, когда что-то или кто-то очень важны для результата.
+    correct_example: User feedback played a key role in the redesign.
+    common_mistake: have a key role in
+    mistake_explanation_ru: have a role возможно, но стандартное сильное сочетание — play a key role.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - User feedback played a key role in the redesign.
+        - User feedback did a key role in the redesign.
+        - User feedback made a key role in the redesign.
+      correct_option_index: 0
+    tags:
+      - play
+      - key-role

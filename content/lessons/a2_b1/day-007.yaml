@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-007
+  level_band: a2_b1
+  day_number: 7
+  topic: keep collocations
+  locale: ru
+  tags:
+    - keep
+    - relationships
+    - behavior
+items:
+  - key: a2-b1-day-007-item-01
+    phrase: keep calm
+    translation_ru: сохранять спокойствие
+    explanation_ru: Используется, когда человек старается не паниковать и не нервничать.
+    correct_example: Try to keep calm during the exam.
+    common_mistake: stay calmly
+    mistake_explanation_ru: В этом устойчивом выражении обычно говорят keep calm.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Try to keep calm during the exam.
+        - Try to do calm during the exam.
+        - Try to make calm during the exam.
+      correct_option_index: 0
+    tags:
+      - keep
+      - calm
+  - key: a2-b1-day-007-item-02
+    phrase: keep in touch
+    translation_ru: оставаться на связи
+    explanation_ru: Используется, когда люди продолжают общаться после встречи, поездки или совместной работы.
+    correct_example: Let's keep in touch after the course.
+    common_mistake: stay on touch
+    mistake_explanation_ru: Правильное устойчивое выражение — keep in touch.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Let's keep in touch after the course.
+        - Let's do in touch after the course.
+        - Let's make in touch after the course.
+      correct_option_index: 0
+    tags:
+      - keep
+      - touch
+  - key: a2-b1-day-007-item-03
+    phrase: keep a promise
+    translation_ru: сдержать обещание
+    explanation_ru: Используется, когда человек делает то, что обещал.
+    correct_example: She always keeps her promises.
+    common_mistake: hold a promise
+    mistake_explanation_ru: Для выполнения обещания естественно говорить keep a promise или keep your promise.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She always keeps her promises.
+        - She always does her promises.
+        - She always makes her promises.
+      correct_option_index: 0
+    tags:
+      - keep
+      - promise

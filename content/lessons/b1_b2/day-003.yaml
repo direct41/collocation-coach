@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-003
+  level_band: b1_b2
+  day_number: 3
+  topic: formal action collocations
+  locale: ru
+  tags:
+    - action
+    - formal
+    - work
+items:
+  - key: b1-b2-day-003-item-01
+    phrase: carry out research
+    translation_ru: проводить исследование
+    explanation_ru: Используется, когда команда или специалист системно изучают тему.
+    correct_example: The team carried out research before launching the product.
+    common_mistake: do out research
+    mistake_explanation_ru: Формальное и естественное сочетание здесь — carry out research.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The team carried out research before launching the product.
+        - The team made out research before launching the product.
+        - The team did out research before launching the product.
+      correct_option_index: 0
+    tags:
+      - carry-out
+      - research
+  - key: b1-b2-day-003-item-02
+    phrase: launch an investigation
+    translation_ru: начать расследование
+    explanation_ru: Используется, когда официально начинается проверка инцидента или проблемы.
+    correct_example: The company launched an investigation into the complaint.
+    common_mistake: open an investigation on
+    mistake_explanation_ru: open возможно в отдельных контекстах, но стандартное деловое сочетание — launch an investigation into.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The company launched an investigation into the complaint.
+        - The company did an investigation into the complaint.
+        - The company made an investigation into the complaint.
+      correct_option_index: 0
+    tags:
+      - launch
+      - investigation
+  - key: b1-b2-day-003-item-03
+    phrase: commit a crime
+    translation_ru: совершить преступление
+    explanation_ru: Используется, когда речь идет о совершении незаконного действия.
+    correct_example: He was accused of committing a serious crime.
+    common_mistake: do a crime
+    mistake_explanation_ru: Со словом crime устойчиво используется commit.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He was accused of committing a serious crime.
+        - He was accused of making a serious crime.
+        - He was accused of doing a serious crime.
+      correct_option_index: 0
+    tags:
+      - commit
+      - crime

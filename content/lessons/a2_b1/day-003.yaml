@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-003
+  level_band: a2_b1
+  day_number: 3
+  topic: do collocations
+  locale: ru
+  tags:
+    - do
+    - study
+    - actions
+items:
+  - key: a2-b1-day-003-item-01
+    phrase: do homework
+    translation_ru: делать домашнее задание
+    explanation_ru: Используется, когда речь идет о выполнении домашнего задания для школы, курса или самостоятельной учебы.
+    correct_example: I usually do my homework after dinner.
+    common_mistake: make homework
+    mistake_explanation_ru: Со словом homework в английском обычно используется do, а не make.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I usually make my homework after dinner.
+        - I usually do my homework after dinner.
+        - I usually take my homework after dinner.
+      correct_option_index: 1
+    tags:
+      - do
+      - homework
+  - key: a2-b1-day-003-item-02
+    phrase: do exercise
+    translation_ru: делать упражнение
+    explanation_ru: Используется, когда человек выполняет учебное или тренировочное упражнение.
+    correct_example: We need to do this exercise before the break.
+    common_mistake: make an exercise
+    mistake_explanation_ru: С exercise в значении задания обычно используется do.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to do this exercise before the break.
+        - We need to make this exercise before the break.
+        - We need to have this exercise before the break.
+      correct_option_index: 0
+    tags:
+      - do
+      - exercise
+  - key: a2-b1-day-003-item-03
+    phrase: do your best
+    translation_ru: стараться изо всех сил
+    explanation_ru: Используется, когда человек прикладывает максимум усилий в какой-то ситуации.
+    correct_example: Just do your best in the interview.
+    common_mistake: make your best
+    mistake_explanation_ru: В устойчивом выражении говорят do your best, а не make your best.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Just make your best in the interview.
+        - Just do your best in the interview.
+        - Just take your best in the interview.
+      correct_option_index: 1
+    tags:
+      - do
+      - best

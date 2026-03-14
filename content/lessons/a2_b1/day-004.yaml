@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-004
+  level_band: a2_b1
+  day_number: 4
+  topic: get collocations
+  locale: ru
+  tags:
+    - get
+    - daily-life
+    - changes
+items:
+  - key: a2-b1-day-004-item-01
+    phrase: get married
+    translation_ru: жениться, выйти замуж
+    explanation_ru: Используется, когда говорят о вступлении в брак.
+    correct_example: They are going to get married next summer.
+    common_mistake: become married
+    mistake_explanation_ru: become married возможно по смыслу, но естественное устойчивое сочетание — get married.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - They are going to get married next summer.
+        - They are going to make married next summer.
+        - They are going to do married next summer.
+      correct_option_index: 0
+    tags:
+      - get
+      - married
+  - key: a2-b1-day-004-item-02
+    phrase: get dressed
+    translation_ru: одеться
+    explanation_ru: Используется, когда человек надевает одежду и готовится выйти или начать день.
+    correct_example: Hurry up and get dressed.
+    common_mistake: wear dressed
+    mistake_explanation_ru: В значении процесса подготовки используется get dressed.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Hurry up and take dressed.
+        - Hurry up and get dressed.
+        - Hurry up and make dressed.
+      correct_option_index: 1
+    tags:
+      - get
+      - dressed
+  - key: a2-b1-day-004-item-03
+    phrase: get better
+    translation_ru: становиться лучше, выздоравливать
+    explanation_ru: Используется, когда ситуация улучшается или человек чувствует себя лучше.
+    correct_example: I hope you get better soon.
+    common_mistake: become more good
+    mistake_explanation_ru: В повседневной речи естественно говорить get better.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I hope you get better soon.
+        - I hope you do better soon.
+        - I hope you take better soon.
+      correct_option_index: 0
+    tags:
+      - get
+      - better
