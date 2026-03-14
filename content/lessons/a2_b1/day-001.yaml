@@ -1,0 +1,63 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-001
+  level_band: a2_b1
+  day_number: 1
+  topic: make collocations
+  locale: ru
+  tags:
+    - make
+    - work
+    - decisions
+items:
+  - key: a2-b1-day-001-item-01
+    phrase: make a decision
+    translation_ru: принять решение
+    explanation_ru: Используется, когда нужно сказать, что кто-то выбирает один вариант или приходит к выводу.
+    correct_example: I need to make a decision by Friday.
+    common_mistake: do a decision
+    mistake_explanation_ru: С decision обычно используется make, а не do.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I need to make a decision by Friday.
+        - I need to do a decision by Friday.
+        - I need to create a decision by Friday.
+      correct_option_index: 0
+    tags:
+      - make
+      - decision
+  - key: a2-b1-day-001-item-02
+    phrase: make progress
+    translation_ru: добиваться прогресса
+    explanation_ru: Используется, когда человек или команда постепенно движутся вперед.
+    correct_example: She is making good progress in English.
+    common_mistake: do progress
+    mistake_explanation_ru: Со словом progress используется make, потому что речь идет о достижении результата.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She is doing good progress in English.
+        - She is making good progress in English.
+        - She is having good progress in English.
+      correct_option_index: 1
+    tags:
+      - make
+      - progress
+  - key: a2-b1-day-001-item-03
+    phrase: make an effort
+    translation_ru: прилагать усилие
+    explanation_ru: Используется, когда человек сознательно старается сделать что-то лучше или добиться цели.
+    correct_example: You need to make an effort if you want to improve.
+    common_mistake: do an effort
+    mistake_explanation_ru: Со словом effort в таком значении используется make an effort.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - You need to make an effort if you want to improve.
+        - You need to do an effort if you want to improve.
+        - You need to take an effort if you want to improve.
+      correct_option_index: 0
+    tags:
+      - make
+      - effort

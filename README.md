@@ -18,6 +18,7 @@ Initial MVP focus:
 - [AI MVP plan](./docs/AI_MVP_PLAN.md)
 - [Product plan](./docs/PRODUCT_PLAN.md)
 - [Technical decisions](./docs/TECHNICAL_DECISIONS.md)
+- [Phase 1 product contract](./docs/PHASE_1_PRODUCT_CONTRACT.md)
 
 ## Planned Open-Source Goals
 
@@ -36,4 +37,4 @@ Initial MVP focus:
 
 ## Repository Status
 
-Planning stage. No production code yet.
+Phase 1 product contract is being prepared. No production code yet.
