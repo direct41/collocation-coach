@@ -5,11 +5,12 @@ Open-source Telegram bot for learning English collocations through short daily l
 ## What It Does
 
 `Collocation Coach` helps learners build more natural English with a small daily loop:
-- `3` new collocations
-- up to `2` review items
+- pace-based new collocations
+- due review items first
 - short explanations in Russian
 - common mistake contrast
 - simple spaced repetition
+- optional extra practice after the main session
 
 ## Current MVP
 
@@ -18,6 +19,7 @@ Implemented now:
 - onboarding flow
 - `/today`, `/review`, `/settings`
 - per-level learning tracks for `a2_b1` and `b1_b2`
+- pace modes: `light`, `standard`, `intensive`
 - YAML lesson content
 - built-in daily delivery loop
 - PostgreSQL persistence
@@ -60,6 +62,14 @@ Each level has its own track:
 - `/today`
 - `/review`
 - `/settings`
+
+## Current Learning Model
+
+- the main daily session is generated from the current level track
+- review items come first
+- new items are selected from unseen collocations in pack order
+- pace controls how many new items appear in the main session
+- after the main session, the user can continue with extra practice
 
 ## Self-Hosting Goal
 

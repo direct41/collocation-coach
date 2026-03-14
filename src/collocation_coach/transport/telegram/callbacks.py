@@ -9,6 +9,10 @@ class TimezoneSelectionCallback(CallbackData, prefix="tz"):
     timezone: str
 
 
+class PaceSelectionCallback(CallbackData, prefix="pace"):
+    pace_mode: str
+
+
 class DeliveryTimeSelectionCallback(CallbackData, prefix="time"):
     delivery_time: str
 
@@ -23,3 +27,7 @@ class StudyActionCallback(CallbackData, prefix="study"):
     item_id: int
     action: str
     value: str = ""
+
+
+class PracticeMenuCallback(CallbackData, prefix="practice_menu"):
+    action: str

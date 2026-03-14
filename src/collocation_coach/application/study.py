@@ -2,9 +2,10 @@ from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from typing import Literal
 
-from sqlalchemy import Select, asc, delete, func, select
+from sqlalchemy import Select, asc, case, delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from collocation_coach.application.onboarding import DEFAULT_PACE_MODE, normalize_pace_mode
 from collocation_coach.storage.models import (
     CollocationItem,
     DailyLesson,
@@ -20,8 +21,21 @@ SessionType = Literal["daily", "review"]
 Rating = Literal["know", "unsure", "repeat"]
 
 SUCCESS_INTERVALS_DAYS = (3, 7, 14)
-DAILY_REVIEW_LIMIT = 2
 REVIEW_SESSION_LIMIT = 5
+
+
+@dataclass(frozen=True, slots=True)
+class PacePlan:
+    new_items: int
+    review_items: int
+    extra_items: int
+
+
+PACE_PLANS: dict[str, PacePlan] = {
+    "light": PacePlan(new_items=2, review_items=2, extra_items=3),
+    "standard": PacePlan(new_items=3, review_items=2, extra_items=3),
+    "intensive": PacePlan(new_items=5, review_items=3, extra_items=5),
+}
 
 
 @dataclass(slots=True)
@@ -56,6 +70,10 @@ class SessionSummary:
 
 def utc_now() -> datetime:
     return datetime.now(UTC)
+
+
+def pace_plan_for_mode(pace_mode: str | None) -> PacePlan:
+    return PACE_PLANS.get(normalize_pace_mode(pace_mode), PACE_PLANS[DEFAULT_PACE_MODE])
 
 
 def _session_item_model(session_type: SessionType):
@@ -209,6 +227,73 @@ def _due_progress_query(
     )
 
 
+def _extra_progress_query(
+    user_id: int,
+    level_band: str,
+    limit: int,
+) -> Select[tuple[int]]:
+    rating_priority = case(
+        (UserCollocationProgress.last_rating == "repeat", 0),
+        (UserCollocationProgress.last_rating == "unsure", 1),
+        else_=2,
+    )
+    return (
+        select(UserCollocationProgress.collocation_item_id)
+        .join(CollocationItem, CollocationItem.id == UserCollocationProgress.collocation_item_id)
+        .join(LessonUnit, LessonUnit.id == CollocationItem.lesson_unit_id)
+        .where(
+            UserCollocationProgress.user_id == user_id,
+            UserCollocationProgress.times_seen > 0,
+            LessonUnit.level_band == level_band,
+        )
+        .order_by(
+            asc(rating_priority),
+            asc(UserCollocationProgress.last_seen_at),
+            asc(UserCollocationProgress.collocation_item_id),
+        )
+        .limit(limit)
+    )
+
+
+def _new_item_query(
+    user_id: int,
+    level_band: str,
+    limit: int,
+) -> Select[tuple[int]]:
+    return (
+        select(CollocationItem.id)
+        .join(LessonUnit, LessonUnit.id == CollocationItem.lesson_unit_id)
+        .outerjoin(
+            UserCollocationProgress,
+            (UserCollocationProgress.collocation_item_id == CollocationItem.id)
+            & (UserCollocationProgress.user_id == user_id),
+        )
+        .where(
+            LessonUnit.level_band == level_band,
+            UserCollocationProgress.id.is_(None),
+        )
+        .order_by(
+            asc(LessonUnit.day_number),
+            asc(CollocationItem.external_key),
+        )
+        .limit(limit)
+    )
+
+
+async def _resolve_primary_lesson_unit_id(
+    session: AsyncSession,
+    collocation_item_ids: list[int],
+) -> int | None:
+    if not collocation_item_ids:
+        return None
+    return await session.scalar(
+        select(CollocationItem.lesson_unit_id)
+        .where(CollocationItem.id.in_(collocation_item_ids))
+        .order_by(asc(CollocationItem.id))
+        .limit(1)
+    )
+
+
 async def create_or_get_daily_lesson(
     session: AsyncSession,
     user_id: int,
@@ -219,6 +304,7 @@ async def create_or_get_daily_lesson(
     user = await session.get(User, user_id)
     if user is None or user.level_band is None:
         return None
+    pace_plan = pace_plan_for_mode(user.pace_mode)
 
     existing = await session.scalar(
         select(DailyLesson).where(
@@ -227,48 +313,54 @@ async def create_or_get_daily_lesson(
         )
     )
 
-    lesson_unit = await _select_next_lesson_unit_for_level(session, user_id, user.level_band)
-    if lesson_unit is None:
-        return None
-
     if existing is not None:
         existing_level_band = await get_daily_lesson_level_band(session, existing.id)
         if existing_level_band == user.level_band:
             return existing
         if existing.status == "completed":
             return existing
-
-        await session.execute(
-            delete(DailyLessonItem).where(DailyLessonItem.daily_lesson_id == existing.id)
-        )
-        existing.lesson_unit_id = lesson_unit.id
-        existing.status = "in_progress"
-        existing.completed_at = None
-        existing.delivered_at = None
+        await session.execute(delete(DailyLessonItem).where(DailyLessonItem.daily_lesson_id == existing.id))
         daily_lesson = existing
     else:
+        daily_lesson = None
+
+    due_review_ids = list(
+        (
+            await session.execute(
+                _due_progress_query(user_id, user.level_band, now, pace_plan.review_items)
+            )
+        ).scalars()
+    )
+    new_item_ids = list(
+        (
+            await session.execute(
+                _new_item_query(user_id, user.level_band, pace_plan.new_items)
+            )
+        ).scalars()
+    )
+
+    selected_item_ids = due_review_ids + new_item_ids
+    if not selected_item_ids:
+        return None
+
+    primary_lesson_unit_id = await _resolve_primary_lesson_unit_id(session, selected_item_ids)
+    if primary_lesson_unit_id is None:
+        return None
+
+    if daily_lesson is None:
         daily_lesson = DailyLesson(
             user_id=user_id,
             lesson_date=lesson_date,
-            lesson_unit_id=lesson_unit.id,
+            lesson_unit_id=primary_lesson_unit_id,
             status="in_progress",
         )
         session.add(daily_lesson)
         await session.flush()
-
-    due_review_ids = list(
-        (await session.execute(_due_progress_query(user_id, user.level_band, now, DAILY_REVIEW_LIMIT))).scalars()
-    )
-
-    new_items = list(
-        (
-            await session.execute(
-                select(CollocationItem.id)
-                .where(CollocationItem.lesson_unit_id == lesson_unit.id)
-                .order_by(asc(CollocationItem.external_key))
-            )
-        ).scalars()
-    )
+    else:
+        daily_lesson.lesson_unit_id = primary_lesson_unit_id
+        daily_lesson.status = "in_progress"
+        daily_lesson.completed_at = None
+        daily_lesson.delivered_at = None
 
     position = 1
     for collocation_item_id in due_review_ids:
@@ -282,7 +374,7 @@ async def create_or_get_daily_lesson(
         )
         position += 1
 
-    for collocation_item_id in new_items:
+    for collocation_item_id in new_item_ids:
         session.add(
             DailyLessonItem(
                 daily_lesson_id=daily_lesson.id,
@@ -298,39 +390,17 @@ async def create_or_get_daily_lesson(
     return daily_lesson
 
 
-async def _select_next_lesson_unit_for_level(
-    session: AsyncSession,
-    user_id: int,
-    level_band: str,
-) -> LessonUnit | None:
-    served_count = await session.scalar(
-        select(func.count())
-        .select_from(DailyLesson)
-        .join(LessonUnit, LessonUnit.id == DailyLesson.lesson_unit_id)
-        .where(
-            DailyLesson.user_id == user_id,
-            LessonUnit.level_band == level_band,
-        )
-    ) or 0
-
-    return await session.scalar(
-        select(LessonUnit)
-        .where(LessonUnit.level_band == level_band)
-        .order_by(asc(LessonUnit.day_number))
-        .offset(served_count)
-        .limit(1)
-    )
-
-
 async def create_or_get_review_session(
     session: AsyncSession,
     user_id: int,
     now: datetime | None = None,
+    include_extra: bool = False,
 ) -> ReviewSession | None:
     now = now or utc_now()
     user = await session.get(User, user_id)
     if user is None or user.level_band is None:
         return None
+    pace_plan = pace_plan_for_mode(user.pace_mode)
 
     existing = await _load_existing_in_progress_review_session(session, user_id, user.level_band)
     if existing is not None:
@@ -345,17 +415,28 @@ async def create_or_get_review_session(
         if has_pending > 0:
             return existing
 
-    due_item_ids = list(
-        (await session.execute(_due_progress_query(user_id, user.level_band, now, REVIEW_SESSION_LIMIT))).scalars()
+    item_ids = list(
+        (
+            await session.execute(
+                _extra_progress_query(user_id, user.level_band, pace_plan.extra_items)
+                if include_extra
+                else _due_progress_query(
+                    user_id,
+                    user.level_band,
+                    now,
+                    min(REVIEW_SESSION_LIMIT, pace_plan.extra_items if include_extra else REVIEW_SESSION_LIMIT),
+                )
+            )
+        ).scalars()
     )
-    if not due_item_ids:
+    if not item_ids:
         return None
 
     review_session = ReviewSession(user_id=user_id, status="in_progress")
     session.add(review_session)
     await session.flush()
 
-    for index, collocation_item_id in enumerate(due_item_ids, start=1):
+    for index, collocation_item_id in enumerate(item_ids, start=1):
         session.add(
             ReviewSessionItem(
                 review_session_id=review_session.id,
@@ -540,9 +621,30 @@ async def load_user_by_telegram_id(session: AsyncSession, telegram_user_id: int)
     return await session.scalar(select(User).where(User.telegram_user_id == telegram_user_id))
 
 
+async def has_extra_practice_available(session: AsyncSession, user_id: int) -> bool:
+    user = await session.get(User, user_id)
+    if user is None or user.level_band is None:
+        return False
+    return bool(
+        await session.scalar(
+            select(func.count())
+            .select_from(UserCollocationProgress)
+            .join(CollocationItem, CollocationItem.id == UserCollocationProgress.collocation_item_id)
+            .join(LessonUnit, LessonUnit.id == CollocationItem.lesson_unit_id)
+            .where(
+                UserCollocationProgress.user_id == user_id,
+                UserCollocationProgress.times_seen > 0,
+                LessonUnit.level_band == user.level_band,
+            )
+        )
+    )
+
+
 async def get_daily_lesson_level_band(session: AsyncSession, daily_lesson_id: int) -> str | None:
     return await session.scalar(
         select(LessonUnit.level_band)
-        .join(DailyLesson, DailyLesson.lesson_unit_id == LessonUnit.id)
-        .where(DailyLesson.id == daily_lesson_id)
+        .join(CollocationItem, CollocationItem.lesson_unit_id == LessonUnit.id)
+        .join(DailyLessonItem, DailyLessonItem.collocation_item_id == CollocationItem.id)
+        .where(DailyLessonItem.daily_lesson_id == daily_lesson_id)
+        .limit(1)
     )

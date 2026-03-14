@@ -3,13 +3,19 @@ from html import escape
 from aiogram.types import InlineKeyboardMarkup
 
 from collocation_coach.application.study import SessionSummary, StudyItemCard
-from collocation_coach.transport.telegram.keyboards import practice_start_keyboard
+from collocation_coach.transport.telegram.keyboards import extra_practice_keyboard, practice_start_keyboard
 
 
-def format_settings(level_band: str | None, timezone: str | None, delivery_time: str | None) -> str:
+def format_settings(
+    level_band: str | None,
+    timezone: str | None,
+    delivery_time: str | None,
+    pace_mode: str | None,
+) -> str:
     return (
         "Current settings:\n"
         f"- Level: {level_band or 'not set'}\n"
+        f"- Pace: {pace_mode or 'standard'}\n"
         f"- Timezone: {timezone or 'not set'}\n"
         f"- Delivery time: {delivery_time or 'not set'}"
     )
@@ -50,7 +56,7 @@ def format_feedback(card: StudyItemCard, selected_index: int) -> str:
 def format_summary(summary: SessionSummary) -> str:
     if summary.session_type == "daily":
         return (
-            "Daily lesson complete.\n\n"
+            "Main session complete.\n\n"
             f"Correct answers: {summary.correct_answers}/{summary.total_items}\n"
             f"New items: {summary.new_items}\n"
             f"Review items: {summary.review_items}"
@@ -63,7 +69,7 @@ def format_summary(summary: SessionSummary) -> str:
 
 def daily_intro_text(summary: SessionSummary) -> str:
     return (
-        "Today's lesson is ready.\n\n"
+        "Today's session is ready.\n\n"
         f"New items: {summary.new_items}\n"
         f"Review items: {summary.review_items}"
     )
@@ -71,3 +77,14 @@ def daily_intro_text(summary: SessionSummary) -> str:
 
 def practice_markup(card: StudyItemCard) -> InlineKeyboardMarkup:
     return practice_start_keyboard(card.session_type, card.session_id, card.session_item_id)
+
+
+def extra_practice_prompt() -> str:
+    return (
+        "You are done with the main session for now.\n\n"
+        "If you want, continue with extra practice."
+    )
+
+
+def extra_practice_markup() -> InlineKeyboardMarkup:
+    return extra_practice_keyboard()

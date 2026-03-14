@@ -12,6 +12,7 @@ from collocation_coach.application.study import (
     apply_rating,
     create_or_get_daily_lesson,
     create_or_get_review_session,
+    has_extra_practice_available,
     get_next_session_card,
     get_daily_lesson_level_band,
     get_session_item_card,
@@ -25,6 +26,8 @@ from collocation_coach.storage.models import User
 from collocation_coach.transport.telegram.callbacks import (
     DeliveryTimeSelectionCallback,
     LevelSelectionCallback,
+    PaceSelectionCallback,
+    PracticeMenuCallback,
     SettingsActionCallback,
     StudyActionCallback,
     TimezoneSelectionCallback,
@@ -33,12 +36,15 @@ from collocation_coach.transport.telegram.keyboards import (
     answer_keyboard,
     delivery_time_keyboard,
     level_keyboard,
+    pace_keyboard,
     rating_keyboard,
     settings_keyboard,
     timezone_keyboard,
 )
 from collocation_coach.transport.telegram.messages import (
     daily_intro_text,
+    extra_practice_markup,
+    extra_practice_prompt,
     format_feedback,
     format_item_card,
     format_practice,
@@ -75,7 +81,7 @@ async def _send_onboarding_next_step(message: Message, user: User, default_timez
         return
     await message.answer(
         "Onboarding complete.\n\n"
-        f"{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}\n\n"
+        f"{format_settings(user.level_band, user.timezone, user.daily_delivery_time, user.pace_mode)}\n\n"
         "Use /today to start your current lesson.",
     )
 
@@ -126,7 +132,7 @@ def create_router(
 
         await message.answer(
             "You are already set up.\n\n"
-            f"{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}\n\n"
+            f"{format_settings(user.level_band, user.timezone, user.daily_delivery_time, user.pace_mode)}\n\n"
             "Use /today to open today's lesson or /settings to change preferences."
         )
 
@@ -140,6 +146,10 @@ def create_router(
             "/review - start a review session\n"
             "/settings - change your preferences\n"
             "/help - show this help message\n\n"
+            "Pace modes:\n"
+            "Light - fewer new items\n"
+            "Standard - balanced daily load\n"
+            "Intensive - more new items\n\n"
             "Ratings:\n"
             "Know - this item felt solid\n"
             "Unsure - show it again tomorrow\n"
@@ -169,7 +179,16 @@ def create_router(
                 now=datetime.now(UTC),
             )
             if lesson is None:
-                await message.answer("No lesson content is available for your current level yet.")
+                if await has_extra_practice_available(session, user.id):
+                    await message.answer(
+                        "No new main session is available right now.",
+                    )
+                    await message.answer(
+                        extra_practice_prompt(),
+                        reply_markup=extra_practice_markup(),
+                    )
+                else:
+                    await message.answer("No lesson content is available for your current level yet.")
                 return
 
             summary = await get_session_summary(session, "daily", lesson.id)
@@ -181,6 +200,11 @@ def create_router(
                         "Your new level will apply to the next generated lesson."
                     )
                 await message.answer(format_summary(summary))
+                if await has_extra_practice_available(session, user.id):
+                    await message.answer(
+                        extra_practice_prompt(),
+                        reply_markup=extra_practice_markup(),
+                    )
                 return
 
             if lesson.delivered_at is None:
@@ -213,6 +237,11 @@ def create_router(
             )
             if review_session is None:
                 await message.answer("Your review queue is empty right now.")
+                if await has_extra_practice_available(session, user.id):
+                    await message.answer(
+                        extra_practice_prompt(),
+                        reply_markup=extra_practice_markup(),
+                    )
                 return
 
         await message.answer("Review session started.")
@@ -231,7 +260,7 @@ def create_router(
                 return
 
             await message.answer(
-                format_settings(user.level_band, user.timezone, user.daily_delivery_time),
+                format_settings(user.level_band, user.timezone, user.daily_delivery_time, user.pace_mode),
                 reply_markup=settings_keyboard(),
             )
 
@@ -264,7 +293,7 @@ def create_router(
                 )
         else:
             await callback.message.answer(
-                f"Updated.\n\n{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}"
+                f"Updated.\n\n{format_settings(user.level_band, user.timezone, user.daily_delivery_time, user.pace_mode)}"
             )
         await callback.answer()
 
@@ -294,8 +323,29 @@ def create_router(
             )
         else:
             await callback.message.answer(
-                f"Updated.\n\n{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}"
+                f"Updated.\n\n{format_settings(user.level_band, user.timezone, user.daily_delivery_time, user.pace_mode)}"
             )
+        await callback.answer()
+
+    @router.callback_query(PaceSelectionCallback.filter())
+    async def pace_selected(callback: CallbackQuery, callback_data: PaceSelectionCallback) -> None:
+        if callback.from_user is None or callback.message is None:
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, callback.from_user.id)
+            if user is None:
+                await callback.message.answer("Use /start first.")
+                await callback.answer()
+                return
+            user.pace_mode = callback_data.pace_mode
+            await session.commit()
+            await session.refresh(user)
+
+        await callback.message.edit_text(f"Pace set to {callback_data.pace_mode}.")
+        await callback.message.answer(
+            f"Updated.\n\n{format_settings(user.level_band, user.timezone, user.daily_delivery_time, user.pace_mode)}"
+        )
         await callback.answer()
 
     @router.callback_query(DeliveryTimeSelectionCallback.filter())
@@ -318,7 +368,7 @@ def create_router(
 
         await callback.message.edit_text(
             "Daily delivery time saved.\n\n"
-            f"{format_settings(user.level_band, user.timezone, user.daily_delivery_time)}\n\n"
+            f"{format_settings(user.level_band, user.timezone, user.daily_delivery_time, user.pace_mode)}\n\n"
             "Use /today to start your lesson."
         )
         await callback.answer()
@@ -333,6 +383,8 @@ def create_router(
 
         if callback_data.action == "level":
             await callback.message.answer("Choose a new level band.", reply_markup=level_keyboard())
+        elif callback_data.action == "pace":
+            await callback.message.answer("Choose your pace.", reply_markup=pace_keyboard())
         elif callback_data.action == "timezone":
             await callback.message.answer("Choose a new timezone.", reply_markup=timezone_keyboard())
         else:
@@ -340,6 +392,37 @@ def create_router(
                 "Choose a new delivery time.",
                 reply_markup=delivery_time_keyboard(),
             )
+        await callback.answer()
+
+    @router.callback_query(PracticeMenuCallback.filter())
+    async def practice_menu_action(
+        callback: CallbackQuery,
+        callback_data: PracticeMenuCallback,
+    ) -> None:
+        if callback.message is None or callback.from_user is None:
+            return
+        if callback_data.action != "extra":
+            await callback.answer()
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, callback.from_user.id)
+            if user is None:
+                await callback.answer("Use /start first.", show_alert=True)
+                return
+            review_session = await create_or_get_review_session(
+                session,
+                user.id,
+                now=datetime.now(UTC),
+                include_extra=True,
+            )
+            if review_session is None:
+                await callback.message.answer("No extra practice is available yet.")
+                await callback.answer()
+                return
+
+        await callback.message.answer("Extra practice started.")
+        await _send_next_card(session_factory, callback.message, "review", review_session.id)
         await callback.answer()
 
     @router.callback_query(StudyActionCallback.filter())
@@ -422,6 +505,14 @@ def create_router(
         await callback.message.edit_text(f"Saved rating: {callback_data.value}.")
         if next_card is None:
             await callback.message.answer(format_summary(summary))
+            if session_type == "daily":
+                async with session_factory() as follow_up_session:
+                    user = await load_user_by_telegram_id(follow_up_session, callback.from_user.id)
+                    if user is not None and await has_extra_practice_available(follow_up_session, user.id):
+                        await callback.message.answer(
+                            extra_practice_prompt(),
+                            reply_markup=extra_practice_markup(),
+                        )
         else:
             await callback.message.answer(
                 format_item_card(next_card),

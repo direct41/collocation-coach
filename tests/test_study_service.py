@@ -2,7 +2,7 @@ from datetime import UTC, date, datetime
 
 import pytest
 import pytest_asyncio
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from collocation_coach.application.study import (
@@ -11,6 +11,7 @@ from collocation_coach.application.study import (
     create_or_get_review_session,
     get_daily_lesson_level_band,
     get_next_session_card,
+    has_extra_practice_available,
     record_answer,
 )
 from collocation_coach.storage.models import (
@@ -82,7 +83,7 @@ async def _seed_user_and_content(factory: async_sessionmaker):
         return user.id, [item.id for item in items]
 
 
-async def _seed_second_level_content(factory: async_sessionmaker) -> int:
+async def _seed_second_level_content(factory: async_sessionmaker) -> tuple[int, list[int]]:
     async with factory() as session:
         lesson_unit = LessonUnit(
             external_key="lesson-b1-1",
@@ -107,6 +108,41 @@ async def _seed_second_level_content(factory: async_sessionmaker) -> int:
                 option_a=f"b1-a-{index}",
                 option_b=f"b1-b-{index}",
                 option_c=f"b1-c-{index}",
+                correct_option_index=0,
+                tags=["tag"],
+            )
+            for index in range(1, 4)
+        ]
+        session.add_all(items)
+        await session.commit()
+        return lesson_unit.id, [item.id for item in items]
+
+
+async def _seed_additional_a2_content(factory: async_sessionmaker, day_number: int = 2) -> tuple[int, list[int]]:
+    async with factory() as session:
+        lesson_unit = LessonUnit(
+            external_key=f"lesson-a2-{day_number}",
+            level_band="a2_b1",
+            day_number=day_number,
+            topic=f"a2 topic {day_number}",
+            source_path=f"a2-{day_number}.yaml",
+        )
+        session.add(lesson_unit)
+        await session.flush()
+        items = [
+            CollocationItem(
+                lesson_unit_id=lesson_unit.id,
+                external_key=f"a2-day-{day_number}-item-{index}",
+                phrase=f"a2-day-{day_number}-phrase-{index}",
+                translation_ru=f"a2-day-{day_number}-перевод-{index}",
+                explanation_ru=f"a2-day-{day_number}-объяснение-{index}",
+                correct_example=f"a2-day-{day_number}-correct-{index}",
+                common_mistake=f"a2-day-{day_number}-wrong-{index}",
+                mistake_explanation_ru=f"a2-day-{day_number}-mistake-explanation-{index}",
+                practice_prompt=f"a2-day-{day_number}-practice-{index}",
+                option_a=f"a2-day-{day_number}-a-{index}",
+                option_b=f"a2-day-{day_number}-b-{index}",
+                option_c=f"a2-day-{day_number}-c-{index}",
                 correct_option_index=0,
                 tags=["tag"],
             )
@@ -153,11 +189,10 @@ async def test_create_daily_lesson_includes_due_review_items_first(session_facto
             ).scalars()
         )
 
-        assert len(rows) == 4
+        assert len(rows) == 3
         assert rows[0].item_type == "review"
         assert rows[1].item_type == "new"
         assert rows[2].item_type == "new"
-        assert rows[3].item_type == "new"
 
 
 @pytest.mark.asyncio
@@ -398,3 +433,108 @@ async def test_review_session_is_isolated_per_level(session_factory) -> None:
         second_card = await get_next_session_card(session, "review", b1_review.id)
         assert second_card is not None
         assert second_card.phrase == "b1-phrase-1"
+
+
+@pytest.mark.asyncio
+async def test_intensive_pace_spans_multiple_content_packs(session_factory) -> None:
+    user_id, first_pack_ids = await _seed_user_and_content(session_factory)
+    _, second_pack_ids = await _seed_additional_a2_content(session_factory, day_number=2)
+
+    async with session_factory() as session:
+        user = await session.get(User, user_id)
+        assert user is not None
+        user.pace_mode = "intensive"
+        await session.commit()
+
+        lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert lesson is not None
+
+        rows = list(
+            (
+                await session.execute(
+                    select(DailyLessonItem)
+                    .where(DailyLessonItem.daily_lesson_id == lesson.id)
+                    .order_by(DailyLessonItem.position.asc())
+                )
+            ).scalars()
+        )
+        item_ids = [row.collocation_item_id for row in rows]
+
+        assert len(rows) == 5
+        assert item_ids == first_pack_ids + second_pack_ids[:2]
+
+
+@pytest.mark.asyncio
+async def test_light_pace_limits_new_items(session_factory) -> None:
+    user_id, _ = await _seed_user_and_content(session_factory)
+    await _seed_additional_a2_content(session_factory, day_number=2)
+
+    async with session_factory() as session:
+        user = await session.get(User, user_id)
+        assert user is not None
+        user.pace_mode = "light"
+        await session.commit()
+
+        lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert lesson is not None
+
+        new_item_count = await session.scalar(
+            select(func.count())
+            .select_from(DailyLessonItem)
+            .where(
+                DailyLessonItem.daily_lesson_id == lesson.id,
+                DailyLessonItem.item_type == "new",
+            )
+        )
+        assert new_item_count == 2
+
+
+@pytest.mark.asyncio
+async def test_extra_practice_available_after_daily_progress(session_factory) -> None:
+    user_id, _ = await _seed_user_and_content(session_factory)
+
+    async with session_factory() as session:
+        lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert lesson is not None
+
+        card = await get_next_session_card(session, "daily", lesson.id)
+        assert card is not None
+        await record_answer(session, "daily", lesson.id, card.session_item_id, selected_option_index=1)
+        await apply_rating(
+            session,
+            user_id=user_id,
+            session_type="daily",
+            session_id=lesson.id,
+            session_item_id=card.session_item_id,
+            rating="know",
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+
+        assert await has_extra_practice_available(session, user_id)
+
+        extra_session = await create_or_get_review_session(
+            session,
+            user_id=user_id,
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+            include_extra=True,
+        )
+        assert extra_session is not None
+
+        extra_card = await get_next_session_card(session, "review", extra_session.id)
+        assert extra_card is not None
+        assert extra_card.phrase == card.phrase

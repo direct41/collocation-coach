@@ -84,6 +84,7 @@ After the bot starts:
 4. Send `/today`
 5. Finish one lesson
 6. Send `/review`
+7. Optionally continue with `Extra practice`
 
 If these commands work, your instance is ready.
 
@@ -103,7 +104,16 @@ Each lesson file contains:
 
 After changing lesson files, restart the bot to reseed content.
 
-## 9. Common Issues
+## 9. Pace Modes
+
+Users can change pace in `/settings`:
+- `Light`: smaller main session
+- `Standard`: default
+- `Intensive`: more new items per session
+
+The main session is finite. When it ends, the bot can offer optional extra practice.
+
+## 10. Common Issues
 
 `Bot does not start`
 - check `TELEGRAM_BOT_TOKEN`
@@ -117,7 +127,7 @@ After changing lesson files, restart the bot to reseed content.
 - run `uv run pytest`
 - inspect the last edited YAML file for invalid structure
 
-## 10. Useful Commands
+## 11. Useful Commands
 
 ```bash
 uv run pytest
@@ -125,6 +135,6 @@ uv run python -m compileall src
 docker compose config
 ```
 
-## 11. Open-Source Usage
+## 12. Open-Source Usage
 
 Anyone should be able to fork this repository, set `.env`, and run their own copy of the bot.

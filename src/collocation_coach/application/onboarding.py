@@ -6,6 +6,14 @@ LEVEL_BANDS: Sequence[tuple[str, str]] = (
     ("b1_b2", "B1-B2"),
 )
 
+PACE_MODES: Sequence[tuple[str, str]] = (
+    ("light", "Light"),
+    ("standard", "Standard"),
+    ("intensive", "Intensive"),
+)
+
+DEFAULT_PACE_MODE = "standard"
+
 TIMEZONE_OPTIONS: Sequence[tuple[str, str]] = (
     ("UTC", "UTC"),
     ("Europe/Berlin", "Berlin"),
@@ -29,3 +37,10 @@ def decode_delivery_time(value: str) -> str:
 
 def onboarding_complete(user_level_band: str | None, user_timezone: str | None, delivery_time: str | None) -> bool:
     return bool(user_level_band and user_timezone and delivery_time)
+
+
+def normalize_pace_mode(value: str | None) -> str:
+    known_values = {item[0] for item in PACE_MODES}
+    if value in known_values:
+        return value
+    return DEFAULT_PACE_MODE

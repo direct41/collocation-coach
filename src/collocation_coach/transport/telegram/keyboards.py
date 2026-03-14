@@ -3,12 +3,15 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from collocation_coach.application.onboarding import (
     DELIVERY_TIME_OPTIONS,
     LEVEL_BANDS,
+    PACE_MODES,
     TIMEZONE_OPTIONS,
     encode_delivery_time,
 )
 from collocation_coach.transport.telegram.callbacks import (
     DeliveryTimeSelectionCallback,
     LevelSelectionCallback,
+    PaceSelectionCallback,
+    PracticeMenuCallback,
     SettingsActionCallback,
     StudyActionCallback,
     TimezoneSelectionCallback,
@@ -39,6 +42,20 @@ def timezone_keyboard() -> InlineKeyboardMarkup:
                 )
             ]
             for value, label in TIMEZONE_OPTIONS
+        ]
+    )
+
+
+def pace_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=label,
+                    callback_data=PaceSelectionCallback(pace_mode=value).pack(),
+                )
+            ]
+            for value, label in PACE_MODES
         ]
     )
 
@@ -75,6 +92,12 @@ def settings_keyboard() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(
                     text="Change level",
                     callback_data=SettingsActionCallback(action="level").pack(),
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Change pace",
+                    callback_data=SettingsActionCallback(action="pace").pack(),
                 )
             ],
             [
@@ -156,6 +179,19 @@ def rating_keyboard(session_type: str, session_id: int, item_id: int) -> InlineK
                     ).pack(),
                 )
                 for value, label in labels
+            ]
+        ]
+    )
+
+
+def extra_practice_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Extra practice",
+                    callback_data=PracticeMenuCallback(action="extra").pack(),
+                )
             ]
         ]
     )

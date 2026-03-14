@@ -41,6 +41,7 @@ class User(TimestampMixin, Base):
     first_name: Mapped[str | None] = mapped_column(String(255))
     language_code: Mapped[str | None] = mapped_column(String(32))
     level_band: Mapped[str | None] = mapped_column(String(32))
+    pace_mode: Mapped[str] = mapped_column(String(16), default="standard", nullable=False)
     timezone: Mapped[str | None] = mapped_column(String(64))
     daily_delivery_time: Mapped[str | None] = mapped_column(String(5))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
