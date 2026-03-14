@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-033
+  level_band: a2_b1
+  day_number: 33
+  topic: help and truth collocations
+  locale: ru
+  tags:
+    - communication
+    - truth
+items:
+  - key: a2-b1-day-033-item-01
+    phrase: ask for help
+    translation_ru: просить о помощи
+    explanation_ru: Используется, когда человек прямо говорит, что ему нужна помощь.
+    correct_example: Do not be afraid to ask for help.
+    common_mistake: ask help
+    mistake_explanation_ru: "В этой фразе обычно нужен предлог for: ask for help."
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Do not be afraid to ask for help.
+        - Do not be afraid to ask help.
+        - Do not be afraid to say help.
+      correct_option_index: 0
+    tags:
+      - ask
+      - help
+  - key: a2-b1-day-033-item-02
+    phrase: tell the truth
+    translation_ru: говорить правду
+    explanation_ru: Используется, когда человек честно рассказывает, что произошло.
+    correct_example: Please tell the truth.
+    common_mistake: say the truth
+    mistake_explanation_ru: В устойчивой фразе обычно используется tell the truth.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Please tell the truth.
+        - Please say the truth.
+        - Please speak the truth.
+      correct_option_index: 0
+    tags:
+      - tell
+      - truth
+  - key: a2-b1-day-033-item-03
+    phrase: tell a lie
+    translation_ru: говорить неправду
+    explanation_ru: Используется, когда человек намеренно говорит что-то ложное.
+    correct_example: He told a lie to his teacher.
+    common_mistake: say a lie
+    mistake_explanation_ru: В таком значении естественнее tell a lie.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He told a lie to his teacher.
+        - He said a lie to his teacher.
+        - He made a lie to his teacher.
+      correct_option_index: 0
+    tags:
+      - tell
+      - lie

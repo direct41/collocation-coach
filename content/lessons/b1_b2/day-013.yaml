@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-013
+  level_band: b1_b2
+  day_number: 13
+  topic: pressure and criticism collocations
+  locale: ru
+  tags:
+    - pressure
+    - criticism
+items:
+  - key: b1-b2-day-013-item-01
+    phrase: face criticism
+    translation_ru: сталкиваться с критикой
+    explanation_ru: Используется, когда человек или организация получают негативную оценку со стороны других.
+    correct_example: The company faced criticism after the announcement.
+    common_mistake: meet criticism in this sense
+    mistake_explanation_ru: В таких ситуациях естественнее использовать face criticism.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The company faced criticism after the announcement.
+        - The company met criticism after the announcement.
+        - The company did criticism after the announcement.
+      correct_option_index: 0
+    tags:
+      - face
+      - criticism
+  - key: b1-b2-day-013-item-02
+    phrase: pose a challenge
+    translation_ru: представлять трудность
+    explanation_ru: Используется, когда что-то создает проблему или усложняет задачу.
+    correct_example: Limited time can pose a challenge for new teams.
+    common_mistake: make a challenge in analytical phrasing
+    mistake_explanation_ru: Для нейтрального описания трудности часто используют pose a challenge.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Limited time can pose a challenge for new teams.
+        - Limited time can make a challenge for new teams.
+        - Limited time can do a challenge for new teams.
+      correct_option_index: 0
+    tags:
+      - pose
+      - challenge
+  - key: b1-b2-day-013-item-03
+    phrase: come under pressure
+    translation_ru: оказаться под давлением
+    explanation_ru: Используется, когда человек или организация начинают испытывать сильное внешнее давление.
+    correct_example: The manager came under pressure to explain the delay.
+    common_mistake: be below pressure
+    mistake_explanation_ru: В таком контексте естественно говорить come under pressure.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The manager came under pressure to explain the delay.
+        - The manager was below pressure to explain the delay.
+        - The manager did pressure to explain the delay.
+      correct_option_index: 0
+    tags:
+      - pressure
+      - challenge

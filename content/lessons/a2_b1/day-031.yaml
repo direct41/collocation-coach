@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-031
+  level_band: a2_b1
+  day_number: 31
+  topic: set collocations
+  locale: ru
+  tags:
+    - set
+    - planning
+items:
+  - key: a2-b1-day-031-item-01
+    phrase: set a goal
+    translation_ru: ставить цель
+    explanation_ru: Используется, когда человек решает, какого результата он хочет достичь.
+    correct_example: It helps to set a clear goal.
+    common_mistake: put a goal
+    mistake_explanation_ru: Для целей обычно используется set a goal.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - It helps to set a clear goal.
+        - It helps to put a clear goal.
+        - It helps to do a clear goal.
+      correct_option_index: 0
+    tags:
+      - set
+      - goal
+  - key: a2-b1-day-031-item-02
+    phrase: set an alarm
+    translation_ru: ставить будильник
+    explanation_ru: Используется, когда человек выбирает время, в которое будильник должен прозвенеть.
+    correct_example: I set an alarm for 6:30.
+    common_mistake: put an alarm
+    mistake_explanation_ru: В английском обычно говорят set an alarm.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I set an alarm for 6:30.
+        - I make an alarm for 6:30.
+        - I put an alarm for 6:30.
+      correct_option_index: 0
+    tags:
+      - set
+      - alarm
+  - key: a2-b1-day-031-item-03
+    phrase: set a date
+    translation_ru: назначать дату
+    explanation_ru: Используется, когда стороны решают, в какой день что-то произойдет.
+    correct_example: We need to set a date for the meeting.
+    common_mistake: put a date
+    mistake_explanation_ru: Для назначения даты обычно используется set a date.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to set a date for the meeting.
+        - We need to do a date for the meeting.
+        - We need to put a date for the meeting.
+      correct_option_index: 0
+    tags:
+      - set
+      - date

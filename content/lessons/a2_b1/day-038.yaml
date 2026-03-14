@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-038
+  level_band: a2_b1
+  day_number: 38
+  topic: home routine collocations
+  locale: ru
+  tags:
+    - home
+    - routine
+items:
+  - key: a2-b1-day-038-item-01
+    phrase: do the dishes
+    translation_ru: мыть посуду
+    explanation_ru: Используется, когда человек моет тарелки, чашки и другую посуду после еды.
+    correct_example: I will do the dishes after dinner.
+    common_mistake: wash the dishes by default in this lesson
+    mistake_explanation_ru: wash the dishes тоже возможно, но do the dishes очень частотно в бытовой речи.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I will do the dishes after dinner.
+        - I will make the dishes after dinner.
+        - I will take the dishes after dinner.
+      correct_option_index: 0
+    tags:
+      - do
+      - dishes
+  - key: a2-b1-day-038-item-02
+    phrase: do the laundry
+    translation_ru: стирать вещи
+    explanation_ru: Используется, когда человек стирает одежду и другие вещи.
+    correct_example: She does the laundry on Sunday.
+    common_mistake: make the laundry
+    mistake_explanation_ru: В бытовом английском обычно используется do the laundry.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She does the laundry on Sunday.
+        - She makes the laundry on Sunday.
+        - She takes the laundry on Sunday.
+      correct_option_index: 0
+    tags:
+      - do
+      - laundry
+  - key: a2-b1-day-038-item-03
+    phrase: make the bed
+    translation_ru: заправлять кровать
+    explanation_ru: Используется, когда человек приводит кровать в порядок после сна.
+    correct_example: He always makes the bed in the morning.
+    common_mistake: do the bed
+    mistake_explanation_ru: С bed в таком значении используется make the bed.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He always makes the bed in the morning.
+        - He always does the bed in the morning.
+        - He always puts the bed in the morning.
+      correct_option_index: 0
+    tags:
+      - make
+      - bed

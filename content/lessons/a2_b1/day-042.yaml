@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-042
+  level_band: a2_b1
+  day_number: 42
+  topic: phone collocations
+  locale: ru
+  tags:
+    - phone
+    - communication
+items:
+  - key: a2-b1-day-042-item-01
+    phrase: make a phone call
+    translation_ru: делать телефонный звонок
+    explanation_ru: Используется, когда человек звонит кому-то по телефону.
+    correct_example: I need to make a phone call.
+    common_mistake: do a phone call
+    mistake_explanation_ru: Со словом call в таком значении обычно используется make.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I need to make a phone call.
+        - I need to do a phone call.
+        - I need to take a phone call.
+      correct_option_index: 0
+    tags:
+      - make
+      - call
+  - key: a2-b1-day-042-item-02
+    phrase: return a call
+    translation_ru: перезвонить
+    explanation_ru: Используется, когда человек отвечает на пропущенный звонок позже.
+    correct_example: I will return your call after lunch.
+    common_mistake: give back a call
+    mistake_explanation_ru: Для перезвона естественнее использовать return a call.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I will return your call after lunch.
+        - I will give back your call after lunch.
+        - I will do your call after lunch.
+      correct_option_index: 0
+    tags:
+      - return
+      - call
+  - key: a2-b1-day-042-item-03
+    phrase: answer the phone
+    translation_ru: ответить на звонок
+    explanation_ru: Используется, когда человек берет трубку и начинает говорить.
+    correct_example: Can you answer the phone?
+    common_mistake: pick the phone in a literal-only way
+    mistake_explanation_ru: В нейтральной фразе answer the phone звучит очень естественно.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Can you answer the phone?
+        - Can you reply the phone?
+        - Can you do the phone?
+      correct_option_index: 0
+    tags:
+      - answer
+      - phone

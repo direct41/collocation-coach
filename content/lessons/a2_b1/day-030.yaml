@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-030
+  level_band: a2_b1
+  day_number: 30
+  topic: run collocations
+  locale: ru
+  tags:
+    - run
+    - work
+items:
+  - key: a2-b1-day-030-item-01
+    phrase: run a business
+    translation_ru: вести бизнес
+    explanation_ru: Используется, когда человек управляет компанией или небольшим делом.
+    correct_example: Her parents run a small business.
+    common_mistake: do a business
+    mistake_explanation_ru: В значении управления компанией обычно используется run a business.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Her parents make a small business.
+        - Her parents run a small business.
+        - Her parents do a small business.
+      correct_option_index: 1
+    tags:
+      - run
+      - business
+  - key: a2-b1-day-030-item-02
+    phrase: run out of time
+    translation_ru: остаться без времени
+    explanation_ru: Используется, когда времени уже не хватает, чтобы закончить что-то.
+    correct_example: Sorry, I have to go. I am running out of time.
+    common_mistake: finish time
+    mistake_explanation_ru: Для идеи нехватки времени используется run out of time.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Sorry, I have to go. I am running out of time.
+        - Sorry, I have to go. I am finishing time.
+        - Sorry, I have to go. I am ending time.
+      correct_option_index: 0
+    tags:
+      - run
+      - time
+  - key: a2-b1-day-030-item-03
+    phrase: run late
+    translation_ru: опаздывать
+    explanation_ru: Используется, когда человек или событие задерживаются по времени.
+    correct_example: I am running late for class.
+    common_mistake: be late running
+    mistake_explanation_ru: Естественная фраза в такой ситуации - run late.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I am running late for class.
+        - I am late running for class.
+        - I am doing late for class.
+      correct_option_index: 0
+    tags:
+      - run
+      - late

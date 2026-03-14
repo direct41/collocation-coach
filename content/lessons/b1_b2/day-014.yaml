@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-014
+  level_band: b1_b2
+  day_number: 14
+  topic: planning collocations
+  locale: ru
+  tags:
+    - planning
+    - operations
+items:
+  - key: b1-b2-day-014-item-01
+    phrase: allocate resources
+    translation_ru: распределять ресурсы
+    explanation_ru: Используется, когда команда решает, куда направить деньги, время или людей.
+    correct_example: We need to allocate resources more carefully.
+    common_mistake: divide resources only
+    mistake_explanation_ru: divide можно использовать буквально, но в планировании естественнее allocate resources.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to allocate resources more carefully.
+        - We need to divide resources more carefully.
+        - We need to do resources more carefully.
+      correct_option_index: 0
+    tags:
+      - allocate
+      - resources
+  - key: b1-b2-day-014-item-02
+    phrase: set priorities
+    translation_ru: расставлять приоритеты
+    explanation_ru: Используется, когда человек решает, какие задачи важнее других.
+    correct_example: Good managers know how to set priorities.
+    common_mistake: put priorities
+    mistake_explanation_ru: В такой фразе обычно используют set priorities.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Good managers know how to set priorities.
+        - Good managers know how to put priorities.
+        - Good managers know how to make priorities.
+      correct_option_index: 0
+    tags:
+      - set
+      - priorities
+  - key: b1-b2-day-014-item-03
+    phrase: meet requirements
+    translation_ru: соответствовать требованиям
+    explanation_ru: Используется, когда продукт, кандидат или процесс удовлетворяют нужным условиям.
+    correct_example: The product meets all safety requirements.
+    common_mistake: suit requirements
+    mistake_explanation_ru: В формальном контексте естественнее использовать meet requirements.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The product meets all safety requirements.
+        - The product suits all safety requirements.
+        - The product does all safety requirements.
+      correct_option_index: 0
+    tags:
+      - meet
+      - requirements

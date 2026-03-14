@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-036
+  level_band: a2_b1
+  day_number: 36
+  topic: promises and contact collocations
+  locale: ru
+  tags:
+    - relationships
+    - communication
+items:
+  - key: a2-b1-day-036-item-01
+    phrase: keep in touch
+    translation_ru: оставаться на связи
+    explanation_ru: Используется, когда люди продолжают общаться после встречи, поездки или учебы.
+    correct_example: Let us keep in touch after the course.
+    common_mistake: stay in contact always
+    mistake_explanation_ru: stay in contact возможно, но keep in touch звучит естественнее и чаще в разговорной речи.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Let us keep in touch after the course.
+        - Let us do in touch after the course.
+        - Let us make in touch after the course.
+      correct_option_index: 0
+    tags:
+      - keep
+      - touch
+  - key: a2-b1-day-036-item-02
+    phrase: keep a promise
+    translation_ru: сдержать обещание
+    explanation_ru: Используется, когда человек делает то, что пообещал.
+    correct_example: He always keeps his promises.
+    common_mistake: hold a promise
+    mistake_explanation_ru: Со словом promise в таком значении обычно используется keep.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He always keeps his promises.
+        - He always holds his promises.
+        - He always does his promises.
+      correct_option_index: 0
+    tags:
+      - keep
+      - promise
+  - key: a2-b1-day-036-item-03
+    phrase: break a promise
+    translation_ru: нарушить обещание
+    explanation_ru: Используется, когда человек не выполняет то, что обещал.
+    correct_example: Do not break your promise.
+    common_mistake: destroy a promise
+    mistake_explanation_ru: В устойчивой фразе используется break a promise.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Do not break your promise.
+        - Do not cut your promise.
+        - Do not destroy your promise.
+      correct_option_index: 0
+    tags:
+      - break
+      - promise

@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-011
+  level_band: b1_b2
+  day_number: 11
+  topic: analysis collocations
+  locale: ru
+  tags:
+    - analysis
+    - data
+items:
+  - key: b1-b2-day-011-item-01
+    phrase: identify a pattern
+    translation_ru: выявить закономерность
+    explanation_ru: Используется, когда человек замечает повторяющуюся связь или структуру.
+    correct_example: The team identified a clear pattern in customer complaints.
+    common_mistake: find a pattern out
+    mistake_explanation_ru: В более формальном анализе естественно использовать identify a pattern.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The team identified a clear pattern in customer complaints.
+        - The team did a clear pattern in customer complaints.
+        - The team made out a clear pattern in customer complaints.
+      correct_option_index: 0
+    tags:
+      - identify
+      - pattern
+  - key: b1-b2-day-011-item-02
+    phrase: spot a trend
+    translation_ru: заметить тренд
+    explanation_ru: Используется, когда человек замечает общее направление изменений в данных или поведении.
+    correct_example: Analysts spotted a trend in repeat purchases.
+    common_mistake: watch a trend
+    mistake_explanation_ru: Для замеченного тренда естественнее использовать spot a trend.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Analysts spotted a trend in repeat purchases.
+        - Analysts watched a trend in repeat purchases.
+        - Analysts made a trend in repeat purchases.
+      correct_option_index: 0
+    tags:
+      - spot
+      - trend
+  - key: b1-b2-day-011-item-03
+    phrase: collect evidence
+    translation_ru: собирать доказательства
+    explanation_ru: Используется, когда человек накапливает факты, материалы или данные для подтверждения идеи.
+    correct_example: The journalists collected enough evidence to publish the story.
+    common_mistake: gather an evidence
+    mistake_explanation_ru: evidence обычно неисчисляемое, и в такой фразе часто используется collect evidence.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The journalists collected enough evidence to publish the story.
+        - The journalists gathered an evidence to publish the story.
+        - The journalists did enough evidence to publish the story.
+      correct_option_index: 0
+    tags:
+      - collect
+      - evidence

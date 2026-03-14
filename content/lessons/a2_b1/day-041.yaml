@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-041
+  level_band: a2_b1
+  day_number: 41
+  topic: health collocations
+  locale: ru
+  tags:
+    - health
+    - daily-life
+items:
+  - key: a2-b1-day-041-item-01
+    phrase: catch a cold
+    translation_ru: простудиться
+    explanation_ru: Используется, когда человек заболевает простудой.
+    correct_example: I think I caught a cold.
+    common_mistake: get a cold in this exact phrase set
+    mistake_explanation_ru: get a cold тоже встречается, но catch a cold очень частотная и полезная фраза.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I think I caught a cold.
+        - I think I did a cold.
+        - I think I made a cold.
+      correct_option_index: 0
+    tags:
+      - catch
+      - cold
+  - key: a2-b1-day-041-item-02
+    phrase: get better
+    translation_ru: становиться лучше, выздоравливать
+    explanation_ru: Используется, когда здоровье, ситуация или навык улучшаются.
+    correct_example: You will get better soon.
+    common_mistake: become more good
+    mistake_explanation_ru: В обычной речи намного естественнее сказать get better.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - You will get better soon.
+        - You will become more good soon.
+        - You will do better soon.
+      correct_option_index: 0
+    tags:
+      - get
+      - better
+  - key: a2-b1-day-041-item-03
+    phrase: feel sick
+    translation_ru: чувствовать себя плохо, тошно
+    explanation_ru: Используется, когда человеку физически нехорошо.
+    correct_example: I feel sick after the trip.
+    common_mistake: feel badly
+    mistake_explanation_ru: В разговорном значении недомогания обычно говорят feel sick.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I feel sick after the trip.
+        - I feel badly after the trip.
+        - I feel illness after the trip.
+      correct_option_index: 0
+    tags:
+      - feel
+      - sick

@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-044
+  level_band: a2_b1
+  day_number: 44
+  topic: travel routine collocations
+  locale: ru
+  tags:
+    - travel
+    - routine
+items:
+  - key: a2-b1-day-044-item-01
+    phrase: pack a bag
+    translation_ru: собирать сумку
+    explanation_ru: Используется, когда человек кладет вещи в сумку или чемодан перед поездкой.
+    correct_example: I packed my bag the night before.
+    common_mistake: collect a bag
+    mistake_explanation_ru: Для подготовки вещей к поездке обычно говорят pack a bag.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I packed my bag the night before.
+        - I collected my bag the night before.
+        - I did my bag the night before.
+      correct_option_index: 0
+    tags:
+      - pack
+      - bag
+  - key: a2-b1-day-044-item-02
+    phrase: catch a train
+    translation_ru: успеть на поезд
+    explanation_ru: Используется, когда человек садится на поезд вовремя.
+    correct_example: We have to leave now to catch the train.
+    common_mistake: take the train now in urgency contexts
+    mistake_explanation_ru: take the train возможно в значении ехать поездом, но когда важно успеть, лучше catch the train.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We have to leave now to catch the train.
+        - We have to leave now to do the train.
+        - We have to leave now to make the train.
+      correct_option_index: 0
+    tags:
+      - catch
+      - train
+  - key: a2-b1-day-044-item-03
+    phrase: check the time
+    translation_ru: проверить время
+    explanation_ru: Используется, когда человек смотрит на часы, чтобы узнать текущее время.
+    correct_example: I checked the time before leaving home.
+    common_mistake: see the time
+    mistake_explanation_ru: see the time возможно понять из контекста, но check the time звучит естественнее.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I checked the time before leaving home.
+        - I saw the time before leaving home.
+        - I did the time before leaving home.
+      correct_option_index: 0
+    tags:
+      - check
+      - time

@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-029
+  level_band: a2_b1
+  day_number: 29
+  topic: come collocations
+  locale: ru
+  tags:
+    - come
+    - daily-life
+items:
+  - key: a2-b1-day-029-item-01
+    phrase: come back
+    translation_ru: возвращаться
+    explanation_ru: Используется, когда человек возвращается в место, где он уже был.
+    correct_example: She will come back tomorrow morning.
+    common_mistake: return back
+    mistake_explanation_ru: В разговорном английском достаточно сказать come back или return, но не return back.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She will come back tomorrow morning.
+        - She will return back tomorrow morning.
+        - She will come tomorrow back morning.
+      correct_option_index: 0
+    tags:
+      - come
+      - back
+  - key: a2-b1-day-029-item-02
+    phrase: come true
+    translation_ru: сбываться
+    explanation_ru: Используется, когда мечта, желание или план становятся реальностью.
+    correct_example: Her dream finally came true.
+    common_mistake: become true
+    mistake_explanation_ru: Для мечты или желания естественнее использовать come true.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Her dream finally did true.
+        - Her dream finally became true.
+        - Her dream finally came true.
+      correct_option_index: 2
+    tags:
+      - come
+      - dream
+  - key: a2-b1-day-029-item-03
+    phrase: come first
+    translation_ru: быть на первом месте
+    explanation_ru: Используется, когда что-то важнее всего или занимает первое место в списке приоритетов.
+    correct_example: Family should always come first.
+    common_mistake: be first place
+    mistake_explanation_ru: Когда речь о приоритете, естественнее сказать come first.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Family should always come first.
+        - Family should always do first.
+        - Family should always stay first place.
+      correct_option_index: 0
+    tags:
+      - come
+      - priority

@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-045
+  level_band: a2_b1
+  day_number: 45
+  topic: learning collocations
+  locale: ru
+  tags:
+    - learning
+    - study
+items:
+  - key: a2-b1-day-045-item-01
+    phrase: learn by heart
+    translation_ru: выучить наизусть
+    explanation_ru: Используется, когда человек запоминает текст, слова или правило полностью.
+    correct_example: We had to learn the poem by heart.
+    common_mistake: know by memory
+    mistake_explanation_ru: Для заучивания наизусть чаще используется learn by heart.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We had to learn the poem by heart.
+        - We had to know the poem by memory.
+        - We had to do the poem by heart.
+      correct_option_index: 0
+    tags:
+      - learn
+      - heart
+  - key: a2-b1-day-045-item-02
+    phrase: take notes
+    translation_ru: делать заметки
+    explanation_ru: Используется, когда человек записывает важную информацию во время лекции, встречи или урока.
+    correct_example: I always take notes in class.
+    common_mistake: write notes down always as a direct replacement
+    mistake_explanation_ru: write down notes возможно, но take notes - самая базовая и частотная фраза.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I always take notes in class.
+        - I always do notes in class.
+        - I always make notes in class.
+      correct_option_index: 0
+    tags:
+      - take
+      - notes
+  - key: a2-b1-day-045-item-03
+    phrase: make a mistake
+    translation_ru: совершить ошибку
+    explanation_ru: Используется, когда человек делает что-то неправильно.
+    correct_example: Everyone makes mistakes sometimes.
+    common_mistake: do a mistake
+    mistake_explanation_ru: Со словом mistake обычно используется make.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Everyone makes mistakes sometimes.
+        - Everyone does mistakes sometimes.
+        - Everyone takes mistakes sometimes.
+      correct_option_index: 0
+    tags:
+      - make
+      - mistake

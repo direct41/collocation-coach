@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-040
+  level_band: a2_b1
+  day_number: 40
+  topic: study results collocations
+  locale: ru
+  tags:
+    - study
+    - exams
+items:
+  - key: a2-b1-day-040-item-01
+    phrase: pass an exam
+    translation_ru: сдать экзамен
+    explanation_ru: Используется, когда человек успешно проходит экзамен.
+    correct_example: She passed the exam on her first try.
+    common_mistake: give an exam for a student result
+    mistake_explanation_ru: Студент usually passes an exam. give an exam means проводить экзамен.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She passed the exam on her first try.
+        - She gave the exam on her first try.
+        - She did the exam on her first try.
+      correct_option_index: 0
+    tags:
+      - pass
+      - exam
+  - key: a2-b1-day-040-item-02
+    phrase: fail an exam
+    translation_ru: провалить экзамен
+    explanation_ru: Используется, когда человек не набирает достаточно баллов.
+    correct_example: He failed the exam last year.
+    common_mistake: lose an exam
+    mistake_explanation_ru: Для неудачного результата по экзамену обычно используется fail an exam.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - He lost the exam last year.
+        - He failed the exam last year.
+        - He broke the exam last year.
+      correct_option_index: 1
+    tags:
+      - fail
+      - exam
+  - key: a2-b1-day-040-item-03
+    phrase: do research
+    translation_ru: проводить исследование
+    explanation_ru: Используется, когда человек собирает информацию и изучает тему глубже.
+    correct_example: We need to do more research before writing the report.
+    common_mistake: make research
+    mistake_explanation_ru: В обычной фразе чаще используется do research, а не make research.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to do more research before writing the report.
+        - We need to make more research before writing the report.
+        - We need to take more research before writing the report.
+      correct_option_index: 0
+    tags:
+      - do
+      - research

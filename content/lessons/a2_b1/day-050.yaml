@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-050
+  level_band: a2_b1
+  day_number: 50
+  topic: goals and solutions collocations
+  locale: ru
+  tags:
+    - goals
+    - problem-solving
+items:
+  - key: a2-b1-day-050-item-01
+    phrase: reach a goal
+    translation_ru: достичь цели
+    explanation_ru: Используется, когда человек получает результат, к которому долго шел.
+    correct_example: It takes time to reach your goals.
+    common_mistake: arrive a goal
+    mistake_explanation_ru: В таком значении обычно используется reach a goal.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - It takes time to reach your goals.
+        - It takes time to arrive your goals.
+        - It takes time to make your goals.
+      correct_option_index: 0
+    tags:
+      - reach
+      - goal
+  - key: a2-b1-day-050-item-02
+    phrase: solve a problem
+    translation_ru: решить проблему
+    explanation_ru: Используется, когда человек находит способ убрать трудность или исправить ситуацию.
+    correct_example: We need to solve this problem quickly.
+    common_mistake: decide a problem
+    mistake_explanation_ru: Для проблемы естественнее сказать solve a problem.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to solve this problem quickly.
+        - We need to decide this problem quickly.
+        - We need to do this problem quickly.
+      correct_option_index: 0
+    tags:
+      - solve
+      - problem
+  - key: a2-b1-day-050-item-03
+    phrase: find a solution
+    translation_ru: найти решение
+    explanation_ru: Используется, когда человек предлагает способ справиться с проблемой.
+    correct_example: I am sure we can find a solution.
+    common_mistake: search a solution
+    mistake_explanation_ru: В обычной фразе естественнее использовать find a solution.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I am sure we can find a solution.
+        - I am sure we can search a solution.
+        - I am sure we can do a solution.
+      correct_option_index: 0
+    tags:
+      - find
+      - solution

@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-010
+  level_band: b1_b2
+  day_number: 10
+  topic: impact and purpose collocations
+  locale: ru
+  tags:
+    - impact
+    - purpose
+items:
+  - key: b1-b2-day-010-item-01
+    phrase: have an impact
+    translation_ru: оказывать влияние
+    explanation_ru: Используется, когда действие, решение или событие заметно меняют результат.
+    correct_example: Small changes can have a big impact.
+    common_mistake: make an impact in all contexts
+    mistake_explanation_ru: make an impact тоже встречается, но have an impact - более нейтральный и частотный вариант.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Small changes can have a big impact.
+        - Small changes can do a big impact.
+        - Small changes can give a big impact.
+      correct_option_index: 0
+    tags:
+      - have
+      - impact
+  - key: b1-b2-day-010-item-02
+    phrase: play a role
+    translation_ru: играть роль
+    explanation_ru: Используется, когда что-то влияет на результат или является важным фактором.
+    correct_example: Trust plays a key role in teamwork.
+    common_mistake: take a role in causal explanations
+    mistake_explanation_ru: В причинно-следственных объяснениях естественнее использовать play a role.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Trust plays a key role in teamwork.
+        - Trust takes a key role in teamwork.
+        - Trust does a key role in teamwork.
+      correct_option_index: 0
+    tags:
+      - play
+      - role
+  - key: b1-b2-day-010-item-03
+    phrase: serve a purpose
+    translation_ru: служить цели
+    explanation_ru: Используется, когда действие, правило или объект имеют понятную функцию.
+    correct_example: This rule serves an important purpose.
+    common_mistake: have a purpose only
+    mistake_explanation_ru: have a purpose говорит о наличии цели, а serve a purpose - о полезной функции.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - This rule serves an important purpose.
+        - This rule makes an important purpose.
+        - This rule does an important purpose.
+      correct_option_index: 0
+    tags:
+      - serve
+      - purpose

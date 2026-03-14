@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-037
+  level_band: a2_b1
+  day_number: 37
+  topic: attention and participation collocations
+  locale: ru
+  tags:
+    - school
+    - focus
+items:
+  - key: a2-b1-day-037-item-01
+    phrase: pay attention
+    translation_ru: обращать внимание
+    explanation_ru: Используется, когда нужно сосредоточиться на человеке, задаче или детали.
+    correct_example: Please pay attention to the instructions.
+    common_mistake: give attention
+    mistake_explanation_ru: В обычной фразе используется pay attention.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Please pay attention to the instructions.
+        - Please give attention to the instructions.
+        - Please do attention to the instructions.
+      correct_option_index: 0
+    tags:
+      - pay
+      - attention
+  - key: a2-b1-day-037-item-02
+    phrase: take part
+    translation_ru: принимать участие
+    explanation_ru: Используется, когда человек участвует в мероприятии, игре или обсуждении.
+    correct_example: Many students took part in the competition.
+    common_mistake: make part
+    mistake_explanation_ru: Для участия используется take part in something.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Many students took part in the competition.
+        - Many students made part in the competition.
+        - Many students did part in the competition.
+      correct_option_index: 0
+    tags:
+      - take
+      - part
+  - key: a2-b1-day-037-item-03
+    phrase: follow instructions
+    translation_ru: следовать инструкциям
+    explanation_ru: Используется, когда человек делает что-то в точности по правилам или шагам.
+    correct_example: Follow the instructions carefully.
+    common_mistake: go by instructions only in direct translation
+    mistake_explanation_ru: В нейтральной фразе естественнее использовать follow instructions.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Follow the instructions carefully.
+        - Do the instructions carefully.
+        - Go the instructions carefully.
+      correct_option_index: 0
+    tags:
+      - follow
+      - instructions

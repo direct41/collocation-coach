@@ -2,65 +2,32 @@
 
 Open-source Telegram bot for learning English collocations through short daily lessons.
 
-## Product Idea
+## What It Does
 
-`Collocation Coach` helps learners build natural English by practicing a few high-value collocations every day.
-
-Initial MVP focus:
-- Telegram bot first
-- 3 new collocations + 2 reviews per daily lesson
+`Collocation Coach` helps learners build more natural English with a small daily loop:
+- `3` new collocations
+- up to `2` review items
 - short explanations in Russian
-- contrast with common mistakes
+- common mistake contrast
 - simple spaced repetition
 
-## Documents
-
-- [AI MVP plan](./docs/AI_MVP_PLAN.md)
-- [Product plan](./docs/PRODUCT_PLAN.md)
-- [Technical decisions](./docs/TECHNICAL_DECISIONS.md)
-- [Phase 1 product contract](./docs/PHASE_1_PRODUCT_CONTRACT.md)
-- [Phase 2 readiness brief](./docs/PHASE_2_READINESS_BRIEF.md)
-- [Phase 3 readiness brief](./docs/PHASE_3_READINESS_BRIEF.md)
-- [Phase 4 readiness brief](./docs/PHASE_4_READINESS_BRIEF.md)
-
-## Planned Open-Source Goals
-
-- anyone can self-host the bot
-- setup should require only a small set of environment variables
-- content should be editable without changing core bot logic
-
-## Default Technical Direction
-
-- language: Python 3.13
-- Telegram framework: aiogram
-- database: PostgreSQL for public MVP
-- local development: Docker Compose
-- content format: YAML files
-- deployment: single container app plus Postgres
-
-## Current Foundation
+## Current MVP
 
 Implemented now:
-- Python project scaffold
-- config loading and validation
-- YAML lesson parsing
-- PostgreSQL schema bootstrap
-- lesson content seeding
-- Telegram polling runtime
-- onboarding and study flow
-- simple built-in daily delivery loop
-- Dockerfile and Docker Compose
-- tests for config, content, study logic, and delivery
+- Telegram bot with polling runtime
+- onboarding flow
+- `/today`, `/review`, `/settings`
+- per-level learning tracks for `a2_b1` and `b1_b2`
+- YAML lesson content
+- built-in daily delivery loop
+- PostgreSQL persistence
+- Docker and local `uv` run paths
 
-## Local Run
+## Quick Start
 
-1. Copy `.env.example` to `.env`
-2. Set `TELEGRAM_BOT_TOKEN`
-3. Start PostgreSQL
-4. Run the bot
-5. Finish onboarding in Telegram with `/start`
+The shortest setup path is in [RUN.md](./RUN.md).
 
-### With uv
+Fast local run:
 
 ```bash
 cp .env.example .env
@@ -68,14 +35,25 @@ uv sync
 uv run python -m collocation_coach.main
 ```
 
-### With Docker Compose
+Then open your bot in Telegram and send `/start`.
 
-```bash
-cp .env.example .env
-docker compose up --build
-```
+## Environment
 
-## Current Commands
+Required:
+- `TELEGRAM_BOT_TOKEN`
+- `DATABASE_URL`
+
+Defaults live in [.env.example](./.env.example).
+
+## Content
+
+Lessons are plain YAML files in [content/lessons](./content/lessons).
+
+Each level has its own track:
+- [content/lessons/a2_b1](./content/lessons/a2_b1)
+- [content/lessons/b1_b2](./content/lessons/b1_b2)
+
+## Commands
 
 - `/start`
 - `/help`
@@ -83,6 +61,21 @@ docker compose up --build
 - `/review`
 - `/settings`
 
-## Repository Status
+## Self-Hosting Goal
 
-Simple MVP is runnable. Next work should focus on more lesson content and small release polish, not on extra infrastructure.
+The repository is intentionally simple:
+- one bot process
+- one Postgres database
+- editable YAML content
+- no external admin panel required
+
+## Documents
+
+- [RUN.md](./RUN.md)
+- [AI MVP plan](./docs/AI_MVP_PLAN.md)
+- [Product plan](./docs/PRODUCT_PLAN.md)
+- [Technical decisions](./docs/TECHNICAL_DECISIONS.md)
+- [Phase 1 product contract](./docs/PHASE_1_PRODUCT_CONTRACT.md)
+- [Phase 2 readiness brief](./docs/PHASE_2_READINESS_BRIEF.md)
+- [Phase 3 readiness brief](./docs/PHASE_3_READINESS_BRIEF.md)
+- [Phase 4 readiness brief](./docs/PHASE_4_READINESS_BRIEF.md)

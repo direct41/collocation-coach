@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-035
+  level_band: a2_b1
+  day_number: 35
+  topic: transport collocations
+  locale: ru
+  tags:
+    - travel
+    - transport
+items:
+  - key: a2-b1-day-035-item-01
+    phrase: catch a bus
+    translation_ru: успеть на автобус
+    explanation_ru: Используется, когда человек успевает сесть на автобус до его отправления.
+    correct_example: We need to hurry if we want to catch the bus.
+    common_mistake: take the bus in a hurry
+    mistake_explanation_ru: Когда важна идея успеть на транспорт, естественнее say catch the bus.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to hurry if we want to catch the bus.
+        - We need to hurry if we want to do the bus.
+        - We need to hurry if we want to reach in the bus.
+      correct_option_index: 0
+    tags:
+      - catch
+      - bus
+  - key: a2-b1-day-035-item-02
+    phrase: miss a flight
+    translation_ru: опоздать на рейс
+    explanation_ru: Используется, когда человек не успевает на самолет.
+    correct_example: They missed the flight because of traffic.
+    common_mistake: lose a flight
+    mistake_explanation_ru: Для самолета, на который не успели, обычно говорят miss a flight.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - They lost the flight because of traffic.
+        - They missed the flight because of traffic.
+        - They were late the flight because of traffic.
+      correct_option_index: 1
+    tags:
+      - miss
+      - flight
+  - key: a2-b1-day-035-item-03
+    phrase: book a ticket
+    translation_ru: бронировать билет
+    explanation_ru: Используется, когда человек заранее оформляет билет на поездку или событие.
+    correct_example: I booked a ticket online.
+    common_mistake: reserve a ticket online for simple travel contexts
+    mistake_explanation_ru: reserve возможно, но в обычной бытовой ситуации чаще используется book a ticket.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I booked a ticket online.
+        - I did a ticket online.
+        - I made a ticket online.
+      correct_option_index: 0
+    tags:
+      - book
+      - ticket

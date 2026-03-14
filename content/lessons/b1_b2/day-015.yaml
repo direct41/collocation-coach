@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-015
+  level_band: b1_b2
+  day_number: 15
+  topic: outcomes collocations
+  locale: ru
+  tags:
+    - outcomes
+    - business
+items:
+  - key: b1-b2-day-015-item-01
+    phrase: yield results
+    translation_ru: приносить результаты
+    explanation_ru: Используется, когда действие или стратегия начинают давать заметный эффект.
+    correct_example: The new process is already yielding results.
+    common_mistake: give results in formal process language
+    mistake_explanation_ru: give results возможно, но yield results звучит точнее в аналитическом и деловом контексте.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The new process is already yielding results.
+        - The new process is already doing results.
+        - The new process is already making results.
+      correct_option_index: 0
+    tags:
+      - yield
+      - results
+  - key: b1-b2-day-015-item-02
+    phrase: deliver value
+    translation_ru: приносить ценность
+    explanation_ru: Используется, когда продукт, команда или решение реально полезны пользователю или бизнесу.
+    correct_example: Our goal is to deliver value, not just features.
+    common_mistake: give a value in product phrasing
+    mistake_explanation_ru: В продуктовой и бизнес-речи естественнее использовать deliver value.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Our goal is to deliver value, not just features.
+        - Our goal is to give a value, not just features.
+        - Our goal is to make a value, not just features.
+      correct_option_index: 0
+    tags:
+      - deliver
+      - value
+  - key: b1-b2-day-015-item-03
+    phrase: achieve consensus
+    translation_ru: достичь согласия
+    explanation_ru: Используется, когда группа людей приходит к общему решению после обсуждения.
+    correct_example: The board finally achieved consensus on the budget.
+    common_mistake: get a consensus
+    mistake_explanation_ru: get consensus возможно, но achieve consensus звучит более формально и точно.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The board finally achieved consensus on the budget.
+        - The board finally got a consensus on the budget.
+        - The board finally made consensus on the budget.
+      correct_option_index: 0
+    tags:
+      - achieve
+      - consensus

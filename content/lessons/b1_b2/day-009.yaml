@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-009
+  level_band: b1_b2
+  day_number: 9
+  topic: progress and support collocations
+  locale: ru
+  tags:
+    - progress
+    - support
+items:
+  - key: b1-b2-day-009-item-01
+    phrase: gain experience
+    translation_ru: получать опыт
+    explanation_ru: Используется, когда человек постепенно становится опытнее через практику.
+    correct_example: Internships help students gain experience.
+    common_mistake: win experience
+    mistake_explanation_ru: В этом значении обычно используется gain experience.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Internships help students gain experience.
+        - Internships help students win experience.
+        - Internships help students take experience.
+      correct_option_index: 0
+    tags:
+      - gain
+      - experience
+  - key: b1-b2-day-009-item-02
+    phrase: gain access
+    translation_ru: получать доступ
+    explanation_ru: Используется, когда человеку разрешают войти, использовать систему или получить информацию.
+    correct_example: Only managers can gain access to this data.
+    common_mistake: get an access
+    mistake_explanation_ru: a обычно не нужна, а в более формальном контексте полезно знать gain access.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Only managers can gain access to this data.
+        - Only managers can get an access to this data.
+        - Only managers can make access to this data.
+      correct_option_index: 0
+    tags:
+      - gain
+      - access
+  - key: b1-b2-day-009-item-03
+    phrase: gain support
+    translation_ru: заручиться поддержкой
+    explanation_ru: Используется, когда идея, проект или человек начинают получать одобрение других людей.
+    correct_example: The proposal gained support from several investors.
+    common_mistake: win support in neutral business phrasing
+    mistake_explanation_ru: win support возможно, но gain support звучит более нейтрально и делово.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - The proposal gained support from several investors.
+        - The proposal did support from several investors.
+        - The proposal made support from several investors.
+      correct_option_index: 0
+    tags:
+      - gain
+      - support

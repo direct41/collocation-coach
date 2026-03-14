@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-034
+  level_band: a2_b1
+  day_number: 34
+  topic: everyday situations collocations
+  locale: ru
+  tags:
+    - daily-life
+    - routine
+items:
+  - key: a2-b1-day-034-item-01
+    phrase: leave a message
+    translation_ru: оставить сообщение
+    explanation_ru: Используется, когда человек передает информацию для другого человека, которого сейчас нет на месте.
+    correct_example: Can I leave a message for Anna?
+    common_mistake: put a message
+    mistake_explanation_ru: В таком контексте естественная фраза - leave a message.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Can I leave a message for Anna?
+        - Can I put a message for Anna?
+        - Can I do a message for Anna?
+      correct_option_index: 0
+    tags:
+      - leave
+      - message
+  - key: a2-b1-day-034-item-02
+    phrase: miss a chance
+    translation_ru: упустить шанс
+    explanation_ru: Используется, когда человек не использует хорошую возможность.
+    correct_example: Do not miss this chance.
+    common_mistake: lose a chance
+    mistake_explanation_ru: Для неиспользованной возможности чаще говорят miss a chance.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Do not lose this chance.
+        - Do not miss this chance.
+        - Do not waste this chance.
+      correct_option_index: 1
+    tags:
+      - miss
+      - chance
+  - key: a2-b1-day-034-item-03
+    phrase: lose weight
+    translation_ru: худеть
+    explanation_ru: Используется, когда человек становится легче или хочет стать легче.
+    correct_example: She wants to lose weight before summer.
+    common_mistake: become weightless
+    mistake_explanation_ru: Для идеи похудения используется lose weight.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She wants to lose weight before summer.
+        - She wants to take weight before summer.
+        - She wants to do weight before summer.
+      correct_option_index: 0
+    tags:
+      - lose
+      - weight

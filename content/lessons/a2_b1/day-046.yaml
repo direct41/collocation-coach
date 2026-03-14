@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-046
+  level_band: a2_b1
+  day_number: 46
+  topic: school and work collocations
+  locale: ru
+  tags:
+    - school
+    - work
+items:
+  - key: a2-b1-day-046-item-01
+    phrase: hand in homework
+    translation_ru: сдавать домашнюю работу
+    explanation_ru: Используется, когда ученик отдает выполненное задание учителю.
+    correct_example: Please hand in your homework on Monday.
+    common_mistake: give homework in
+    mistake_explanation_ru: В школьном контексте естественно говорить hand in homework.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Please hand in your homework on Monday.
+        - Please give in your homework on Monday.
+        - Please do in your homework on Monday.
+      correct_option_index: 0
+    tags:
+      - hand
+      - homework
+  - key: a2-b1-day-046-item-02
+    phrase: meet a deadline
+    translation_ru: уложиться в срок
+    explanation_ru: Используется, когда работа или задача закончены вовремя.
+    correct_example: We must meet the deadline.
+    common_mistake: catch a deadline
+    mistake_explanation_ru: Для выполнения задачи вовремя обычно используют meet a deadline.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We must meet the deadline.
+        - We must catch the deadline.
+        - We must do the deadline.
+      correct_option_index: 0
+    tags:
+      - meet
+      - deadline
+  - key: a2-b1-day-046-item-03
+    phrase: miss class
+    translation_ru: пропустить занятие
+    explanation_ru: Используется, когда человек не приходит на урок или пару.
+    correct_example: I missed class because I was ill.
+    common_mistake: lose class
+    mistake_explanation_ru: В таком значении обычно используется miss class.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I missed class because I was ill.
+        - I lost class because I was ill.
+        - I failed class because I was ill.
+      correct_option_index: 0
+    tags:
+      - miss
+      - class

@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-028
+  level_band: a2_b1
+  day_number: 28
+  topic: go collocations
+  locale: ru
+  tags:
+    - go
+    - daily-life
+items:
+  - key: a2-b1-day-028-item-01
+    phrase: go home
+    translation_ru: идти домой
+    explanation_ru: Используется, когда человек возвращается домой после работы, учебы или прогулки.
+    correct_example: I usually go home at six.
+    common_mistake: go to home
+    mistake_explanation_ru: С home обычно не используется to после go.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I usually go to home at six.
+        - I usually go home at six.
+        - I usually go in home at six.
+      correct_option_index: 1
+    tags:
+      - go
+      - home
+  - key: a2-b1-day-028-item-02
+    phrase: go shopping
+    translation_ru: ходить за покупками
+    explanation_ru: Используется, когда человек идет покупать вещи, продукты или одежду.
+    correct_example: We often go shopping on Saturday.
+    common_mistake: make shopping
+    mistake_explanation_ru: Для такого действия обычно используется go shopping, а не make shopping.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We often go shopping on Saturday.
+        - We often do shopping on Saturday.
+        - We often make shopping on Saturday.
+      correct_option_index: 0
+    tags:
+      - go
+      - shopping
+  - key: a2-b1-day-028-item-03
+    phrase: go wrong
+    translation_ru: пойти не так
+    explanation_ru: Используется, когда что-то развивается не по плану или заканчивается плохо.
+    correct_example: Something went wrong with my laptop.
+    common_mistake: become wrong
+    mistake_explanation_ru: В таких ситуациях естественнее сказать go wrong.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Something made wrong with my laptop.
+        - Something went wrong with my laptop.
+        - Something did wrong with my laptop.
+      correct_option_index: 1
+    tags:
+      - go
+      - problems

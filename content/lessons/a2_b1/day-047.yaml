@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-047
+  level_band: a2_b1
+  day_number: 47
+  topic: habit collocations
+  locale: ru
+  tags:
+    - habits
+    - routine
+items:
+  - key: a2-b1-day-047-item-01
+    phrase: keep a diary
+    translation_ru: вести дневник
+    explanation_ru: Используется, когда человек регулярно записывает свои мысли или события дня.
+    correct_example: She keeps a diary in English.
+    common_mistake: write a diary every day as direct replacement
+    mistake_explanation_ru: write in a diary возможно, но для устойчивого действия полезно знать keep a diary.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She keeps a diary in English.
+        - She does a diary in English.
+        - She makes a diary in English.
+      correct_option_index: 0
+    tags:
+      - keep
+      - diary
+  - key: a2-b1-day-047-item-02
+    phrase: break a habit
+    translation_ru: избавиться от привычки
+    explanation_ru: Используется, когда человек перестает делать что-то регулярно.
+    correct_example: It is hard to break a bad habit.
+    common_mistake: stop a habit completely in direct translation
+    mistake_explanation_ru: Для устойчивой фразы про избавление от привычки обычно используют break a habit.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - It is hard to break a bad habit.
+        - It is hard to cut a bad habit.
+        - It is hard to do a bad habit.
+      correct_option_index: 0
+    tags:
+      - break
+      - habit
+  - key: a2-b1-day-047-item-03
+    phrase: form a habit
+    translation_ru: выработать привычку
+    explanation_ru: Используется, когда человек начинает делать что-то регулярно.
+    correct_example: Reading every day can help you form a good habit.
+    common_mistake: build a habit in basic learner contexts
+    mistake_explanation_ru: build a habit возможно, но form a habit - хороший базовый вариант для учебного английского.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Reading every day can help you form a good habit.
+        - Reading every day can help you do a good habit.
+        - Reading every day can help you make a good habit.
+      correct_option_index: 0
+    tags:
+      - form
+      - habit

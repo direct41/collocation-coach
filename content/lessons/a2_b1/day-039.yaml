@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-039
+  level_band: a2_b1
+  day_number: 39
+  topic: plans and reactions collocations
+  locale: ru
+  tags:
+    - plans
+    - emotions
+items:
+  - key: a2-b1-day-039-item-01
+    phrase: change your mind
+    translation_ru: передумать
+    explanation_ru: Используется, когда человек решает сделать что-то иначе, чем планировал раньше.
+    correct_example: I wanted to stay home, but I changed my mind.
+    common_mistake: turn my mind
+    mistake_explanation_ru: В таком значении естественно говорить change your mind.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I wanted to stay home, but I changed my mind.
+        - I wanted to stay home, but I turned my mind.
+        - I wanted to stay home, but I did my mind.
+      correct_option_index: 0
+    tags:
+      - change
+      - mind
+  - key: a2-b1-day-039-item-02
+    phrase: make plans
+    translation_ru: строить планы
+    explanation_ru: Используется, когда человек решает заранее, что и когда будет делать.
+    correct_example: We are making plans for the weekend.
+    common_mistake: do plans
+    mistake_explanation_ru: Со словом plans в таком значении обычно используется make.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We are making plans for the weekend.
+        - We are doing plans for the weekend.
+        - We are taking plans for the weekend.
+      correct_option_index: 0
+    tags:
+      - make
+      - plans
+  - key: a2-b1-day-039-item-03
+    phrase: keep calm
+    translation_ru: сохранять спокойствие
+    explanation_ru: Используется, когда важно не паниковать и не нервничать.
+    correct_example: Try to keep calm during the exam.
+    common_mistake: stay calmly
+    mistake_explanation_ru: В устойчивой фразе обычно используется keep calm.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Try to keep calm during the exam.
+        - Try to stay calmly during the exam.
+        - Try to do calm during the exam.
+      correct_option_index: 0
+    tags:
+      - keep
+      - calm

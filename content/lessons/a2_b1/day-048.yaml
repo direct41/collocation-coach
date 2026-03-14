@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-048
+  level_band: a2_b1
+  day_number: 48
+  topic: cooking collocations
+  locale: ru
+  tags:
+    - cooking
+    - home
+items:
+  - key: a2-b1-day-048-item-01
+    phrase: make breakfast
+    translation_ru: готовить завтрак
+    explanation_ru: Используется, когда человек готовит еду утром.
+    correct_example: I will make breakfast for everyone.
+    common_mistake: do breakfast
+    mistake_explanation_ru: Со словом breakfast в значении приготовления часто используется make breakfast.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I will make breakfast for everyone.
+        - I will do breakfast for everyone.
+        - I will cook a breakfast for everyone.
+      correct_option_index: 0
+    tags:
+      - make
+      - breakfast
+  - key: a2-b1-day-048-item-02
+    phrase: boil water
+    translation_ru: кипятить воду
+    explanation_ru: Используется, когда человек нагревает воду до кипения.
+    correct_example: Boil some water for tea.
+    common_mistake: cook water
+    mistake_explanation_ru: Для воды обычно используется boil, а не cook.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Boil some water for tea.
+        - Cook some water for tea.
+        - Make some water for tea.
+      correct_option_index: 0
+    tags:
+      - boil
+      - water
+  - key: a2-b1-day-048-item-03
+    phrase: cook dinner
+    translation_ru: готовить ужин
+    explanation_ru: Используется, когда человек делает горячую еду на вечер.
+    correct_example: My brother is cooking dinner tonight.
+    common_mistake: make dinner when focusing on actual cooking action
+    mistake_explanation_ru: make dinner тоже возможно, но cook dinner полезно для фокуса на процессе приготовления.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - My brother is cooking dinner tonight.
+        - My brother is doing dinner tonight.
+        - My brother is taking dinner tonight.
+      correct_option_index: 0
+    tags:
+      - cook
+      - dinner

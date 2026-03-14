@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-043
+  level_band: a2_b1
+  day_number: 43
+  topic: shopping and service collocations
+  locale: ru
+  tags:
+    - shopping
+    - service
+items:
+  - key: a2-b1-day-043-item-01
+    phrase: try on clothes
+    translation_ru: примерять одежду
+    explanation_ru: Используется, когда человек надевает одежду в магазине, чтобы понять, подходит ли она.
+    correct_example: She wants to try on the dress first.
+    common_mistake: test clothes on
+    mistake_explanation_ru: Для примерки одежды используется try on clothes.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - She wants to try on the dress first.
+        - She wants to test the dress first.
+        - She wants to wear on the dress first.
+      correct_option_index: 0
+    tags:
+      - try
+      - clothes
+  - key: a2-b1-day-043-item-02
+    phrase: pay a bill
+    translation_ru: оплатить счет
+    explanation_ru: Используется, когда человек платит за ресторан, интернет, электричество или другую услугу.
+    correct_example: I need to pay the electricity bill today.
+    common_mistake: close a bill
+    mistake_explanation_ru: В обычной фразе используется pay a bill.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I need to pay the electricity bill today.
+        - I need to close the electricity bill today.
+        - I need to do the electricity bill today.
+      correct_option_index: 0
+    tags:
+      - pay
+      - bill
+  - key: a2-b1-day-043-item-03
+    phrase: leave a tip
+    translation_ru: оставить чаевые
+    explanation_ru: Используется, когда человек оставляет немного денег официанту или курьеру.
+    correct_example: We left a tip for the waiter.
+    common_mistake: give tips in singular situations by default
+    mistake_explanation_ru: В конкретной ситуации про чаевые естественнее сказать leave a tip.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We left a tip for the waiter.
+        - We made a tip for the waiter.
+        - We did a tip for the waiter.
+      correct_option_index: 0
+    tags:
+      - leave
+      - tip

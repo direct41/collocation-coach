@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-049
+  level_band: a2_b1
+  day_number: 49
+  topic: social collocations
+  locale: ru
+  tags:
+    - social
+    - emotions
+items:
+  - key: a2-b1-day-049-item-01
+    phrase: feel nervous
+    translation_ru: нервничать
+    explanation_ru: Используется, когда человек волнуется перед чем-то важным.
+    correct_example: I always feel nervous before interviews.
+    common_mistake: have nervous
+    mistake_explanation_ru: Для эмоции естественнее использовать feel nervous.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I always feel nervous before interviews.
+        - I always have nervous before interviews.
+        - I always do nervous before interviews.
+      correct_option_index: 0
+    tags:
+      - feel
+      - nervous
+  - key: a2-b1-day-049-item-02
+    phrase: show respect
+    translation_ru: проявлять уважение
+    explanation_ru: Используется, когда человек ведет себя вежливо и уважительно по отношению к другим.
+    correct_example: Children should show respect to their teachers.
+    common_mistake: give respect in this simple pattern
+    mistake_explanation_ru: give respect иногда встречается, но в базовой фразе естественнее show respect.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Children should show respect to their teachers.
+        - Children should do respect to their teachers.
+        - Children should make respect to their teachers.
+      correct_option_index: 0
+    tags:
+      - show
+      - respect
+  - key: a2-b1-day-049-item-03
+    phrase: give advice
+    translation_ru: давать совет
+    explanation_ru: Используется, когда человек предлагает, что лучше сделать.
+    correct_example: My friend gave me useful advice.
+    common_mistake: say an advice
+    mistake_explanation_ru: advice обычно неисчисляемое, и в такой фразе естественно использовать give advice.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - My friend gave me useful advice.
+        - My friend said me useful advice.
+        - My friend did me useful advice.
+      correct_option_index: 0
+    tags:
+      - give
+      - advice

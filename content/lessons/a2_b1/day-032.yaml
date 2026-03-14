@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: a2-b1-day-032
+  level_band: a2_b1
+  day_number: 32
+  topic: time and money collocations
+  locale: ru
+  tags:
+    - money
+    - time
+items:
+  - key: a2-b1-day-032-item-01
+    phrase: save money
+    translation_ru: экономить деньги
+    explanation_ru: Используется, когда человек старается не тратить лишнее и откладывает деньги.
+    correct_example: We are saving money for a trip.
+    common_mistake: keep money
+    mistake_explanation_ru: Когда речь об экономии, обычно используется save money.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We are saving money for a trip.
+        - We are keeping money for a trip.
+        - We are doing money for a trip.
+      correct_option_index: 0
+    tags:
+      - save
+      - money
+  - key: a2-b1-day-032-item-02
+    phrase: spend time
+    translation_ru: проводить время
+    explanation_ru: Используется, когда речь идет о том, на что уходит время.
+    correct_example: I like to spend time with my family.
+    common_mistake: pass time with
+    mistake_explanation_ru: В нейтральном значении обычно используется spend time with someone.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - I like to spend time with my family.
+        - I like to do time with my family.
+        - I like to make time with my family.
+      correct_option_index: 0
+    tags:
+      - spend
+      - time
+  - key: a2-b1-day-032-item-03
+    phrase: waste time
+    translation_ru: тратить время впустую
+    explanation_ru: Используется, когда время уходит на что-то бесполезное.
+    correct_example: Stop wasting time and start working.
+    common_mistake: lose time
+    mistake_explanation_ru: lose time возможно в других значениях, но для бесполезной траты естественнее waste time.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Stop wasting time and start working.
+        - Stop losing time and start working.
+        - Stop doing time and start working.
+      correct_option_index: 0
+    tags:
+      - waste
+      - time

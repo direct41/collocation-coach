@@ -1,0 +1,62 @@
+version: 1
+lesson_unit:
+  key: b1-b2-day-012
+  level_band: b1_b2
+  day_number: 12
+  topic: communication collocations
+  locale: ru
+  tags:
+    - communication
+    - meetings
+items:
+  - key: b1-b2-day-012-item-01
+    phrase: address an issue
+    translation_ru: рассмотреть проблему, заняться проблемой
+    explanation_ru: Используется, когда человек не игнорирует проблему, а пытается ею заняться.
+    correct_example: We need to address this issue before launch.
+    common_mistake: touch this issue
+    mistake_explanation_ru: В деловом и нейтральном контексте естественнее использовать address an issue.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - We need to address this issue before launch.
+        - We need to touch this issue before launch.
+        - We need to do this issue before launch.
+      correct_option_index: 0
+    tags:
+      - address
+      - issue
+  - key: b1-b2-day-012-item-02
+    phrase: voice an opinion
+    translation_ru: высказать мнение
+    explanation_ru: Используется, когда человек открыто формулирует свою точку зрения.
+    correct_example: Everyone had a chance to voice an opinion.
+    common_mistake: tell an opinion
+    mistake_explanation_ru: Для открытого высказывания мнения естественнее использовать voice an opinion.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Everyone had a chance to voice an opinion.
+        - Everyone had a chance to tell an opinion.
+        - Everyone had a chance to say an opinion.
+      correct_option_index: 0
+    tags:
+      - voice
+      - opinion
+  - key: b1-b2-day-012-item-03
+    phrase: clarify expectations
+    translation_ru: прояснить ожидания
+    explanation_ru: Используется, когда стороны заранее уточняют, кто что должен сделать и какого результата ждут.
+    correct_example: Let us clarify expectations before we start.
+    common_mistake: clean expectations
+    mistake_explanation_ru: В деловой речи обычно используют clarify expectations.
+    practice:
+      prompt_ru: Выбери правильный вариант.
+      options:
+        - Let us clarify expectations before we start.
+        - Let us clear expectations before we start.
+        - Let us do expectations before we start.
+      correct_option_index: 0
+    tags:
+      - clarify
+      - expectations
