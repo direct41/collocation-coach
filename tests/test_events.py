@@ -4,7 +4,11 @@ import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from collocation_coach.application.events import record_product_event, summarize_product_events
+from collocation_coach.application.events import (
+    record_content_exhaustion_signal,
+    record_product_event,
+    summarize_product_events,
+)
 from collocation_coach.storage.models import Base, User
 
 
@@ -97,3 +101,61 @@ async def test_summarize_product_events_reports_return_conversion(session_factor
         assert counts["daily_lesson_completed"] == 1
         assert summary.return_prompts == 1
         assert summary.return_completions_within_72h == 1
+
+
+@pytest.mark.asyncio
+async def test_summarize_product_events_reports_content_exhaustion_by_level(session_factory) -> None:
+    async with session_factory() as session:
+        first_user = User(
+            telegram_user_id=1001,
+            username="exhaust-1",
+            first_name="Exhaust",
+            language_code="ru",
+            level_band="a2_b1",
+            timezone="UTC",
+            daily_delivery_time="09:00",
+            is_active=True,
+        )
+        second_user = User(
+            telegram_user_id=1002,
+            username="exhaust-2",
+            first_name="Exhaust",
+            language_code="ru",
+            level_band="b1_b2",
+            timezone="UTC",
+            daily_delivery_time="09:00",
+            is_active=True,
+        )
+        session.add_all([first_user, second_user])
+        await session.commit()
+
+        await record_content_exhaustion_signal(
+            session,
+            first_user.id,
+            level_band="a2_b1",
+            lesson_date=datetime(2026, 3, 15, tzinfo=UTC).date(),
+            source="today",
+            occurred_at=datetime(2026, 3, 15, 9, 0, tzinfo=UTC),
+        )
+        await record_content_exhaustion_signal(
+            session,
+            second_user.id,
+            level_band="b1_b2",
+            lesson_date=datetime(2026, 3, 16, tzinfo=UTC).date(),
+            source="scheduled_delivery",
+            occurred_at=datetime(2026, 3, 16, 9, 0, tzinfo=UTC),
+        )
+        await session.commit()
+
+        summary = await summarize_product_events(
+            session,
+            now=datetime(2026, 3, 17, 9, 0, tzinfo=UTC),
+        )
+
+        counts = {row.event_name: row.total_count for row in summary.counts}
+        assert counts["content_exhausted"] == 2
+        exhaustion = {row.level_band: row for row in summary.content_exhaustion_levels}
+        assert exhaustion["a2_b1"].user_count == 1
+        assert exhaustion["a2_b1"].event_count == 1
+        assert exhaustion["b1_b2"].user_count == 1
+        assert exhaustion["b1_b2"].event_count == 1

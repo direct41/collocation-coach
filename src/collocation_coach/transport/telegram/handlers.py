@@ -7,7 +7,10 @@ from aiogram.types import CallbackQuery
 from aiogram.types import Message
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from collocation_coach.application.events import record_product_event
+from collocation_coach.application.events import (
+    record_content_exhaustion_signal,
+    record_product_event,
+)
 from collocation_coach.application.feedback import submit_content_feedback
 from collocation_coach.application.onboarding import (
     decode_delivery_time,
@@ -52,6 +55,9 @@ from collocation_coach.transport.telegram.keyboards import (
     timezone_keyboard,
 )
 from collocation_coach.transport.telegram.messages import (
+    content_report_acknowledgement,
+    content_report_markup,
+    content_report_prompt,
     daily_intro_text,
     extra_practice_markup,
     extra_practice_prompt,
@@ -147,6 +153,10 @@ async def _send_next_card(
         format_item_card(card),
         reply_markup=practice_markup(card),
     )
+    await target_message.answer(
+        content_report_prompt(),
+        reply_markup=content_report_markup(card),
+    )
 
 
 def create_router(
@@ -227,6 +237,15 @@ def create_router(
                 now=now_utc,
             )
             if lesson is None:
+                await record_content_exhaustion_signal(
+                    session,
+                    user.id,
+                    level_band=user.level_band,
+                    lesson_date=lesson_date,
+                    source="today",
+                    occurred_at=now_utc,
+                )
+                await session.commit()
                 if await has_extra_practice_available(session, user.id):
                     await message.answer(
                         "No new main session is available right now.",
@@ -677,9 +696,11 @@ def create_router(
                     return
                 await session.commit()
 
-            await callback.answer(
-                "Feedback saved." if created else "Feedback already saved for this card."
-            )
+            if callback_data.value:
+                await callback.answer(content_report_acknowledgement(created))
+                return
+            await callback.message.edit_text(content_report_acknowledgement(created))
+            await callback.answer()
             return
 
         async with session_factory() as session:
@@ -720,6 +741,10 @@ def create_router(
             await callback.message.answer(
                 format_item_card(next_card),
                 reply_markup=practice_markup(next_card),
+            )
+            await callback.message.answer(
+                content_report_prompt(),
+                reply_markup=content_report_markup(next_card),
             )
         await callback.answer()
 

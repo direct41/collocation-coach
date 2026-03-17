@@ -4,7 +4,11 @@ from aiogram.types import InlineKeyboardMarkup
 
 from collocation_coach.application.progress import ProgressSnapshot
 from collocation_coach.application.study import SessionSummary, StudyItemCard
-from collocation_coach.transport.telegram.keyboards import extra_practice_keyboard, practice_start_keyboard
+from collocation_coach.transport.telegram.keyboards import (
+    extra_practice_keyboard,
+    practice_start_keyboard,
+    report_problem_keyboard,
+)
 
 
 def format_settings(
@@ -97,6 +101,25 @@ def format_progress(snapshot: ProgressSnapshot) -> str:
 
 def practice_markup(card: StudyItemCard) -> InlineKeyboardMarkup:
     return practice_start_keyboard(card.session_type, card.session_id, card.session_item_id)
+
+
+def content_report_prompt() -> str:
+    return (
+        "Spot a problem with this card?\n"
+        "Use Report a problem to mark it quietly for review."
+    )
+
+
+def content_report_acknowledgement(created: bool) -> str:
+    return (
+        "Thanks, we marked this card for review."
+        if created
+        else "This card is already marked for review."
+    )
+
+
+def content_report_markup(card: StudyItemCard) -> InlineKeyboardMarkup:
+    return report_problem_keyboard(card.session_type, card.session_id, card.session_item_id)
 
 
 def extra_practice_prompt() -> str:

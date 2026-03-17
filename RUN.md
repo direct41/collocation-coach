@@ -86,7 +86,7 @@ After the bot starts:
 6. Send `/review`
 7. Send `/progress`
 8. Optionally continue with `Extra practice`
-9. If you see a broken or unnatural card, use the feedback buttons directly from the study card
+9. If you see a bad card, use `Report a problem` from the study card
 
 If these commands work, your instance is ready.
 
@@ -146,7 +146,7 @@ uv run pytest
 uv run python -m compileall src
 uv run python -m collocation_coach.validation
 uv run python -m collocation_coach.reporting
-uv run python -m collocation_coach.reporting feedback-export --format csv
+uv run python -m collocation_coach.reporting content-issues --format csv
 docker compose config
 ```
 

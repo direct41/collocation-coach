@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,6 +15,7 @@ CORE_EVENT_NAMES = (
     "return_prompt_shown",
     "progress_viewed",
     "content_feedback_submitted",
+    "content_exhausted",
     "settings_updated",
 )
 
@@ -31,6 +32,15 @@ class ProductEventSummary:
     counts: tuple[ProductEventCount, ...]
     return_prompts: int
     return_completions_within_72h: int
+    content_exhaustion_levels: tuple["ContentExhaustionLevelSummary", ...]
+
+
+@dataclass(frozen=True, slots=True)
+class ContentExhaustionLevelSummary:
+    level_band: str
+    user_count: int
+    event_count: int
+    last_seen_at: datetime
 
 
 async def record_product_event(
@@ -63,6 +73,33 @@ async def record_product_event(
         )
     )
     return True
+
+
+async def record_content_exhaustion_signal(
+    session: AsyncSession,
+    user_id: int,
+    *,
+    level_band: str | None,
+    lesson_date: date,
+    source: str,
+    occurred_at: datetime | None = None,
+) -> bool:
+    normalized_level_band = level_band or "unknown"
+    return await record_product_event(
+        session,
+        user_id,
+        "content_exhausted",
+        occurred_at=occurred_at,
+        metadata={
+            "level_band": normalized_level_band,
+            "lesson_date": lesson_date.isoformat(),
+            "source": source,
+        },
+        event_key=(
+            f"content-exhausted:{source}:{user_id}:"
+            f"{normalized_level_band}:{lesson_date.isoformat()}"
+        ),
+    )
 
 
 async def summarize_product_events(
@@ -135,8 +172,44 @@ async def summarize_product_events(
         if any(prompt_time <= completion_time <= prompt_time + timedelta(hours=72) for completion_time in completion_times):
             conversion_count += 1
 
+    exhaustion_rows = list(
+        (
+            await session.execute(
+                select(ProductEvent.user_id, ProductEvent.event_metadata, ProductEvent.occurred_at)
+                .where(ProductEvent.event_name == "content_exhausted")
+                .order_by(ProductEvent.occurred_at.desc(), ProductEvent.id.desc())
+            )
+        ).all()
+    )
+    exhaustion_by_level: dict[str, dict[str, object]] = {}
+    for user_id, metadata, occurred_at in exhaustion_rows:
+        level_band = str((metadata or {}).get("level_band") or "unknown")
+        bucket = exhaustion_by_level.setdefault(
+            level_band,
+            {
+                "user_ids": set(),
+                "event_count": 0,
+                "last_seen_at": occurred_at,
+            },
+        )
+        bucket["user_ids"].add(user_id)
+        bucket["event_count"] += 1
+        if occurred_at > bucket["last_seen_at"]:
+            bucket["last_seen_at"] = occurred_at
+
+    content_exhaustion_levels = tuple(
+        ContentExhaustionLevelSummary(
+            level_band=level_band,
+            user_count=len(bucket["user_ids"]),
+            event_count=int(bucket["event_count"]),
+            last_seen_at=bucket["last_seen_at"],
+        )
+        for level_band, bucket in sorted(exhaustion_by_level.items())
+    )
+
     return ProductEventSummary(
         counts=counts,
         return_prompts=len(prompt_rows),
         return_completions_within_72h=conversion_count,
+        content_exhaustion_levels=content_exhaustion_levels,
     )

@@ -104,6 +104,23 @@ async def _seed_lapsed_due_user(factory: async_sessionmaker) -> int:
     return user_id
 
 
+async def _seed_due_user_without_content(factory: async_sessionmaker, *, level_band: str) -> int:
+    async with factory() as session:
+        user = User(
+            telegram_user_id=777,
+            username="empty_user",
+            first_name="Empty",
+            language_code="ru",
+            level_band=level_band,
+            timezone="UTC",
+            daily_delivery_time="09:00",
+            is_active=True,
+        )
+        session.add(user)
+        await session.commit()
+        return user.id
+
+
 def test_user_is_due_for_delivery_matches_local_minute() -> None:
     user = User(
         telegram_user_id=1,
@@ -127,11 +144,12 @@ async def test_delivery_tick_sends_once_per_day(session_factory) -> None:
 
     delivered_count = await run_delivery_tick(bot, session_factory, now)
     assert delivered_count == 1
-    assert len(bot.messages) == 2
+    assert len(bot.messages) == 3
+    assert bot.messages[2][1].startswith("Spot a problem with this card?")
 
     delivered_count = await run_delivery_tick(bot, session_factory, now)
     assert delivered_count == 0
-    assert len(bot.messages) == 2
+    assert len(bot.messages) == 3
 
     async with session_factory() as session:
         lesson = await session.scalar(select(DailyLesson))
@@ -148,8 +166,9 @@ async def test_delivery_tick_shows_return_prompt_for_lapsed_user(session_factory
     delivered_count = await run_delivery_tick(bot, session_factory, now)
 
     assert delivered_count == 1
-    assert len(bot.messages) == 3
+    assert len(bot.messages) == 4
     assert bot.messages[0][1].startswith("Welcome back.")
+    assert bot.messages[3][1].startswith("Spot a problem with this card?")
 
     async with session_factory() as session:
         lesson = await session.scalar(
@@ -167,3 +186,25 @@ async def test_delivery_tick_shows_return_prompt_for_lapsed_user(session_factory
         )
         assert "return_prompt_shown" in event_names
         assert "daily_lesson_started" in event_names
+
+
+@pytest.mark.asyncio
+async def test_delivery_tick_records_content_exhaustion_when_no_lesson_exists(session_factory) -> None:
+    await _seed_due_user_without_content(session_factory, level_band="b1_b2")
+    bot = FakeBot()
+    now = datetime(2026, 3, 15, 9, 0, tzinfo=UTC)
+
+    delivered_count = await run_delivery_tick(bot, session_factory, now)
+
+    assert delivered_count == 0
+    assert bot.messages == []
+
+    async with session_factory() as session:
+        event_names = list(
+            (
+                await session.execute(
+                    select(ProductEvent.event_name).order_by(ProductEvent.id.asc())
+                )
+            ).scalars()
+        )
+        assert event_names == ["content_exhausted"]

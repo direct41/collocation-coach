@@ -10,6 +10,7 @@ from collocation_coach.application.feedback import (
     feedback_rows_to_csv,
     feedback_rows_to_jsonl,
     load_feedback_export_rows,
+    summarize_content_issues,
     summarize_feedback_types,
 )
 from collocation_coach.storage.database import Database
@@ -52,6 +53,15 @@ async def _run_summary() -> None:
         f"- return_prompt_conversions_within_72h: "
         f"{summary.return_completions_within_72h}/{summary.return_prompts}"
     )
+    if not summary.content_exhaustion_levels:
+        print("- content_exhaustion: none")
+    else:
+        for row in summary.content_exhaustion_levels:
+            print(
+                f"- content_exhaustion[{row.level_band}]: "
+                f"users={row.user_count}, hits={row.event_count}, "
+                f"last_seen_at={row.last_seen_at.isoformat()}"
+            )
 
 
 async def _run_feedback_export(output_format: str) -> None:
@@ -62,17 +72,26 @@ async def _run_feedback_export(output_format: str) -> None:
         async with database.session_factory() as session:
             rows = await load_feedback_export_rows(session)
             summary = await summarize_feedback_types(session)
+            issue_summary = await summarize_content_issues(session)
     finally:
         await database.dispose()
 
-    print("Feedback summary")
+    print("Content issue summary")
+    print(f"- total: {issue_summary.total_reports}")
     if not summary:
         print("- total: 0")
     else:
         for feedback_type, count in summary.items():
             print(f"- {feedback_type}: {count}")
+    if issue_summary.most_reported_items:
+        print("- most_reported_items:")
+        for item in issue_summary.most_reported_items:
+            print(
+                f"  - {item.phrase} "
+                f"({item.level_band}/{item.lesson_unit_key}): reports={item.report_count}"
+            )
     print("")
-    print("Feedback export")
+    print("Content issue export")
     if output_format == "jsonl":
         print(feedback_rows_to_jsonl(rows))
     else:
@@ -85,7 +104,7 @@ def main() -> None:
         "command",
         nargs="?",
         default="summary",
-        choices=("summary", "feedback-export"),
+        choices=("summary", "feedback-export", "content-issues"),
     )
     parser.add_argument(
         "--format",
@@ -95,7 +114,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    if args.command == "feedback-export":
+    if args.command in {"feedback-export", "content-issues"}:
         _print_feedback_export(args.output_format)
         return
     _print_summary()

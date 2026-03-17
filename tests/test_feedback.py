@@ -9,6 +9,8 @@ from collocation_coach.application.feedback import (
     feedback_rows_to_csv,
     feedback_rows_to_jsonl,
     load_feedback_export_rows,
+    summarize_content_issues,
+    summarize_feedback_types,
     submit_content_feedback,
 )
 from collocation_coach.storage.models import (
@@ -131,7 +133,7 @@ async def test_submit_content_feedback_rejects_invalid_type(session_factory) -> 
 
 
 @pytest.mark.asyncio
-async def test_feedback_export_outputs_csv_and_jsonl(session_factory) -> None:
+async def test_feedback_export_outputs_csv_and_jsonl_with_issue_context(session_factory) -> None:
     user_id, item_id = await _seed_feedback_target(session_factory)
 
     async with session_factory() as session:
@@ -148,11 +150,43 @@ async def test_feedback_export_outputs_csv_and_jsonl(session_factory) -> None:
         await session.commit()
 
         rows = await load_feedback_export_rows(session)
+        summary = await summarize_feedback_types(session)
+        issue_summary = await summarize_content_issues(session)
         csv_output = feedback_rows_to_csv(rows)
         jsonl_output = feedback_rows_to_jsonl(rows)
 
         assert len(rows) == 1
-        assert "too_hard" in csv_output
+        assert rows[0].feedback_type == "not_my_level"
+        assert summary == {"not_my_level": 1}
+        assert issue_summary.total_reports == 1
+        assert issue_summary.most_reported_items[0].lesson_unit_key == "lesson-1"
+        assert "not_my_level" in csv_output
         assert "take action" in csv_output
-        assert '"feedback_type": "too_hard"' in jsonl_output
+        assert "a2_b1" in csv_output
+        assert '"feedback_type": "not_my_level"' in jsonl_output
         assert '"collocation_external_key": "feedback-item"' in jsonl_output
+        assert '"lesson_unit_key": "lesson-1"' in jsonl_output
+
+
+@pytest.mark.asyncio
+async def test_submit_content_feedback_accepts_quiet_report_default_type(session_factory) -> None:
+    user_id, item_id = await _seed_feedback_target(session_factory)
+
+    async with session_factory() as session:
+        created = await submit_content_feedback(
+            session,
+            user_id=user_id,
+            collocation_item_id=item_id,
+            feedback_type="",
+            session_type="daily",
+            session_id=11,
+            session_item_id=12,
+            now=datetime(2026, 3, 17, 11, 0, tzinfo=UTC),
+        )
+        await session.commit()
+
+        feedback = await session.scalar(select(ContentFeedback))
+
+        assert created is True
+        assert feedback is not None
+        assert feedback.feedback_type == "wrong_or_broken"

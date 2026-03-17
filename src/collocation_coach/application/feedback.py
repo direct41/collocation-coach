@@ -1,25 +1,30 @@
 import csv
 import io
 import json
+from collections import Counter
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from collocation_coach.application.events import record_product_event
-from collocation_coach.storage.models import CollocationItem, ContentFeedback
+from collocation_coach.storage.models import CollocationItem, ContentFeedback, LessonUnit
 
 FEEDBACK_TYPES = (
     "wrong_or_broken",
-    "too_hard",
-    "unnatural_example",
+    "unclear",
+    "not_my_level",
 )
-FEEDBACK_TYPE_LABELS = (
-    ("wrong_or_broken", "Broken"),
-    ("too_hard", "Too hard"),
-    ("unnatural_example", "Unnatural"),
-)
+LEGACY_FEEDBACK_TYPE_MAP = {
+    "wrong_or_broken": "wrong_or_broken",
+    "too_hard": "not_my_level",
+    "unnatural_example": "unclear",
+    "unclear": "unclear",
+    "not_my_level": "not_my_level",
+}
+DEFAULT_CONTENT_FEEDBACK_TYPE = "wrong_or_broken"
+REPORT_PROBLEM_LABEL = "Report a problem"
 
 
 @dataclass(frozen=True, slots=True)
@@ -30,15 +35,46 @@ class FeedbackExportRow:
     collocation_item_id: int
     collocation_external_key: str
     phrase: str
+    level_band: str
+    lesson_unit_key: str
+    lesson_topic: str
     session_type: str | None
     session_id: int | None
     session_item_id: int | None
 
 
-def validate_feedback_type(value: str) -> str:
-    if value not in FEEDBACK_TYPES:
+@dataclass(frozen=True, slots=True)
+class MostReportedContentIssue:
+    collocation_item_id: int
+    collocation_external_key: str
+    phrase: str
+    level_band: str
+    lesson_unit_key: str
+    lesson_topic: str
+    report_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class ContentIssueSummary:
+    total_reports: int
+    counts_by_type: dict[str, int]
+    most_reported_items: tuple[MostReportedContentIssue, ...]
+
+
+def normalize_feedback_type(value: str | None) -> str:
+    candidate = value or DEFAULT_CONTENT_FEEDBACK_TYPE
+    normalized = LEGACY_FEEDBACK_TYPE_MAP.get(candidate, candidate)
+    if normalized not in FEEDBACK_TYPES:
         raise ValueError("Invalid feedback type")
-    return value
+    return normalized
+
+
+def validate_feedback_type(value: str) -> str:
+    return normalize_feedback_type(value)
+
+
+def default_feedback_type() -> str:
+    return DEFAULT_CONTENT_FEEDBACK_TYPE
 
 
 def feedback_key_for_submission(
@@ -68,7 +104,7 @@ async def submit_content_feedback(
     now: datetime | None = None,
 ) -> bool:
     now = now or datetime.now(UTC)
-    validate_feedback_type(feedback_type)
+    feedback_type = normalize_feedback_type(feedback_type)
 
     item = await session.get(CollocationItem, collocation_item_id)
     if item is None:
@@ -121,8 +157,9 @@ async def load_feedback_export_rows(session: AsyncSession) -> tuple[FeedbackExpo
     rows = list(
         (
             await session.execute(
-                select(ContentFeedback, CollocationItem)
+                select(ContentFeedback, CollocationItem, LessonUnit)
                 .join(CollocationItem, CollocationItem.id == ContentFeedback.collocation_item_id)
+                .join(LessonUnit, LessonUnit.id == CollocationItem.lesson_unit_id)
                 .order_by(ContentFeedback.created_at.desc(), ContentFeedback.id.desc())
             )
         ).all()
@@ -130,30 +167,75 @@ async def load_feedback_export_rows(session: AsyncSession) -> tuple[FeedbackExpo
     return tuple(
         FeedbackExportRow(
             created_at=feedback.created_at if feedback.created_at.tzinfo is not None else feedback.created_at.replace(tzinfo=UTC),
-            feedback_type=feedback.feedback_type,
+            feedback_type=normalize_feedback_type(feedback.feedback_type),
             user_id=feedback.user_id,
             collocation_item_id=feedback.collocation_item_id,
             collocation_external_key=item.external_key,
             phrase=item.phrase,
+            level_band=lesson_unit.level_band,
+            lesson_unit_key=lesson_unit.external_key,
+            lesson_topic=lesson_unit.topic,
             session_type=feedback.session_type,
             session_id=feedback.session_id,
             session_item_id=feedback.session_item_id,
         )
-        for feedback, item in rows
+        for feedback, item, lesson_unit in rows
     )
 
 
 async def summarize_feedback_types(session: AsyncSession) -> dict[str, int]:
-    rows = list(
-        (
-            await session.execute(
-                select(ContentFeedback.feedback_type, func.count(ContentFeedback.id))
-                .group_by(ContentFeedback.feedback_type)
-                .order_by(ContentFeedback.feedback_type.asc())
+    rows = await load_feedback_export_rows(session)
+    counts = Counter(row.feedback_type for row in rows)
+    return {
+        feedback_type: counts[feedback_type]
+        for feedback_type in FEEDBACK_TYPES
+        if counts[feedback_type] > 0
+    }
+
+
+async def summarize_content_issues(
+    session: AsyncSession,
+    *,
+    top_n: int = 5,
+) -> ContentIssueSummary:
+    rows = await load_feedback_export_rows(session)
+    counts_by_type = await summarize_feedback_types(session)
+    issue_counts: dict[int, MostReportedContentIssue] = {}
+
+    for row in rows:
+        existing = issue_counts.get(row.collocation_item_id)
+        if existing is None:
+            issue_counts[row.collocation_item_id] = MostReportedContentIssue(
+                collocation_item_id=row.collocation_item_id,
+                collocation_external_key=row.collocation_external_key,
+                phrase=row.phrase,
+                level_band=row.level_band,
+                lesson_unit_key=row.lesson_unit_key,
+                lesson_topic=row.lesson_topic,
+                report_count=1,
             )
-        ).all()
+            continue
+        issue_counts[row.collocation_item_id] = MostReportedContentIssue(
+            collocation_item_id=existing.collocation_item_id,
+            collocation_external_key=existing.collocation_external_key,
+            phrase=existing.phrase,
+            level_band=existing.level_band,
+            lesson_unit_key=existing.lesson_unit_key,
+            lesson_topic=existing.lesson_topic,
+            report_count=existing.report_count + 1,
+        )
+
+    most_reported_items = tuple(
+        sorted(
+            issue_counts.values(),
+            key=lambda item: (-item.report_count, item.level_band, item.phrase),
+        )[:top_n]
     )
-    return {feedback_type: count for feedback_type, count in rows}
+    return ContentIssueSummary(
+        total_reports=len(rows),
+        counts_by_type=counts_by_type,
+        most_reported_items=most_reported_items,
+    )
 
 
 def feedback_rows_to_csv(rows: tuple[FeedbackExportRow, ...]) -> str:
@@ -167,6 +249,9 @@ def feedback_rows_to_csv(rows: tuple[FeedbackExportRow, ...]) -> str:
             "collocation_item_id",
             "collocation_external_key",
             "phrase",
+            "level_band",
+            "lesson_unit_key",
+            "lesson_topic",
             "session_type",
             "session_id",
             "session_item_id",
@@ -181,6 +266,9 @@ def feedback_rows_to_csv(rows: tuple[FeedbackExportRow, ...]) -> str:
                 row.collocation_item_id,
                 row.collocation_external_key,
                 row.phrase,
+                row.level_band,
+                row.lesson_unit_key,
+                row.lesson_topic,
                 row.session_type or "",
                 row.session_id or "",
                 row.session_item_id or "",
@@ -199,6 +287,9 @@ def feedback_rows_to_jsonl(rows: tuple[FeedbackExportRow, ...]) -> str:
                 "collocation_item_id": row.collocation_item_id,
                 "collocation_external_key": row.collocation_external_key,
                 "phrase": row.phrase,
+                "level_band": row.level_band,
+                "lesson_unit_key": row.lesson_unit_key,
+                "lesson_topic": row.lesson_topic,
                 "session_type": row.session_type,
                 "session_id": row.session_id,
                 "session_item_id": row.session_item_id,

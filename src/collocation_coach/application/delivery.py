@@ -5,7 +5,10 @@ from aiogram import Bot
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from collocation_coach.application.events import record_product_event
+from collocation_coach.application.events import (
+    record_content_exhaustion_signal,
+    record_product_event,
+)
 from collocation_coach.application.onboarding import onboarding_complete
 from collocation_coach.application.study import (
     activate_return_mode_if_lapsed,
@@ -16,6 +19,8 @@ from collocation_coach.application.study import (
 from collocation_coach.application.time import local_now, local_today
 from collocation_coach.storage.models import DailyLesson, User
 from collocation_coach.transport.telegram.messages import (
+    content_report_markup,
+    content_report_prompt,
     daily_intro_text,
     format_item_card,
     return_intro_text,
@@ -72,6 +77,15 @@ async def deliver_daily_lesson_for_user(
         missed_days = await activate_return_mode_if_lapsed(session, user, lesson_date, now_utc)
         lesson = await create_or_get_daily_lesson(session, user_id, lesson_date=lesson_date, now=now_utc)
         if lesson is None:
+            await record_content_exhaustion_signal(
+                session,
+                user_id,
+                level_band=user.level_band,
+                lesson_date=lesson_date,
+                source="scheduled_delivery",
+                occurred_at=now_utc,
+            )
+            await session.commit()
             return False
 
         lesson = await session.get(DailyLesson, lesson.id)
@@ -96,6 +110,11 @@ async def deliver_daily_lesson_for_user(
             user.telegram_user_id,
             format_item_card(next_card),
             reply_markup=practice_markup(next_card),
+        )
+        await bot.send_message(
+            user.telegram_user_id,
+            content_report_prompt(),
+            reply_markup=content_report_markup(next_card),
         )
 
         lesson.delivered_at = now_utc

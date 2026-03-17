@@ -2,7 +2,7 @@ from collections.abc import Sequence
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from collocation_coach.application.feedback import FEEDBACK_TYPE_LABELS
+from collocation_coach.application.feedback import REPORT_PROBLEM_LABEL
 from collocation_coach.application.onboarding import (
     DELIVERY_TIME_OPTIONS,
     LEVEL_BANDS,
@@ -130,20 +130,26 @@ def practice_start_keyboard(session_type: str, session_id: int, item_id: int) ->
                         action="practice",
                     ).pack(),
                 )
-            ],
+            ]
+        ]
+    )
+
+
+def report_problem_keyboard(session_type: str, session_id: int, item_id: int) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=label,
+                    text=REPORT_PROBLEM_LABEL,
                     callback_data=StudyActionCallback(
                         session_type=session_type,
                         session_id=session_id,
                         item_id=item_id,
                         action="feedback",
-                        value=value,
+                        value="",
                     ).pack(),
                 )
-                for value, label in FEEDBACK_TYPE_LABELS
-            ],
+            ]
         ]
     )
 
