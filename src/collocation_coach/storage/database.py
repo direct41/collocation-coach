@@ -56,8 +56,11 @@ class Database:
         )
         if "return_mode_applied" not in daily_lesson_columns:
             await connection.execute(
-                text("ALTER TABLE daily_lessons ADD COLUMN return_mode_applied BOOLEAN DEFAULT 0")
+                text("ALTER TABLE daily_lessons ADD COLUMN return_mode_applied BOOLEAN DEFAULT FALSE")
             )
             await connection.execute(
-                text("UPDATE daily_lessons SET return_mode_applied = 0 WHERE return_mode_applied IS NULL")
+                text(
+                    "UPDATE daily_lessons SET return_mode_applied = FALSE "
+                    "WHERE return_mode_applied IS NULL"
+                )
             )
