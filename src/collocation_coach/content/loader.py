@@ -19,6 +19,12 @@ def load_lesson_file(path: Path) -> LessonUnitFile:
 def load_all_lessons(content_dir: Path) -> list[tuple[Path, LessonUnitFile]]:
     lesson_files = discover_lesson_files(content_dir)
     lessons: list[tuple[Path, LessonUnitFile]] = []
+    errors: list[str] = []
     for path in lesson_files:
-        lessons.append((path, load_lesson_file(path)))
+        try:
+            lessons.append((path, load_lesson_file(path)))
+        except (yaml.YAMLError, ValueError) as exc:
+            errors.append(f"{path}: {exc}")
+    if errors:
+        raise ValueError("Invalid lesson files:\n- " + "\n- ".join(errors))
     return lessons

@@ -58,6 +58,13 @@ Defaults live in [.env.example](./.env.example).
 
 Lessons are plain YAML files in [content/lessons](./content/lessons).
 
+Authoring rules live in [docs/CONTENT_GUIDE.md](./docs/CONTENT_GUIDE.md).
+Run the content validator before shipping lesson edits:
+
+```bash
+uv run python -m collocation_coach.validation
+```
+
 Each level has its own track:
 - [content/lessons/a2_b1](./content/lessons/a2_b1)
 - [content/lessons/b1_b2](./content/lessons/b1_b2)
@@ -90,10 +97,12 @@ The repository is intentionally simple:
 - no external admin panel required
 - local event summary without external analytics
 - local feedback export for content triage
+- local content linting for lesson quality checks
 
 ## Documents
 
 - [RUN.md](./RUN.md)
+- [Content guide](./docs/CONTENT_GUIDE.md)
 - [AI MVP plan](./docs/AI_MVP_PLAN.md)
 - [Product plan](./docs/PRODUCT_PLAN.md)
 - [Technical decisions](./docs/TECHNICAL_DECISIONS.md)

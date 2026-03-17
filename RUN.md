@@ -104,6 +104,13 @@ Each lesson file contains:
 - common mistake
 - multiple-choice practice
 
+Before editing lesson files, read [docs/CONTENT_GUIDE.md](./docs/CONTENT_GUIDE.md).
+To validate content locally, run:
+
+```bash
+uv run python -m collocation_coach.validation
+```
+
 After changing lesson files, restart the bot to reseed content.
 
 ## 9. Pace Modes
@@ -128,6 +135,7 @@ Timezone selection now covers a wider set of common regions, and delivery-time s
 - make sure no other process is running the same bot token
 
 `Content fails to load`
+- run `uv run python -m collocation_coach.validation`
 - run `uv run pytest`
 - inspect the last edited YAML file for invalid structure
 
@@ -136,6 +144,7 @@ Timezone selection now covers a wider set of common regions, and delivery-time s
 ```bash
 uv run pytest
 uv run python -m compileall src
+uv run python -m collocation_coach.validation
 uv run python -m collocation_coach.reporting
 uv run python -m collocation_coach.reporting feedback-export --format csv
 docker compose config

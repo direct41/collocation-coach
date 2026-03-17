@@ -13,7 +13,7 @@ from collocation_coach.logging import configure_logging
 from collocation_coach.runtime import delivery_loop, stop_background_task
 from collocation_coach.storage.database import Database
 from collocation_coach.transport.telegram.handlers import create_router
-from collocation_coach.validation import validate_startup_content
+from collocation_coach.validation import collect_content_lint_warnings, validate_startup_content
 
 
 async def run() -> None:
@@ -23,7 +23,14 @@ async def run() -> None:
 
     lessons = load_all_lessons(settings.content_dir)
     validate_startup_content(lessons)
-    logger.info("Loaded lesson files", extra={"lesson_file_count": len(lessons)})
+    lint_warnings = collect_content_lint_warnings(lessons)
+    logger.info(
+        "Loaded lesson files",
+        extra={
+            "lesson_file_count": len(lessons),
+            "content_validation_warning_count": len(lint_warnings),
+        },
+    )
 
     database = Database(settings.database_url)
     await database.initialize()
