@@ -5,6 +5,7 @@ from typing import Literal
 from sqlalchemy import Select, asc, case, delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from collocation_coach.application.events import record_product_event
 from collocation_coach.application.onboarding import DEFAULT_PACE_MODE, normalize_pace_mode
 from collocation_coach.storage.models import (
     CollocationItem,
@@ -22,6 +23,8 @@ Rating = Literal["know", "unsure", "repeat"]
 
 SUCCESS_INTERVALS_DAYS = (3, 7, 14)
 REVIEW_SESSION_LIMIT = 5
+RETURN_MODE_DURATION = timedelta(hours=72)
+RETURN_MODE_COMPLETED_LESSONS = 2
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,6 +39,7 @@ PACE_PLANS: dict[str, PacePlan] = {
     "standard": PacePlan(new_items=3, review_items=2, extra_items=3),
     "intensive": PacePlan(new_items=5, review_items=3, extra_items=5),
 }
+RETURN_MODE_PACE_PLAN = PacePlan(new_items=2, review_items=2, extra_items=3)
 
 
 @dataclass(slots=True)
@@ -74,6 +78,85 @@ def utc_now() -> datetime:
 
 def pace_plan_for_mode(pace_mode: str | None) -> PacePlan:
     return PACE_PLANS.get(normalize_pace_mode(pace_mode), PACE_PLANS[DEFAULT_PACE_MODE])
+
+
+def _as_utc_datetime(value: datetime | None) -> datetime | None:
+    if value is None:
+        return None
+    if value.tzinfo is None:
+        return value.replace(tzinfo=UTC)
+    return value
+
+
+def clear_return_mode(user: User) -> None:
+    user.return_mode_started_at = None
+    user.return_mode_until = None
+    user.return_mode_lessons_remaining = 0
+
+
+def is_return_mode_active(user: User, now: datetime | None = None) -> bool:
+    now = now or utc_now()
+    return_mode_until = _as_utc_datetime(user.return_mode_until)
+    if return_mode_until is None:
+        return False
+    if user.return_mode_lessons_remaining <= 0:
+        return False
+    return now < return_mode_until
+
+
+def expire_return_mode_if_needed(user: User, now: datetime | None = None) -> bool:
+    now = now or utc_now()
+    if not is_return_mode_active(user, now) and (
+        user.return_mode_until is not None or user.return_mode_lessons_remaining > 0
+    ):
+        clear_return_mode(user)
+        return True
+    return False
+
+
+def missed_local_days(last_completed_lesson_date: date, current_lesson_date: date) -> int:
+    return max((current_lesson_date - last_completed_lesson_date).days - 1, 0)
+
+
+async def _load_last_completed_daily_lesson_date(session: AsyncSession, user_id: int) -> date | None:
+    return await session.scalar(
+        select(func.max(DailyLesson.lesson_date)).where(
+            DailyLesson.user_id == user_id,
+            DailyLesson.status == "completed",
+        )
+    )
+
+
+async def activate_return_mode_if_lapsed(
+    session: AsyncSession,
+    user: User,
+    lesson_date: date,
+    now: datetime | None = None,
+) -> int | None:
+    now = now or utc_now()
+    expire_return_mode_if_needed(user, now)
+    if is_return_mode_active(user, now):
+        return None
+
+    last_completed_lesson_date = await _load_last_completed_daily_lesson_date(session, user.id)
+    if last_completed_lesson_date is None:
+        return None
+
+    missed_days = missed_local_days(last_completed_lesson_date, lesson_date)
+    if missed_days < 3:
+        return None
+
+    user.return_mode_started_at = now
+    user.return_mode_until = now + RETURN_MODE_DURATION
+    user.return_mode_lessons_remaining = RETURN_MODE_COMPLETED_LESSONS
+    return missed_days
+
+
+def _active_daily_pace_plan(user: User, now: datetime) -> PacePlan:
+    expire_return_mode_if_needed(user, now)
+    if is_return_mode_active(user, now):
+        return RETURN_MODE_PACE_PLAN
+    return pace_plan_for_mode(user.pace_mode)
 
 
 def _session_item_model(session_type: SessionType):
@@ -304,7 +387,8 @@ async def create_or_get_daily_lesson(
     user = await session.get(User, user_id)
     if user is None or user.level_band is None:
         return None
-    pace_plan = pace_plan_for_mode(user.pace_mode)
+    pace_plan = _active_daily_pace_plan(user, now)
+    return_mode_applied = is_return_mode_active(user, now)
 
     existing = await session.scalar(
         select(DailyLesson).where(
@@ -315,7 +399,7 @@ async def create_or_get_daily_lesson(
 
     if existing is not None:
         existing_level_band = await get_daily_lesson_level_band(session, existing.id)
-        if existing_level_band == user.level_band:
+        if existing_level_band == user.level_band and existing.return_mode_applied == return_mode_applied:
             return existing
         if existing.status == "completed":
             return existing
@@ -353,12 +437,14 @@ async def create_or_get_daily_lesson(
             lesson_date=lesson_date,
             lesson_unit_id=primary_lesson_unit_id,
             status="in_progress",
+            return_mode_applied=return_mode_applied,
         )
         session.add(daily_lesson)
         await session.flush()
     else:
         daily_lesson.lesson_unit_id = primary_lesson_unit_id
         daily_lesson.status = "in_progress"
+        daily_lesson.return_mode_applied = return_mode_applied
         daily_lesson.completed_at = None
         daily_lesson.delivered_at = None
 
@@ -445,6 +531,17 @@ async def create_or_get_review_session(
             )
         )
 
+    await record_product_event(
+        session,
+        user_id,
+        "review_session_started",
+        occurred_at=now,
+        metadata={
+            "review_session_id": review_session.id,
+            "include_extra": include_extra,
+        },
+        event_key=f"review-session-started:{review_session.id}",
+    )
     await session.commit()
     await session.refresh(review_session)
     return review_session
@@ -562,6 +659,35 @@ async def apply_rating(
     if pending_count == 0 and parent is not None:
         parent.status = "completed"
         parent.completed_at = now
+        if session_type == "daily":
+            user = await session.get(User, user_id)
+            return_mode_applied = bool(parent.return_mode_applied) if isinstance(parent, DailyLesson) else False
+            if user is not None:
+                if return_mode_applied and is_return_mode_active(user, now):
+                    user.return_mode_lessons_remaining = max(user.return_mode_lessons_remaining - 1, 0)
+                expire_return_mode_if_needed(user, now)
+                if user.return_mode_lessons_remaining <= 0:
+                    clear_return_mode(user)
+            await record_product_event(
+                session,
+                user_id,
+                "daily_lesson_completed",
+                occurred_at=now,
+                metadata={
+                    "daily_lesson_id": session_id,
+                    "return_mode": return_mode_applied,
+                },
+                event_key=f"daily-lesson-completed:{session_id}",
+            )
+        else:
+            await record_product_event(
+                session,
+                user_id,
+                "review_session_completed",
+                occurred_at=now,
+                metadata={"review_session_id": session_id},
+                event_key=f"review-session-completed:{session_id}",
+            )
 
     await session.commit()
     return await get_session_summary(session, session_type, session_id)

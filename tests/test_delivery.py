@@ -9,7 +9,14 @@ from collocation_coach.application.delivery import (
     run_delivery_tick,
     user_is_due_for_delivery,
 )
-from collocation_coach.storage.models import Base, DailyLesson, LessonUnit, CollocationItem, User
+from collocation_coach.storage.models import (
+    Base,
+    CollocationItem,
+    DailyLesson,
+    LessonUnit,
+    ProductEvent,
+    User,
+)
 
 
 class FakeBot:
@@ -77,6 +84,26 @@ async def _seed_due_user(factory: async_sessionmaker) -> int:
         return user.id
 
 
+async def _seed_lapsed_due_user(factory: async_sessionmaker) -> int:
+    user_id = await _seed_due_user(factory)
+    async with factory() as session:
+        lesson = await session.scalar(select(DailyLesson))
+        assert lesson is None
+        first_unit = await session.scalar(select(LessonUnit).limit(1))
+        assert first_unit is not None
+        session.add(
+            DailyLesson(
+                user_id=user_id,
+                lesson_date=datetime(2026, 3, 11, 9, 0, tzinfo=UTC).date(),
+                lesson_unit_id=first_unit.id,
+                status="completed",
+                completed_at=datetime(2026, 3, 11, 9, 5, tzinfo=UTC),
+            )
+        )
+        await session.commit()
+    return user_id
+
+
 def test_user_is_due_for_delivery_matches_local_minute() -> None:
     user = User(
         telegram_user_id=1,
@@ -110,3 +137,33 @@ async def test_delivery_tick_sends_once_per_day(session_factory) -> None:
         lesson = await session.scalar(select(DailyLesson))
         assert lesson is not None
         assert lesson.delivered_at is not None
+
+
+@pytest.mark.asyncio
+async def test_delivery_tick_shows_return_prompt_for_lapsed_user(session_factory) -> None:
+    await _seed_lapsed_due_user(session_factory)
+    bot = FakeBot()
+    now = datetime(2026, 3, 15, 9, 0, tzinfo=UTC)
+
+    delivered_count = await run_delivery_tick(bot, session_factory, now)
+
+    assert delivered_count == 1
+    assert len(bot.messages) == 3
+    assert bot.messages[0][1].startswith("Welcome back.")
+
+    async with session_factory() as session:
+        lesson = await session.scalar(
+            select(DailyLesson).where(DailyLesson.lesson_date == datetime(2026, 3, 15, 9, 0, tzinfo=UTC).date())
+        )
+        assert lesson is not None
+        assert lesson.return_mode_applied is True
+
+        event_names = set(
+            (
+                await session.execute(
+                    select(ProductEvent.event_name).where(ProductEvent.user_id == lesson.user_id)
+                )
+            ).scalars()
+        )
+        assert "return_prompt_shown" in event_names
+        assert "daily_lesson_started" in event_names

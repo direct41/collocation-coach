@@ -2,6 +2,7 @@ from html import escape
 
 from aiogram.types import InlineKeyboardMarkup
 
+from collocation_coach.application.progress import ProgressSnapshot
 from collocation_coach.application.study import SessionSummary, StudyItemCard
 from collocation_coach.transport.telegram.keyboards import extra_practice_keyboard, practice_start_keyboard
 
@@ -72,6 +73,25 @@ def daily_intro_text(summary: SessionSummary) -> str:
         "Today's session is ready.\n\n"
         f"New items: {summary.new_items}\n"
         f"Review items: {summary.review_items}"
+    )
+
+
+def return_intro_text(missed_days: int) -> str:
+    return (
+        "Welcome back.\n\n"
+        f"You missed {missed_days} day{'s' if missed_days != 1 else ''}, "
+        "but you do not need to catch anything up.\n"
+        "Today's session is a small restart."
+    )
+
+
+def format_progress(snapshot: ProgressSnapshot) -> str:
+    return (
+        "Your progress:\n"
+        f"- Lessons completed in the last 7 days: {snapshot.lessons_completed_last_7_days}\n"
+        f"- Pace: {snapshot.pace_mode}\n"
+        f"- Review backlog: {snapshot.review_backlog_bucket}\n"
+        f"- Level progress: {snapshot.completed_units}/{snapshot.total_units} lesson units"
     )
 
 

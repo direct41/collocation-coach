@@ -1,31 +1,29 @@
 import logging
-from datetime import UTC, date, datetime
-from zoneinfo import ZoneInfo
+from datetime import UTC, datetime
 
 from aiogram import Bot
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
+from collocation_coach.application.events import record_product_event
 from collocation_coach.application.onboarding import onboarding_complete
 from collocation_coach.application.study import (
+    activate_return_mode_if_lapsed,
     create_or_get_daily_lesson,
     get_next_session_card,
     get_session_summary,
 )
+from collocation_coach.application.time import local_now, local_today
 from collocation_coach.storage.models import DailyLesson, User
 from collocation_coach.transport.telegram.messages import (
     daily_intro_text,
     format_item_card,
+    return_intro_text,
     format_summary,
     practice_markup,
 )
 
 logger = logging.getLogger(__name__)
-
-
-def _local_now(now_utc: datetime, timezone_name: str) -> datetime:
-    return now_utc.astimezone(ZoneInfo(timezone_name))
-
 
 def user_is_due_for_delivery(user: User, now_utc: datetime) -> bool:
     if not onboarding_complete(user.level_band, user.timezone, user.daily_delivery_time):
@@ -33,8 +31,8 @@ def user_is_due_for_delivery(user: User, now_utc: datetime) -> bool:
     if not user.is_active or user.timezone is None or user.daily_delivery_time is None:
         return False
 
-    local_now = _local_now(now_utc, user.timezone)
-    return local_now.strftime("%H:%M") == user.daily_delivery_time
+    user_local_now = local_now(now_utc, user.timezone)
+    return user_local_now.strftime("%H:%M") == user.daily_delivery_time
 
 
 async def load_due_user_ids(
@@ -70,8 +68,9 @@ async def deliver_daily_lesson_for_user(
         if user is None or user.timezone is None:
             return False
 
-        local_today = _local_now(now_utc, user.timezone).date()
-        lesson = await create_or_get_daily_lesson(session, user_id, lesson_date=local_today, now=now_utc)
+        lesson_date = local_today(now_utc, user.timezone)
+        missed_days = await activate_return_mode_if_lapsed(session, user, lesson_date, now_utc)
+        lesson = await create_or_get_daily_lesson(session, user_id, lesson_date=lesson_date, now=now_utc)
         if lesson is None:
             return False
 
@@ -90,6 +89,8 @@ async def deliver_daily_lesson_for_user(
             await bot.send_message(user.telegram_user_id, format_summary(summary))
             return True
 
+        if missed_days is not None:
+            await bot.send_message(user.telegram_user_id, return_intro_text(missed_days))
         await bot.send_message(user.telegram_user_id, daily_intro_text(summary))
         await bot.send_message(
             user.telegram_user_id,
@@ -98,6 +99,31 @@ async def deliver_daily_lesson_for_user(
         )
 
         lesson.delivered_at = now_utc
+        if missed_days is not None:
+            await record_product_event(
+                session,
+                user_id,
+                "return_prompt_shown",
+                occurred_at=now_utc,
+                metadata={
+                    "daily_lesson_id": lesson.id,
+                    "missed_days": missed_days,
+                    "source": "scheduled_delivery",
+                },
+                event_key=f"return-prompt:{lesson.id}",
+            )
+        await record_product_event(
+            session,
+            user_id,
+            "daily_lesson_started",
+            occurred_at=now_utc,
+            metadata={
+                "daily_lesson_id": lesson.id,
+                "source": "scheduled_delivery",
+                "return_mode": lesson.return_mode_applied,
+            },
+            event_key=f"daily-lesson-started:{lesson.id}",
+        )
         await session.commit()
         logger.info("Delivered daily lesson", extra={"user_id": user_id, "lesson_id": lesson.id})
         return True

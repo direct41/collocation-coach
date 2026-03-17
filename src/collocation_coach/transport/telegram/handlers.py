@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import UTC, datetime
 import logging
 
 from aiogram import Router
@@ -7,8 +7,11 @@ from aiogram.types import CallbackQuery
 from aiogram.types import Message
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
+from collocation_coach.application.events import record_product_event
 from collocation_coach.application.onboarding import decode_delivery_time, onboarding_complete
+from collocation_coach.application.progress import build_progress_snapshot
 from collocation_coach.application.study import (
+    activate_return_mode_if_lapsed,
     apply_rating,
     create_or_get_daily_lesson,
     create_or_get_review_session,
@@ -20,9 +23,10 @@ from collocation_coach.application.study import (
     load_user_by_telegram_id,
     record_answer,
 )
+from collocation_coach.application.time import local_today
 from collocation_coach.application.users import ensure_user
 from collocation_coach.config import Settings
-from collocation_coach.storage.models import User
+from collocation_coach.storage.models import DailyLesson, User
 from collocation_coach.transport.telegram.callbacks import (
     DeliveryTimeSelectionCallback,
     LevelSelectionCallback,
@@ -48,9 +52,11 @@ from collocation_coach.transport.telegram.messages import (
     format_feedback,
     format_item_card,
     format_practice,
+    format_progress,
     format_settings,
     format_summary,
     practice_markup,
+    return_intro_text,
 )
 
 logger = logging.getLogger(__name__)
@@ -58,6 +64,38 @@ logger = logging.getLogger(__name__)
 
 def _is_ready(user: User) -> bool:
     return onboarding_complete(user.level_band, user.timezone, user.daily_delivery_time)
+
+
+async def _record_user_state_events(
+    session,
+    user: User,
+    *,
+    changed_field: str,
+    changed: bool,
+    was_ready: bool,
+    occurred_at: datetime,
+) -> None:
+    if changed and was_ready:
+        await record_product_event(
+            session,
+            user.id,
+            "settings_updated",
+            occurred_at=occurred_at,
+            metadata={"field": changed_field},
+        )
+    if not was_ready and _is_ready(user):
+        await record_product_event(
+            session,
+            user.id,
+            "onboarding_completed",
+            occurred_at=occurred_at,
+            metadata={
+                "level_band": user.level_band or "",
+                "timezone": user.timezone or "",
+                "delivery_time": user.daily_delivery_time or "",
+            },
+            event_key="onboarding-completed",
+        )
 
 
 async def _send_onboarding_next_step(message: Message, user: User, default_timezone: str) -> None:
@@ -144,6 +182,7 @@ def create_router(
             "/start - register or reopen the bot\n"
             "/today - open today's lesson\n"
             "/review - start a review session\n"
+            "/progress - see current learning status\n"
             "/settings - change your preferences\n"
             "/help - show this help message\n\n"
             "Pace modes:\n"
@@ -172,11 +211,14 @@ def create_router(
                 await _send_onboarding_next_step(message, user, settings.default_timezone)
                 return
 
+            now_utc = datetime.now(UTC)
+            lesson_date = local_today(now_utc, user.timezone or settings.default_timezone)
+            missed_days = await activate_return_mode_if_lapsed(session, user, lesson_date, now_utc)
             lesson = await create_or_get_daily_lesson(
                 session,
                 user.id,
-                lesson_date=date.today(),
-                now=datetime.now(UTC),
+                lesson_date=lesson_date,
+                now=now_utc,
             )
             if lesson is None:
                 if await has_extra_practice_available(session, user.id):
@@ -200,16 +242,47 @@ def create_router(
                         "Your new level will apply to the next generated lesson."
                     )
                 await message.answer(format_summary(summary))
-                if await has_extra_practice_available(session, user.id):
+                if not lesson.return_mode_applied and await has_extra_practice_available(session, user.id):
                     await message.answer(
                         extra_practice_prompt(),
                         reply_markup=extra_practice_markup(),
                     )
                 return
 
+            should_commit = False
             if lesson.delivered_at is None:
-                lesson.delivered_at = datetime.now(UTC)
+                lesson.delivered_at = now_utc
+                should_commit = True
+                await record_product_event(
+                    session,
+                    user.id,
+                    "daily_lesson_started",
+                    occurred_at=now_utc,
+                    metadata={
+                        "daily_lesson_id": lesson.id,
+                        "source": "today",
+                        "return_mode": lesson.return_mode_applied,
+                    },
+                    event_key=f"daily-lesson-started:{lesson.id}",
+                )
+            if missed_days is not None:
+                await record_product_event(
+                    session,
+                    user.id,
+                    "return_prompt_shown",
+                    occurred_at=now_utc,
+                    metadata={
+                        "daily_lesson_id": lesson.id,
+                        "missed_days": missed_days,
+                        "source": "today",
+                    },
+                    event_key=f"return-prompt:{lesson.id}",
+                )
+                should_commit = True
+            if should_commit:
                 await session.commit()
+            if missed_days is not None:
+                await message.answer(return_intro_text(missed_days))
             await message.answer(daily_intro_text(summary))
 
         await _send_next_card(session_factory, message, "daily", lesson.id)
@@ -247,6 +320,35 @@ def create_router(
         await message.answer("Review session started.")
         await _send_next_card(session_factory, message, "review", review_session.id)
 
+    @router.message(Command("progress"))
+    async def progress_handler(message: Message) -> None:
+        from_user = message.from_user
+        if from_user is None:
+            return
+
+        async with session_factory() as session:
+            user = await load_user_by_telegram_id(session, from_user.id)
+            if user is None:
+                await message.answer("Use /start first.")
+                return
+            if not _is_ready(user):
+                await message.answer("Finish onboarding first.")
+                await _send_onboarding_next_step(message, user, settings.default_timezone)
+                return
+
+            now_utc = datetime.now(UTC)
+            snapshot = await build_progress_snapshot(session, user, now_utc=now_utc)
+            await record_product_event(
+                session,
+                user.id,
+                "progress_viewed",
+                occurred_at=now_utc,
+                metadata={"level_band": user.level_band or "", "pace_mode": user.pace_mode},
+            )
+            await session.commit()
+
+        await message.answer(format_progress(snapshot))
+
     @router.message(Command("settings"))
     async def settings_handler(message: Message) -> None:
         from_user = message.from_user
@@ -275,7 +377,18 @@ def create_router(
                 await callback.message.answer("Use /start first.")
                 await callback.answer()
                 return
+            occurred_at = datetime.now(UTC)
+            was_ready = _is_ready(user)
+            changed = user.level_band != callback_data.level_band
             user.level_band = callback_data.level_band
+            await _record_user_state_events(
+                session,
+                user,
+                changed_field="level_band",
+                changed=changed,
+                was_ready=was_ready,
+                occurred_at=occurred_at,
+            )
             await session.commit()
             await session.refresh(user)
 
@@ -311,7 +424,18 @@ def create_router(
                 await callback.message.answer("Use /start first.")
                 await callback.answer()
                 return
+            occurred_at = datetime.now(UTC)
+            was_ready = _is_ready(user)
+            changed = user.timezone != callback_data.timezone
             user.timezone = callback_data.timezone
+            await _record_user_state_events(
+                session,
+                user,
+                changed_field="timezone",
+                changed=changed,
+                was_ready=was_ready,
+                occurred_at=occurred_at,
+            )
             await session.commit()
             await session.refresh(user)
 
@@ -338,7 +462,18 @@ def create_router(
                 await callback.message.answer("Use /start first.")
                 await callback.answer()
                 return
+            occurred_at = datetime.now(UTC)
+            was_ready = _is_ready(user)
+            changed = user.pace_mode != callback_data.pace_mode
             user.pace_mode = callback_data.pace_mode
+            await _record_user_state_events(
+                session,
+                user,
+                changed_field="pace_mode",
+                changed=changed,
+                was_ready=was_ready,
+                occurred_at=occurred_at,
+            )
             await session.commit()
             await session.refresh(user)
 
@@ -362,7 +497,19 @@ def create_router(
                 await callback.message.answer("Use /start first.")
                 await callback.answer()
                 return
-            user.daily_delivery_time = decode_delivery_time(callback_data.delivery_time)
+            occurred_at = datetime.now(UTC)
+            was_ready = _is_ready(user)
+            next_delivery_time = decode_delivery_time(callback_data.delivery_time)
+            changed = user.daily_delivery_time != next_delivery_time
+            user.daily_delivery_time = next_delivery_time
+            await _record_user_state_events(
+                session,
+                user,
+                changed_field="daily_delivery_time",
+                changed=changed,
+                was_ready=was_ready,
+                occurred_at=occurred_at,
+            )
             await session.commit()
             await session.refresh(user)
 
@@ -487,6 +634,9 @@ def create_router(
             if user is None:
                 await callback.answer("Use /start first.", show_alert=True)
                 return
+            daily_lesson = None
+            if session_type == "daily":
+                daily_lesson = await session.get(DailyLesson, callback_data.session_id)
             summary = await apply_rating(
                 session,
                 user.id,
@@ -505,7 +655,7 @@ def create_router(
         await callback.message.edit_text(f"Saved rating: {callback_data.value}.")
         if next_card is None:
             await callback.message.answer(format_summary(summary))
-            if session_type == "daily":
+            if session_type == "daily" and daily_lesson is not None and not daily_lesson.return_mode_applied:
                 async with session_factory() as follow_up_session:
                     user = await load_user_by_telegram_id(follow_up_session, callback.from_user.id)
                     if user is not None and await has_extra_practice_available(follow_up_session, user.id):

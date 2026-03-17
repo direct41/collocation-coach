@@ -42,6 +42,7 @@ async def run() -> None:
             BotCommand(command="start", description="Register and open the bot"),
             BotCommand(command="today", description="Open today's lesson"),
             BotCommand(command="review", description="Start a review session"),
+            BotCommand(command="progress", description="Show current learning progress"),
             BotCommand(command="settings", description="Change preferences"),
             BotCommand(command="help", description="Show current commands"),
         ]

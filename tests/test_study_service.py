@@ -6,19 +6,24 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from collocation_coach.application.study import (
+    activate_return_mode_if_lapsed,
     apply_rating,
     create_or_get_daily_lesson,
     create_or_get_review_session,
     get_daily_lesson_level_band,
     get_next_session_card,
     has_extra_practice_available,
+    is_return_mode_active,
+    missed_local_days,
     record_answer,
 )
 from collocation_coach.storage.models import (
     Base,
     CollocationItem,
     DailyLessonItem,
+    DailyLesson,
     LessonUnit,
+    ProductEvent,
     User,
     UserCollocationProgress,
 )
@@ -151,6 +156,29 @@ async def _seed_additional_a2_content(factory: async_sessionmaker, day_number: i
         session.add_all(items)
         await session.commit()
         return lesson_unit.id, [item.id for item in items]
+
+
+async def _complete_daily_lesson(
+    session,
+    user_id: int,
+    lesson_id: int,
+    *,
+    now: datetime,
+) -> None:
+    while True:
+        card = await get_next_session_card(session, "daily", lesson_id)
+        if card is None:
+            return
+        await record_answer(session, "daily", lesson_id, card.session_item_id, card.correct_option_index)
+        await apply_rating(
+            session,
+            user_id=user_id,
+            session_type="daily",
+            session_id=lesson_id,
+            session_item_id=card.session_item_id,
+            rating="know",
+            now=now,
+        )
 
 
 @pytest.mark.asyncio
@@ -538,3 +566,246 @@ async def test_extra_practice_available_after_daily_progress(session_factory) ->
         extra_card = await get_next_session_card(session, "review", extra_session.id)
         assert extra_card is not None
         assert extra_card.phrase == card.phrase
+
+
+def test_missed_local_days_requires_three_full_missed_dates() -> None:
+    assert missed_local_days(date(2026, 3, 10), date(2026, 3, 13)) == 2
+    assert missed_local_days(date(2026, 3, 10), date(2026, 3, 14)) == 3
+
+
+@pytest.mark.asyncio
+async def test_activate_return_mode_only_for_users_with_completed_lesson_history(session_factory) -> None:
+    user_id, _ = await _seed_user_and_content(session_factory)
+
+    async with session_factory() as session:
+        user = await session.get(User, user_id)
+        assert user is not None
+
+        assert await activate_return_mode_if_lapsed(
+            session,
+            user,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        ) is None
+
+        completed_lesson = DailyLesson(
+            user_id=user_id,
+            lesson_date=date(2026, 3, 10),
+            lesson_unit_id=1,
+            status="completed",
+            completed_at=datetime(2026, 3, 10, tzinfo=UTC),
+        )
+        session.add(completed_lesson)
+        await session.commit()
+
+        missed_days = await activate_return_mode_if_lapsed(
+            session,
+            user,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+
+        assert missed_days == 3
+        assert is_return_mode_active(user, datetime(2026, 3, 14, tzinfo=UTC))
+
+
+@pytest.mark.asyncio
+async def test_return_mode_caps_daily_lesson_without_changing_user_pace(session_factory) -> None:
+    user_id, item_ids = await _seed_user_and_content(session_factory)
+    await _seed_additional_a2_content(session_factory, day_number=2)
+
+    async with session_factory() as session:
+        user = await session.get(User, user_id)
+        assert user is not None
+        user.pace_mode = "intensive"
+        user.return_mode_started_at = datetime(2026, 3, 14, tzinfo=UTC)
+        user.return_mode_until = datetime(2026, 3, 17, tzinfo=UTC)
+        user.return_mode_lessons_remaining = 2
+        session.add_all(
+            [
+                UserCollocationProgress(
+                    user_id=user_id,
+                    collocation_item_id=item_ids[0],
+                    times_seen=1,
+                    times_correct=1,
+                    stability_stage=1,
+                    due_at=datetime(2026, 3, 14, tzinfo=UTC),
+                ),
+                UserCollocationProgress(
+                    user_id=user_id,
+                    collocation_item_id=item_ids[1],
+                    times_seen=1,
+                    times_correct=1,
+                    stability_stage=1,
+                    due_at=datetime(2026, 3, 14, tzinfo=UTC),
+                ),
+                UserCollocationProgress(
+                    user_id=user_id,
+                    collocation_item_id=item_ids[2],
+                    times_seen=1,
+                    times_correct=1,
+                    stability_stage=1,
+                    due_at=datetime(2026, 3, 14, tzinfo=UTC),
+                ),
+            ]
+        )
+        await session.commit()
+
+        lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert lesson is not None
+        rows = list(
+            (
+                await session.execute(
+                    select(DailyLessonItem)
+                    .where(DailyLessonItem.daily_lesson_id == lesson.id)
+                    .order_by(DailyLessonItem.position.asc())
+                )
+            ).scalars()
+        )
+
+        assert lesson.return_mode_applied is True
+        assert user.pace_mode == "intensive"
+        assert len(rows) == 4
+        assert [row.item_type for row in rows] == ["review", "review", "new", "new"]
+
+
+@pytest.mark.asyncio
+async def test_return_mode_clears_after_two_completed_daily_lessons(session_factory) -> None:
+    user_id, _ = await _seed_user_and_content(session_factory)
+    await _seed_additional_a2_content(session_factory, day_number=2)
+    await _seed_additional_a2_content(session_factory, day_number=3)
+
+    async with session_factory() as session:
+        user = await session.get(User, user_id)
+        assert user is not None
+        user.return_mode_started_at = datetime(2026, 3, 14, tzinfo=UTC)
+        user.return_mode_until = datetime(2026, 3, 17, tzinfo=UTC)
+        user.return_mode_lessons_remaining = 2
+        await session.commit()
+
+        first_lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert first_lesson is not None
+        await _complete_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_id=first_lesson.id,
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        await session.refresh(user)
+        assert user.return_mode_lessons_remaining == 1
+
+        second_lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 15),
+            now=datetime(2026, 3, 15, tzinfo=UTC),
+        )
+        assert second_lesson is not None
+        await _complete_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_id=second_lesson.id,
+            now=datetime(2026, 3, 15, tzinfo=UTC),
+        )
+        await session.refresh(user)
+
+        assert user.return_mode_lessons_remaining == 0
+        assert user.return_mode_until is None
+
+
+@pytest.mark.asyncio
+async def test_expired_return_mode_is_not_applied_to_new_daily_lesson(session_factory) -> None:
+    user_id, _ = await _seed_user_and_content(session_factory)
+    await _seed_additional_a2_content(session_factory, day_number=2)
+
+    async with session_factory() as session:
+        user = await session.get(User, user_id)
+        assert user is not None
+        user.pace_mode = "intensive"
+        user.return_mode_started_at = datetime(2026, 3, 10, tzinfo=UTC)
+        user.return_mode_until = datetime(2026, 3, 13, tzinfo=UTC)
+        user.return_mode_lessons_remaining = 2
+        await session.commit()
+
+        lesson = await create_or_get_daily_lesson(
+            session,
+            user_id=user_id,
+            lesson_date=date(2026, 3, 14),
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert lesson is not None
+        await session.refresh(user)
+
+        assert lesson.return_mode_applied is False
+        assert user.return_mode_until is None
+        assert user.return_mode_lessons_remaining == 0
+
+
+@pytest.mark.asyncio
+async def test_review_session_emits_started_and_completed_events(session_factory) -> None:
+    user_id, item_ids = await _seed_user_and_content(session_factory)
+
+    async with session_factory() as session:
+        session.add(
+            UserCollocationProgress(
+                user_id=user_id,
+                collocation_item_id=item_ids[0],
+                times_seen=1,
+                times_correct=1,
+                stability_stage=1,
+                due_at=datetime(2026, 3, 14, tzinfo=UTC),
+            )
+        )
+        await session.commit()
+
+        review_session = await create_or_get_review_session(
+            session,
+            user_id=user_id,
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+        assert review_session is not None
+
+        started_count = await session.scalar(
+            select(func.count(ProductEvent.id)).where(
+                ProductEvent.event_name == "review_session_started",
+                ProductEvent.user_id == user_id,
+            )
+        )
+        assert started_count == 1
+
+        card = await get_next_session_card(session, "review", review_session.id)
+        assert card is not None
+        await record_answer(
+            session,
+            "review",
+            review_session.id,
+            card.session_item_id,
+            card.correct_option_index,
+        )
+        await apply_rating(
+            session,
+            user_id=user_id,
+            session_type="review",
+            session_id=review_session.id,
+            session_item_id=card.session_item_id,
+            rating="know",
+            now=datetime(2026, 3, 14, tzinfo=UTC),
+        )
+
+        completed_count = await session.scalar(
+            select(func.count(ProductEvent.id)).where(
+                ProductEvent.event_name == "review_session_completed",
+                ProductEvent.user_id == user_id,
+            )
+        )
+        assert completed_count == 1

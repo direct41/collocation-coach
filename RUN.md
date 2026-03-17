@@ -84,7 +84,8 @@ After the bot starts:
 4. Send `/today`
 5. Finish one lesson
 6. Send `/review`
-7. Optionally continue with `Extra practice`
+7. Send `/progress`
+8. Optionally continue with `Extra practice`
 
 If these commands work, your instance is ready.
 
@@ -112,6 +113,7 @@ Users can change pace in `/settings`:
 - `Intensive`: more new items per session
 
 The main session is finite. When it ends, the bot can offer optional extra practice.
+If a user returns after 3 or more missed local days, the bot starts with a smaller welcome-back session.
 
 ## 10. Common Issues
 
@@ -132,6 +134,7 @@ The main session is finite. When it ends, the bot can offer optional extra pract
 ```bash
 uv run pytest
 uv run python -m compileall src
+uv run python -m collocation_coach.reporting
 docker compose config
 ```
 

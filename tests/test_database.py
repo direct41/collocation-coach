@@ -8,7 +8,7 @@ from collocation_coach.storage.database import Database
 
 
 @pytest.mark.asyncio
-async def test_initialize_adds_missing_pace_mode_column(tmp_path: Path) -> None:
+async def test_initialize_adds_phase_5_columns_and_event_table(tmp_path: Path) -> None:
     database_path = tmp_path / "upgrade.sqlite"
     database_url = f"sqlite+aiosqlite:///{database_path}"
 
@@ -33,6 +33,22 @@ async def test_initialize_adds_missing_pace_mode_column(tmp_path: Path) -> None:
                 """
             )
         )
+        await connection.execute(
+            text(
+                """
+                CREATE TABLE daily_lessons (
+                    id INTEGER PRIMARY KEY,
+                    user_id INTEGER,
+                    lesson_date DATE NOT NULL,
+                    lesson_unit_id INTEGER,
+                    status VARCHAR(32) NOT NULL DEFAULT 'in_progress',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    delivered_at DATETIME,
+                    completed_at DATETIME
+                )
+                """
+            )
+        )
     await engine.dispose()
 
     database = Database(database_url)
@@ -44,6 +60,19 @@ async def test_initialize_adds_missing_pace_mode_column(tmp_path: Path) -> None:
                 column["name"] for column in inspect(sync_connection).get_columns("users")
             }
         )
+        daily_lesson_columns = await connection.run_sync(
+            lambda sync_connection: {
+                column["name"] for column in inspect(sync_connection).get_columns("daily_lessons")
+            }
+        )
+        product_event_tables = await connection.run_sync(
+            lambda sync_connection: set(inspect(sync_connection).get_table_names())
+        )
 
     await database.dispose()
     assert "pace_mode" in columns
+    assert "return_mode_started_at" in columns
+    assert "return_mode_until" in columns
+    assert "return_mode_lessons_remaining" in columns
+    assert "return_mode_applied" in daily_lesson_columns
+    assert "product_events" in product_event_tables

@@ -44,6 +44,9 @@ class User(TimestampMixin, Base):
     pace_mode: Mapped[str] = mapped_column(String(16), default="standard", nullable=False)
     timezone: Mapped[str | None] = mapped_column(String(64))
     daily_delivery_time: Mapped[str | None] = mapped_column(String(5))
+    return_mode_started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    return_mode_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    return_mode_lessons_remaining: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
 
@@ -96,6 +99,7 @@ class DailyLesson(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+    return_mode_applied: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
@@ -154,3 +158,16 @@ class ReviewSessionItem(Base):
     answered_correctly: Mapped[bool | None] = mapped_column(Boolean)
     self_rating: Mapped[str | None] = mapped_column(String(16))
     answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ProductEvent(Base):
+    __tablename__ = "product_events"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    event_name: Mapped[str] = mapped_column(String(64), index=True)
+    event_key: Mapped[str | None] = mapped_column(String(255), index=True)
+    event_metadata: Mapped[dict[str, object]] = mapped_column("metadata", JSON, default=dict, nullable=False)
+    occurred_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )

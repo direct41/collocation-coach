@@ -10,6 +10,8 @@ Open-source Telegram bot for learning English collocations through short daily l
 - short explanations in Russian
 - common mistake contrast
 - simple spaced repetition
+- gentle return flow after missed days
+- `/progress` for lightweight progress visibility
 - optional extra practice after the main session
 
 ## Current MVP
@@ -22,6 +24,8 @@ Implemented now:
 - pace modes: `light`, `standard`, `intensive`
 - YAML lesson content
 - built-in daily delivery loop
+- append-only product event logging in PostgreSQL
+- local event summary CLI
 - PostgreSQL persistence
 - Docker and local `uv` run paths
 
@@ -61,6 +65,7 @@ Each level has its own track:
 - `/help`
 - `/today`
 - `/review`
+- `/progress`
 - `/settings`
 
 ## Current Learning Model
@@ -69,6 +74,7 @@ Each level has its own track:
 - review items come first
 - new items are selected from unseen collocations in pack order
 - pace controls how many new items appear in the main session
+- after 3 or more missed local days, the bot uses a softer welcome-back session
 - after the main session, the user can continue with extra practice
 
 ## Self-Hosting Goal
@@ -78,6 +84,7 @@ The repository is intentionally simple:
 - one Postgres database
 - editable YAML content
 - no external admin panel required
+- local event summary without external analytics
 
 ## Documents
 
