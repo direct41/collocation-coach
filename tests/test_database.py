@@ -76,3 +76,4 @@ async def test_initialize_adds_phase_5_columns_and_event_table(tmp_path: Path) -
     assert "return_mode_lessons_remaining" in columns
     assert "return_mode_applied" in daily_lesson_columns
     assert "product_events" in product_event_tables
+    assert "content_feedback" in product_event_tables

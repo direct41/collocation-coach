@@ -47,6 +47,7 @@ class StudyItemCard:
     session_type: SessionType
     session_id: int
     session_item_id: int
+    collocation_item_id: int
     position: int
     total_items: int
     item_type: str
@@ -211,6 +212,7 @@ def _to_card(session_type: SessionType, row: tuple[object, CollocationItem], tot
         session_type=session_type,
         session_id=getattr(session_item, _session_fk_name(session_type)),
         session_item_id=session_item.id,
+        collocation_item_id=collocation_item.id,
         position=session_item.position,
         total_items=total_items,
         item_type=item_type,

@@ -12,6 +12,8 @@ Open-source Telegram bot for learning English collocations through short daily l
 - simple spaced repetition
 - gentle return flow after missed days
 - `/progress` for lightweight progress visibility
+- broader timezone and delivery-time choices
+- one-tap content feedback from study cards
 - optional extra practice after the main session
 
 ## Current MVP
@@ -26,6 +28,7 @@ Implemented now:
 - built-in daily delivery loop
 - append-only product event logging in PostgreSQL
 - local event summary CLI
+- local feedback export CLI
 - PostgreSQL persistence
 - Docker and local `uv` run paths
 
@@ -75,6 +78,7 @@ Each level has its own track:
 - new items are selected from unseen collocations in pack order
 - pace controls how many new items appear in the main session
 - after 3 or more missed local days, the bot uses a softer welcome-back session
+- users can flag broken, too-hard, or unnatural cards without leaving the study flow
 - after the main session, the user can continue with extra practice
 
 ## Self-Hosting Goal
@@ -85,6 +89,7 @@ The repository is intentionally simple:
 - editable YAML content
 - no external admin panel required
 - local event summary without external analytics
+- local feedback export for content triage
 
 ## Documents
 

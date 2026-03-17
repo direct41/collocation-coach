@@ -86,6 +86,7 @@ After the bot starts:
 6. Send `/review`
 7. Send `/progress`
 8. Optionally continue with `Extra practice`
+9. If you see a broken or unnatural card, use the feedback buttons directly from the study card
 
 If these commands work, your instance is ready.
 
@@ -114,6 +115,7 @@ Users can change pace in `/settings`:
 
 The main session is finite. When it ends, the bot can offer optional extra practice.
 If a user returns after 3 or more missed local days, the bot starts with a smaller welcome-back session.
+Timezone selection now covers a wider set of common regions, and delivery-time selection offers hourly options across the day.
 
 ## 10. Common Issues
 
@@ -135,6 +137,7 @@ If a user returns after 3 or more missed local days, the bot starts with a small
 uv run pytest
 uv run python -m compileall src
 uv run python -m collocation_coach.reporting
+uv run python -m collocation_coach.reporting feedback-export --format csv
 docker compose config
 ```
 

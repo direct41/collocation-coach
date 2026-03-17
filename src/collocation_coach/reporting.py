@@ -1,10 +1,17 @@
 import asyncio
+import argparse
 from datetime import UTC, datetime
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from collocation_coach.application.events import summarize_product_events
+from collocation_coach.application.feedback import (
+    feedback_rows_to_csv,
+    feedback_rows_to_jsonl,
+    load_feedback_export_rows,
+    summarize_feedback_types,
+)
 from collocation_coach.storage.database import Database
 
 
@@ -20,6 +27,10 @@ class ReportingSettings(BaseSettings):
 
 def _print_summary() -> None:
     asyncio.run(_run_summary())
+
+
+def _print_feedback_export(output_format: str) -> None:
+    asyncio.run(_run_feedback_export(output_format))
 
 
 async def _run_summary() -> None:
@@ -43,7 +54,50 @@ async def _run_summary() -> None:
     )
 
 
+async def _run_feedback_export(output_format: str) -> None:
+    settings = ReportingSettings()
+    database = Database(settings.database_url)
+    await database.initialize()
+    try:
+        async with database.session_factory() as session:
+            rows = await load_feedback_export_rows(session)
+            summary = await summarize_feedback_types(session)
+    finally:
+        await database.dispose()
+
+    print("Feedback summary")
+    if not summary:
+        print("- total: 0")
+    else:
+        for feedback_type, count in summary.items():
+            print(f"- {feedback_type}: {count}")
+    print("")
+    print("Feedback export")
+    if output_format == "jsonl":
+        print(feedback_rows_to_jsonl(rows))
+    else:
+        print(feedback_rows_to_csv(rows), end="")
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Local reporting for Collocation Coach")
+    parser.add_argument(
+        "command",
+        nargs="?",
+        default="summary",
+        choices=("summary", "feedback-export"),
+    )
+    parser.add_argument(
+        "--format",
+        dest="output_format",
+        choices=("csv", "jsonl"),
+        default="csv",
+    )
+    args = parser.parse_args()
+
+    if args.command == "feedback-export":
+        _print_feedback_export(args.output_format)
+        return
     _print_summary()
 
 

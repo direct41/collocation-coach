@@ -8,7 +8,13 @@ from aiogram.types import Message
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from collocation_coach.application.events import record_product_event
-from collocation_coach.application.onboarding import decode_delivery_time, onboarding_complete
+from collocation_coach.application.feedback import submit_content_feedback
+from collocation_coach.application.onboarding import (
+    decode_delivery_time,
+    onboarding_complete,
+    validate_delivery_time_option,
+    validate_timezone_option,
+)
 from collocation_coach.application.progress import build_progress_snapshot
 from collocation_coach.application.study import (
     activate_return_mode_if_lapsed,
@@ -417,6 +423,11 @@ def create_router(
     ) -> None:
         if callback.from_user is None or callback.message is None:
             return
+        try:
+            selected_timezone = validate_timezone_option(callback_data.timezone)
+        except ValueError:
+            await callback.answer("Unsupported timezone option.", show_alert=True)
+            return
 
         async with session_factory() as session:
             user = await load_user_by_telegram_id(session, callback.from_user.id)
@@ -426,8 +437,8 @@ def create_router(
                 return
             occurred_at = datetime.now(UTC)
             was_ready = _is_ready(user)
-            changed = user.timezone != callback_data.timezone
-            user.timezone = callback_data.timezone
+            changed = user.timezone != selected_timezone
+            user.timezone = selected_timezone
             await _record_user_state_events(
                 session,
                 user,
@@ -439,7 +450,7 @@ def create_router(
             await session.commit()
             await session.refresh(user)
 
-        await callback.message.edit_text(f"Timezone set to {callback_data.timezone}.")
+        await callback.message.edit_text(f"Timezone set to {selected_timezone}.")
         if not user.daily_delivery_time:
             await callback.message.answer(
                 "Choose your daily lesson time.",
@@ -490,6 +501,13 @@ def create_router(
     ) -> None:
         if callback.from_user is None or callback.message is None:
             return
+        try:
+            next_delivery_time = validate_delivery_time_option(
+                decode_delivery_time(callback_data.delivery_time)
+            )
+        except ValueError:
+            await callback.answer("Unsupported delivery time option.", show_alert=True)
+            return
 
         async with session_factory() as session:
             user = await load_user_by_telegram_id(session, callback.from_user.id)
@@ -499,7 +517,6 @@ def create_router(
                 return
             occurred_at = datetime.now(UTC)
             was_ready = _is_ready(user)
-            next_delivery_time = decode_delivery_time(callback_data.delivery_time)
             changed = user.daily_delivery_time != next_delivery_time
             user.daily_delivery_time = next_delivery_time
             await _record_user_state_events(
@@ -627,6 +644,42 @@ def create_router(
                 ),
             )
             await callback.answer()
+            return
+
+        if callback_data.action == "feedback":
+            async with session_factory() as session:
+                user = await load_user_by_telegram_id(session, callback.from_user.id)
+                if user is None:
+                    await callback.answer("Use /start first.", show_alert=True)
+                    return
+                card = await get_session_item_card(
+                    session,
+                    session_type,
+                    callback_data.session_id,
+                    callback_data.item_id,
+                )
+                if card is None:
+                    await callback.answer("This item is no longer available.", show_alert=True)
+                    return
+                try:
+                    created = await submit_content_feedback(
+                        session,
+                        user_id=user.id,
+                        collocation_item_id=card.collocation_item_id,
+                        feedback_type=callback_data.value,
+                        session_type=card.session_type,
+                        session_id=card.session_id,
+                        session_item_id=card.session_item_id,
+                        now=datetime.now(UTC),
+                    )
+                except ValueError:
+                    await callback.answer("Unsupported feedback option.", show_alert=True)
+                    return
+                await session.commit()
+
+            await callback.answer(
+                "Feedback saved." if created else "Feedback already saved for this card."
+            )
             return
 
         async with session_factory() as session:

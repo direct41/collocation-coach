@@ -1,5 +1,8 @@
+from collections.abc import Sequence
+
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from collocation_coach.application.feedback import FEEDBACK_TYPE_LABELS
 from collocation_coach.application.onboarding import (
     DELIVERY_TIME_OPTIONS,
     LEVEL_BANDS,
@@ -32,6 +35,10 @@ def level_keyboard() -> InlineKeyboardMarkup:
     )
 
 
+def _chunked(values: Sequence[str], chunk_size: int) -> list[list[str]]:
+    return [list(values[index : index + chunk_size]) for index in range(0, len(values), chunk_size)]
+
+
 def timezone_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -61,27 +68,21 @@ def pace_keyboard() -> InlineKeyboardMarkup:
 
 
 def delivery_time_keyboard() -> InlineKeyboardMarkup:
+    rows: list[list[InlineKeyboardButton]] = []
+    for row in _chunked(DELIVERY_TIME_OPTIONS, 4):
+        rows.append(
+            [
+                InlineKeyboardButton(
+                    text=value,
+                    callback_data=DeliveryTimeSelectionCallback(
+                        delivery_time=encode_delivery_time(value)
+                    ).pack(),
+                )
+                for value in row
+            ]
+        )
     return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text=value,
-                    callback_data=DeliveryTimeSelectionCallback(
-                        delivery_time=encode_delivery_time(value)
-                    ).pack(),
-                )
-                for value in DELIVERY_TIME_OPTIONS[:2]
-            ],
-            [
-                InlineKeyboardButton(
-                    text=value,
-                    callback_data=DeliveryTimeSelectionCallback(
-                        delivery_time=encode_delivery_time(value)
-                    ).pack(),
-                )
-                for value in DELIVERY_TIME_OPTIONS[2:]
-            ],
-        ]
+        inline_keyboard=rows
     )
 
 
@@ -129,7 +130,20 @@ def practice_start_keyboard(session_type: str, session_id: int, item_id: int) ->
                         action="practice",
                     ).pack(),
                 )
-            ]
+            ],
+            [
+                InlineKeyboardButton(
+                    text=label,
+                    callback_data=StudyActionCallback(
+                        session_type=session_type,
+                        session_id=session_id,
+                        item_id=item_id,
+                        action="feedback",
+                        value=value,
+                    ).pack(),
+                )
+                for value, label in FEEDBACK_TYPE_LABELS
+            ],
         ]
     )
 
